@@ -1,0 +1,144 @@
+{
+  "common": {
+    "upload": "Upload",
+    "analyze": "Analyze",
+    "share": "Share",
+    "save": "Save",
+    "skip": "Skip",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "home": "Home",
+    "sessions": "My Sessions",
+    "profile": "Profile",
+    "about": "About"
+  },
+  "home": {
+    "hero_title": "Upload. Analyze. Perfect.",
+    "hero_subtitle": "Get instant AI makeup analysis with confidence scores",
+    "upload_cta": "Or take photo now",
+    "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
+    "what_analyzed_title": "What gets analyzed",
+    "labs": {
+      "flashback": "Flashback",
+      "pores": "Pores",
+      "texture": "Texture",
+      "undertone": "Undertone",
+      "transfer": "Transfer",
+      "longevity": "Longevity",
+      "oxidation": "Oxidation",
+      "creasing": "Creasing",
+      "blending": "Blending"
+    },
+    "how_it_works": "How it works",
+    "step1": "Upload your makeup photo",
+    "step2": "AI analyzes 4-9 different aspects",
+    "step3": "Get scored report with recommendations"
+  },
+  "upload": {
+    "drag_drop": "Drag photo here or click to browse",
+    "take_photo": "Take Photo",
+    "file_too_large": "File is too large. Maximum size is 10MB",
+    "invalid_format": "Invalid file format. Please upload JPG, PNG, or HEIC",
+    "analyze_button": "Analyze My Makeup",
+    "occasion_title": "What's this for?",
+    "occasion_optional": "(optional)",
+    "occasions": {
+      "photoshoot": "Photoshoot",
+      "wedding": "Wedding",
+      "party": "Party/Event",
+      "video": "Video/Streaming",
+      "testing": "Just testing"
+    },
+    "concerns_title": "Any specific concerns?",
+    "concerns": {
+      "flash": "Flash photography",
+      "lasting": "Lasting 6+ hours",
+      "closeup": "Close-up photos",
+      "weather": "Hot/humid weather",
+      "transfer": "Transfer to clothing"
+    },
+    "progress": {
+      "analyzing_flashback": "Analyzing flashback risk...",
+      "checking_pores": "Checking pore visibility...",
+      "detecting_undertone": "Detecting undertone...",
+      "evaluating_texture": "Evaluating texture...",
+      "checking_transfer": "Checking transfer risk...",
+      "assessing_longevity": "Assessing longevity...",
+      "almost_there": "Almost there..."
+    }
+  },
+  "results": {
+    "overall_score": "Overall Prediction Score",
+    "critical": "Critical",
+    "watch_these": "Watch These",
+    "looking_good": "Looking Good",
+    "confidence": "{{percent}}% confident",
+    "show_details": "Show Details",
+    "hide_details": "Hide Details",
+    "detected": "Detected",
+    "recommendations": "Recommendations",
+    "verdict": {
+      "yay": "YAY",
+      "nay": "NAY",
+      "maybe": "MAYBE"
+    },
+    "email_report": "Email This Report",
+    "share_instagram": "Share on Instagram",
+    "saved": "Saved to Your Sessions",
+    "analyze_another": "Analyze Another Photo"
+  },
+  "sessions": {
+    "title": "My Sessions",
+    "sessions_used": "{{used}}/{{total}} sessions used this month",
+    "resets": "Resets {{date}}",
+    "empty_title": "No sessions yet",
+    "empty_subtitle": "Upload your first photo to get started",
+    "view_report": "View Report",
+    "score_badges": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "needs_work": "Needs Work",
+      "issues_found": "Issues Found"
+    },
+    "upgrade_prompt": "You've used all 3 free sessions",
+    "upgrade_button": "Upgrade to Pro - $5/mo"
+  },
+  "profile": {
+    "title": "Profile",
+    "skin_type": "Skin Type",
+    "skin_types": {
+      "dry": "Dry",
+      "normal": "Normal",
+      "combo": "Combination",
+      "oily": "Oily",
+      "not_sure": "Not sure"
+    },
+    "skin_tone": "Skin Tone",
+    "lid_type": "Lid Type",
+    "lid_types": {
+      "hooded": "Hooded",
+      "standard": "Standard",
+      "deep_set": "Deep-set"
+    },
+    "complete_profile": "Complete your profile to unlock 5 more predictions",
+    "progress": "{{completed}}/{{total}} complete",
+    "save_profile": "Save Profile",
+    "language_preference": "Language Preference",
+    "danger_zone": "Danger Zone",
+    "delete_data": "Delete all my data"
+  },
+  "about": {
+    "title": "What is siosi.me?",
+    "description": "siosi.me is an AI-powered makeup analysis platform that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
+    "confidence_title": "Understanding Confidence Scores",
+    "confidence_high": "Very likely accurate",
+    "confidence_medium": "Good prediction, some uncertainty",
+    "confidence_low": "Rough estimate, take with caution",
+    "disclaimer": "Our predictions are AI-based recommendations. Always trust your own judgment and seek professional advice for important events."
+  }
+}

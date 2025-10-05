@@ -1,0 +1,144 @@
+{
+  "common": {
+    "upload": "Subir",
+    "analyze": "Analizar",
+    "share": "Compartir",
+    "save": "Guardar",
+    "skip": "Omitir",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "nav": {
+    "home": "Inicio",
+    "sessions": "Mis Sesiones",
+    "profile": "Perfil",
+    "about": "Acerca de"
+  },
+  "home": {
+    "hero_title": "Sube. Analiza. Perfecciona.",
+    "hero_subtitle": "Obtén análisis instantáneo de maquillaje con puntuaciones de confianza",
+    "upload_cta": "O toma una foto ahora",
+    "supported_formats": "Formatos soportados: JPG, PNG, HEIC (máx. 10MB)",
+    "what_analyzed_title": "Qué se analiza",
+    "labs": {
+      "flashback": "Flashback",
+      "pores": "Poros",
+      "texture": "Textura",
+      "undertone": "Subtono",
+      "transfer": "Transferencia",
+      "longevity": "Duración",
+      "oxidation": "Oxidación",
+      "creasing": "Pliegues",
+      "blending": "Difuminado"
+    },
+    "how_it_works": "Cómo funciona",
+    "step1": "Sube tu foto de maquillaje",
+    "step2": "La IA analiza 4-9 aspectos diferentes",
+    "step3": "Obtén un reporte con recomendaciones"
+  },
+  "upload": {
+    "drag_drop": "Arrastra la foto aquí o haz clic para buscar",
+    "take_photo": "Tomar Foto",
+    "file_too_large": "El archivo es demasiado grande. El tamaño máximo es 10MB",
+    "invalid_format": "Formato de archivo no válido. Por favor sube JPG, PNG o HEIC",
+    "analyze_button": "Analizar Mi Maquillaje",
+    "occasion_title": "¿Para qué es esto?",
+    "occasion_optional": "(opcional)",
+    "occasions": {
+      "photoshoot": "Sesión de fotos",
+      "wedding": "Boda",
+      "party": "Fiesta/Evento",
+      "video": "Video/Streaming",
+      "testing": "Solo probando"
+    },
+    "concerns_title": "¿Alguna preocupación específica?",
+    "concerns": {
+      "flash": "Fotografía con flash",
+      "lasting": "Duración de 6+ horas",
+      "closeup": "Fotos de cerca",
+      "weather": "Clima caliente/húmedo",
+      "transfer": "Transferencia a la ropa"
+    },
+    "progress": {
+      "analyzing_flashback": "Analizando riesgo de flashback...",
+      "checking_pores": "Verificando visibilidad de poros...",
+      "detecting_undertone": "Detectando subtono...",
+      "evaluating_texture": "Evaluando textura...",
+      "checking_transfer": "Verificando riesgo de transferencia...",
+      "assessing_longevity": "Evaluando duración...",
+      "almost_there": "Casi listo..."
+    }
+  },
+  "results": {
+    "overall_score": "Puntuación General de Predicción",
+    "critical": "Crítico",
+    "watch_these": "Observa Estos",
+    "looking_good": "Se Ve Bien",
+    "confidence": "{{percent}}% de confianza",
+    "show_details": "Mostrar Detalles",
+    "hide_details": "Ocultar Detalles",
+    "detected": "Detectado",
+    "recommendations": "Recomendaciones",
+    "verdict": {
+      "yay": "SÍ",
+      "nay": "NO",
+      "maybe": "TAL VEZ"
+    },
+    "email_report": "Enviar Reporte por Email",
+    "share_instagram": "Compartir en Instagram",
+    "saved": "Guardado en Tus Sesiones",
+    "analyze_another": "Analizar Otra Foto"
+  },
+  "sessions": {
+    "title": "Mis Sesiones",
+    "sessions_used": "{{used}}/{{total}} sesiones usadas este mes",
+    "resets": "Se reinicia el {{date}}",
+    "empty_title": "Aún no hay sesiones",
+    "empty_subtitle": "Sube tu primera foto para comenzar",
+    "view_report": "Ver Reporte",
+    "score_badges": {
+      "excellent": "Excelente",
+      "good": "Bueno",
+      "needs_work": "Necesita Mejorar",
+      "issues_found": "Problemas Encontrados"
+    },
+    "upgrade_prompt": "Has usado todas las 3 sesiones gratuitas",
+    "upgrade_button": "Actualizar a Pro - $5/mes"
+  },
+  "profile": {
+    "title": "Perfil",
+    "skin_type": "Tipo de Piel",
+    "skin_types": {
+      "dry": "Seca",
+      "normal": "Normal",
+      "combo": "Mixta",
+      "oily": "Grasa",
+      "not_sure": "No estoy seguro/a"
+    },
+    "skin_tone": "Tono de Piel",
+    "lid_type": "Tipo de Párpado",
+    "lid_types": {
+      "hooded": "Encapuchado",
+      "standard": "Estándar",
+      "deep_set": "Hundido"
+    },
+    "complete_profile": "Completa tu perfil para desbloquear 5 predicciones más",
+    "progress": "{{completed}}/{{total}} completo",
+    "save_profile": "Guardar Perfil",
+    "language_preference": "Preferencia de Idioma",
+    "danger_zone": "Zona de Peligro",
+    "delete_data": "Eliminar todos mis datos"
+  },
+  "about": {
+    "title": "¿Qué es siosi.me?",
+    "description": "siosi.me es una plataforma de análisis de maquillaje con IA que te ayuda a entender cómo funcionará tu maquillaje en diferentes situaciones. Sube una foto y obtén predicciones instantáneas en múltiples aspectos.",
+    "confidence_title": "Entendiendo las Puntuaciones de Confianza",
+    "confidence_high": "Muy probablemente preciso",
+    "confidence_medium": "Buena predicción, algo de incertidumbre",
+    "confidence_low": "Estimación aproximada, tomar con precaución",
+    "disclaimer": "Nuestras predicciones son recomendaciones basadas en IA. Siempre confía en tu propio juicio y busca asesoramiento profesional para eventos importantes."
+  }
+}
