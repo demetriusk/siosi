@@ -59,3 +59,13 @@ export interface UploadContext {
   skin_tone?: SkinTone;
   lid_type?: LidType;
 }
+
+// Route params helper types
+export interface ParamsWithLocale {
+  // Match Next's PageProps/LayoutProps: params should be a Promise of the segment params (or undefined)
+  params?: Promise<{ locale: string }>;
+}
+
+export interface ParamsWithLocaleAndId {
+  params?: Promise<{ locale: string; id: string }>;
+}

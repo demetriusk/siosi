@@ -10,9 +10,9 @@ import { supabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 
-interface SessionPageProps {
-  params: { locale: string; id: string };
-}
+import type { ParamsWithLocaleAndId } from '@/lib/types';
+
+interface SessionPageProps extends ParamsWithLocaleAndId {}
 
 async function getSession(id: string): Promise<SessionWithAnalyses | null> {
   const { data: session, error: sessionError } = await supabase
@@ -40,7 +40,8 @@ async function getSession(id: string): Promise<SessionWithAnalyses | null> {
   };
 }
 
-export default async function SessionPage({ params: { locale, id } }: SessionPageProps) {
+export default async function SessionPage({ params }: SessionPageProps) {
+  const { locale, id } = await params!;
   const session = await getSession(id);
   const t = await getTranslations({ locale });
 

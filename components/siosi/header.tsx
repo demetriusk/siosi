@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import LanguageSelect from './language-select';
 
 interface HeaderProps {
   locale: string;
@@ -13,6 +15,7 @@ interface HeaderProps {
 export function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslations('nav');
 
   const navigation = [
@@ -39,7 +42,7 @@ export function Header({ locale }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href={`/${locale}`} className="flex items-center">
-            <span className="text-2xl font-bold text-[#0A0A0A]">siosi</span>
+            <span className="text-2xl font-bold text-[#0A0A0A]">siOsi</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -59,24 +62,8 @@ export function Header({ locale }: HeaderProps) {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm">
-              <Link
-                href={switchLocale('en')}
-                className={`font-medium transition-colors ${
-                  locale === 'en' ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-                }`}
-              >
-                EN
-              </Link>
-              <span className="text-[#D1D5DB]">|</span>
-              <Link
-                href={switchLocale('es')}
-                className={`font-medium transition-colors ${
-                  locale === 'es' ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-                }`}
-              >
-                ES
-              </Link>
+            <div className="w-40">
+              <LanguageSelect locale={locale} />
             </div>
           </div>
 
@@ -107,24 +94,10 @@ export function Header({ locale }: HeaderProps) {
                 {item.name}
               </Link>
             ))}
-            <div className="flex items-center gap-2 px-3 py-2 text-sm">
-              <Link
-                href={switchLocale('en')}
-                className={`font-medium transition-colors ${
-                  locale === 'en' ? 'text-[#0A0A0A]' : 'text-[#6B7280]'
-                }`}
-              >
-                EN
-              </Link>
-              <span className="text-[#D1D5DB]">|</span>
-              <Link
-                href={switchLocale('es')}
-                className={`font-medium transition-colors ${
-                  locale === 'es' ? 'text-[#0A0A0A]' : 'text-[#6B7280]'
-                }`}
-              >
-                ES
-              </Link>
+            <div className="px-3 py-2">
+              <div className="w-full">
+                <LanguageSelect locale={locale} onChangeClose={() => setMobileMenuOpen(false)} />
+              </div>
             </div>
           </nav>
         </div>

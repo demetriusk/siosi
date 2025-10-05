@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Camera, Sparkles, Upload as UploadIcon, CircleCheck as CheckCircle } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
@@ -9,11 +9,9 @@ import { Footer } from '@/components/siosi/footer';
 import { UploadZone } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
 
-interface HomePageProps {
-  params: { locale: string };
-}
-
-export default function HomePage({ params: { locale } }: HomePageProps) {
+export default function HomePage() {
+  const params = useParams();
+  const locale = (params as any)?.locale as string;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
   const t = useTranslations();

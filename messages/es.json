@@ -40,6 +40,7 @@
     "step3": "Obtén un reporte con recomendaciones"
   },
   "upload": {
+    "supported_formats": "Formatos soportados: JPG, PNG, HEIC (máx. 10MB)",
     "drag_drop": "Arrastra la foto aquí o haz clic para buscar",
     "take_photo": "Tomar Foto",
     "file_too_large": "El archivo es demasiado grande. El tamaño máximo es 10MB",
@@ -77,7 +78,6 @@
     "critical": "Crítico",
     "watch_these": "Observa Estos",
     "looking_good": "Se Ve Bien",
-    "confidence": "{{percent}}% de confianza",
     "show_details": "Mostrar Detalles",
     "hide_details": "Ocultar Detalles",
     "detected": "Detectado",
@@ -94,8 +94,9 @@
   },
   "sessions": {
     "title": "Mis Sesiones",
-    "sessions_used": "{{used}}/{{total}} sesiones usadas este mes",
-    "resets": "Se reinicia el {{date}}",
+  "confidence": "{percent}% de confianza",
+  "sessions_used": "{used}/{total} sesiones usadas este mes",
+  "resets": "Se reinicia el {date}",
     "empty_title": "Aún no hay sesiones",
     "empty_subtitle": "Sube tu primera foto para comenzar",
     "view_report": "Ver Reporte",
@@ -126,7 +127,7 @@
       "deep_set": "Hundido"
     },
     "complete_profile": "Completa tu perfil para desbloquear 5 predicciones más",
-    "progress": "{{completed}}/{{total}} completo",
+  "progress": "{completed}/{total} completo",
     "save_profile": "Guardar Perfil",
     "language_preference": "Preferencia de Idioma",
     "danger_zone": "Zona de Peligro",

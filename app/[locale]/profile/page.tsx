@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -11,11 +12,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
 
-interface ProfilePageProps {
-  params: { locale: string };
-}
-
-export default function ProfilePage({ params: { locale } }: ProfilePageProps) {
+export default function ProfilePage() {
+  const params = useParams();
+  const locale = (params as any)?.locale as string;
   const [skinType, setSkinType] = useState<SkinType | undefined>();
   const [skinTone, setSkinTone] = useState<SkinTone | undefined>();
   const [lidType, setLidType] = useState<LidType | undefined>();
@@ -156,6 +155,14 @@ export default function ProfilePage({ params: { locale } }: ProfilePageProps) {
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="es" id="lang-es" />
                     <Label htmlFor="lang-es" className="cursor-pointer">Español</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="ru" id="lang-ru" />
+                    <Label htmlFor="lang-ru" className="cursor-pointer">Русский</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="ua" id="lang-ua" />
+                    <Label htmlFor="lang-ua" className="cursor-pointer">Українська</Label>
                   </div>
                 </div>
               </RadioGroup>

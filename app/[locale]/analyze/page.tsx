@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Loader as Loader2 } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
@@ -15,9 +15,6 @@ import { supabase } from '@/lib/supabase';
 import { generateMockAnalysis, calculateOverallScore, calculateCriticalCount, calculateConfidenceAverage } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
 
-interface AnalyzePageProps {
-  params: { locale: string };
-}
 
 const progressMessages = [
   'progress.analyzing_flashback',
@@ -29,7 +26,9 @@ const progressMessages = [
   'progress.almost_there',
 ];
 
-export default function AnalyzePage({ params: { locale } }: AnalyzePageProps) {
+export default function AnalyzePage() {
+  const params = useParams();
+  const locale = (params as any)?.locale as string;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [occasion, setOccasion] = useState<Occasion | undefined>();
   const [concerns, setConcerns] = useState<Concern[]>([]);

@@ -8,9 +8,9 @@ import { supabase } from '@/lib/supabase';
 import { Session } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 
-interface SessionsPageProps {
-  params: { locale: string };
-}
+import type { ParamsWithLocale } from '@/lib/types';
+
+interface SessionsPageProps extends ParamsWithLocale {}
 
 async function getSessions(): Promise<Session[]> {
   const { data, error } = await supabase
@@ -27,7 +27,8 @@ async function getSessions(): Promise<Session[]> {
   return data as Session[];
 }
 
-export default async function SessionsPage({ params: { locale } }: SessionsPageProps) {
+export default async function SessionsPage({ params }: SessionsPageProps) {
+  const { locale } = await params!;
   const sessions = await getSessions();
   const t = await getTranslations({ locale });
 

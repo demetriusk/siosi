@@ -1,0 +1,145 @@
+{
+  "common": {
+    "upload": "Carica",
+    "analyze": "Analizza",
+    "share": "Condividi",
+    "save": "Salva",
+    "skip": "Salta",
+    "cancel": "Annulla",
+    "continue": "Continua",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo"
+  },
+  "nav": {
+    "home": "Home",
+    "sessions": "Le mie sessioni",
+    "profile": "Profilo",
+    "about": "Informazioni"
+  },
+  "home": {
+    "hero_title": "Carica. Analizza. Perfeziona.",
+    "hero_subtitle": "Analisi del trucco IA istantanea con punteggi di confidenza",
+    "upload_cta": "O scatta una foto ora",
+    "supported_formats": "Formati supportati: JPG, PNG, HEIC (max 10MB)",
+    "what_analyzed_title": "Cosa viene analizzato",
+    "labs": {
+      "flashback": "Flashback",
+      "pores": "Pori",
+      "texture": "Texture",
+      "undertone": "Sottotono",
+      "transfer": "Trasferimento",
+      "longevity": "Longevità",
+      "oxidation": "Ossidazione",
+      "creasing": "Piega",
+      "blending": "Sfocatura"
+    },
+    "how_it_works": "Come funziona",
+    "step1": "Carica la tua foto del trucco",
+    "step2": "L'IA analizza 4-9 aspetti diversi",
+    "step3": "Ricevi un rapporto valutato con raccomandazioni"
+  },
+  "upload": {
+    "supported_formats": "Formati supportati: JPG, PNG, HEIC (max 10MB)",
+    "drag_drop": "Trascina la foto qui o clicca per cercare",
+    "take_photo": "Scatta una foto",
+    "file_too_large": "Il file è troppo grande. La dimensione massima è 10MB",
+    "invalid_format": "Formato file non valido. Per favore carica JPG, PNG o HEIC",
+    "analyze_button": "Analizza il mio trucco",
+    "occasion_title": "Per cosa è questo?",
+    "occasion_optional": "(opzionale)",
+    "occasions": {
+      "photoshoot": "Servizio fotografico",
+      "wedding": "Matrimonio",
+      "party": "Festa/Event",
+      "video": "Video/Streaming",
+      "testing": "Solo test"
+    },
+    "concerns_title": "Qualche preoccupazione specifica?",
+    "concerns": {
+      "flash": "Fotografia con flash",
+      "lasting": "Dura 6+ ore",
+      "closeup": "Primo piano",
+      "weather": "Tempo caldo/umido",
+      "transfer": "Trasferimento sui vestiti"
+    },
+    "progress": {
+      "analyzing_flashback": "Analizzando rischio di flashback...",
+      "checking_pores": "Controllando visibilità dei pori...",
+      "detecting_undertone": "Rilevando sottotono...",
+      "evaluating_texture": "Valutando texture...",
+      "checking_transfer": "Controllando rischio di trasferimento...",
+      "assessing_longevity": "Valutando longevità...",
+      "almost_there": "Quasi pronto..."
+    }
+  },
+  "results": {
+    "overall_score": "Punteggio complessivo previsto",
+    "critical": "Critico",
+    "watch_these": "Tieni d'occhio",
+    "looking_good": "Sembra buono",
+    "confidence": "{percent}% di fiducia",
+    "show_details": "Mostra dettagli",
+    "hide_details": "Nascondi dettagli",
+    "detected": "Rilevato",
+    "recommendations": "Raccomandazioni",
+    "verdict": {
+      "yay": "SÌ",
+      "nay": "NO",
+      "maybe": "FORSE"
+    },
+    "email_report": "Invia questo rapporto via email",
+    "share_instagram": "Condividi su Instagram",
+    "saved": "Salvato nelle tue sessioni",
+    "analyze_another": "Analizza un'altra foto"
+  },
+  "sessions": {
+    "title": "Le mie sessioni",
+    "sessions_used": "{used}/{total} sessioni usate questo mese",
+    "resets": "Si resetta {date}",
+    "empty_title": "Nessuna sessione ancora",
+    "empty_subtitle": "Carica la tua prima foto per iniziare",
+    "view_report": "Visualizza rapporto",
+    "score_badges": {
+      "excellent": "Eccellente",
+      "good": "Buono",
+      "needs_work": "Necessita lavoro",
+      "issues_found": "Problemi trovati"
+    },
+    "upgrade_prompt": "Hai usato tutte e 3 le sessioni gratuite",
+    "upgrade_button": "Aggiorna a Pro - $5/mese"
+  },
+  "profile": {
+    "title": "Profilo",
+    "skin_type": "Tipo di pelle",
+    "skin_types": {
+      "dry": "Secca",
+      "normal": "Normale",
+      "combo": "Mista",
+      "oily": "Grassa",
+      "not_sure": "Non sicuro"
+    },
+    "skin_tone": "Tono della pelle",
+    "lid_type": "Tipo di palpebra",
+    "lid_types": {
+      "hooded": "Coperte",
+      "standard": "Standard",
+      "deep_set": "Infossata"
+    },
+    "complete_profile": "Completa il tuo profilo per sbloccare altre 5 previsioni",
+    "progress": "{completed}/{total} completato",
+    "save_profile": "Salva profilo",
+    "language_preference": "Preferenza lingua",
+    "danger_zone": "Zona di pericolo",
+    "delete_data": "Elimina tutti i miei dati"
+  },
+  "about": {
+    "title": "Cos'è siosi.me?",
+    "description": "siosi.me è una piattaforma di analisi del trucco basata sull'IA che ti aiuta a capire come il tuo trucco si comporterà in diverse situazioni. Carica una foto e ottieni previsioni istantanee su più aspetti.",
+    "confidence_title": "Comprendere i punteggi di confidenza",
+    "confidence_high": "Molto probabilmente accurato",
+    "confidence_medium": "Buona previsione, qualche incertezza",
+    "confidence_low": "Stima approssimativa, prendila con cautela",
+    "disclaimer": "Le nostre previsioni sono basate sull'IA e sono raccomandazioni. Fidati sempre del tuo giudizio e consulta un professionista per eventi importanti."
+  }
+}

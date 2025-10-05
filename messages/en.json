@@ -40,6 +40,7 @@
     "step3": "Get scored report with recommendations"
   },
   "upload": {
+    "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
     "drag_drop": "Drag photo here or click to browse",
     "take_photo": "Take Photo",
     "file_too_large": "File is too large. Maximum size is 10MB",
@@ -77,7 +78,7 @@
     "critical": "Critical",
     "watch_these": "Watch These",
     "looking_good": "Looking Good",
-    "confidence": "{{percent}}% confident",
+  "confidence": "{percent}% confident",
     "show_details": "Show Details",
     "hide_details": "Hide Details",
     "detected": "Detected",
@@ -94,8 +95,8 @@
   },
   "sessions": {
     "title": "My Sessions",
-    "sessions_used": "{{used}}/{{total}} sessions used this month",
-    "resets": "Resets {{date}}",
+  "sessions_used": "{used}/{total} sessions used this month",
+  "resets": "Resets {date}",
     "empty_title": "No sessions yet",
     "empty_subtitle": "Upload your first photo to get started",
     "view_report": "View Report",
@@ -126,7 +127,7 @@
       "deep_set": "Deep-set"
     },
     "complete_profile": "Complete your profile to unlock 5 more predictions",
-    "progress": "{{completed}}/{{total}} complete",
+  "progress": "{completed}/{total} complete",
     "save_profile": "Save Profile",
     "language_preference": "Language Preference",
     "danger_zone": "Danger Zone",

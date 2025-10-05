@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import LanguageSelect from './language-select';
 
 interface FooterProps {
   locale: string;
@@ -16,7 +17,7 @@ export function Footer({ locale }: FooterProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <span className="text-xl font-bold text-[#0A0A0A]">siosi</span>
+            <span className="text-xl font-bold text-[#0A0A0A]">siOsi</span>
             <p className="mt-2 text-sm text-[#6B7280]">
               AI-powered makeup analysis with confidence scores
             </p>
@@ -71,24 +72,10 @@ export function Footer({ locale }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-[#E5E7EB] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[#6B7280]">
-            © {currentYear} siosi.me. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2 text-sm">
-            <Link
-              href={`/en${locale === 'en' ? '' : '/' + locale.slice(1)}`}
-              className="text-[#6B7280] hover:text-[#0A0A0A] transition-colors"
-            >
-              English
-            </Link>
-            <span className="text-[#D1D5DB]">|</span>
-            <Link
-              href={`/es${locale === 'es' ? '' : '/' + locale.slice(1)}`}
-              className="text-[#6B7280] hover:text-[#0A0A0A] transition-colors"
-            >
-              Español
-            </Link>
+          <div className="mt-8 pt-8 border-t border-[#E5E7EB] flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-[#6B7280]">© {currentYear} siOsi.</p>
+          <div className="w-48">
+            <LanguageSelect locale={locale} />
           </div>
         </div>
       </div>

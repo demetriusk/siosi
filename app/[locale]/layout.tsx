@@ -2,38 +2,90 @@ import '../globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
-import { notFound } from 'next/navigation';
 import { Toaster } from '@/components/ui/sonner';
+import type { ParamsWithLocale } from '@/lib/types';
+
+// Import messages statically
+import enMessages from '../../messages/en.json';
+import esMessages from '../../messages/es.json';
+import ruMessages from '../../messages/ru.json';
+import ptMessages from '../../messages/pt.json';
+import frMessages from '../../messages/fr.json';
+import deMessages from '../../messages/de.json';
+import itMessages from '../../messages/it.json';
+import uaMessages from '../../messages/ua.json';
+
+// Helper function to get messages for locale
+function getMessages(locale: string) {
+  switch (locale) {
+    case 'en':
+      return enMessages;
+    case 'es':
+      return esMessages;
+    case 'ru':
+      return ruMessages;
+    case 'pt':
+      return ptMessages;
+    case 'fr':
+      return frMessages;
+    case 'de':
+      return deMessages;
+    case 'it':
+      return itMessages;
+    case 'ua':
+      return uaMessages;
+    default:
+      return enMessages;
+  }
+}
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'siosi.me - AI Makeup Analysis',
+  title: 'siOsi.me - AI Makeup Analysis',
   description: 'Get instant AI makeup analysis with confidence scores',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.ico', type: 'image/x-icon' }
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon.ico'
+  },
+  manifest: '/site.webmanifest',
+  other: {
+    'apple-mobile-web-app-title': 'siOsi'
+  }
 };
 
 export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'es' }];
+  return [
+    { locale: 'en' },
+    { locale: 'es' },
+    { locale: 'ru' },
+    { locale: 'pt' },
+    { locale: 'fr' },
+    { locale: 'de' },
+    { locale: 'it' },
+    { locale: 'ua' }
+  ];
 }
 
 export default async function LocaleLayout({
   children,
-  params: { locale }
+  params
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: ParamsWithLocale['params'];
 }) {
-  let messages;
-  try {
-    messages = (await import(`../../messages/${locale}.json`)).default;
-  } catch (error) {
-    notFound();
-  }
+  // Layout params come from the router and can be a Promise; await for safety
+  const { locale } = await params as { locale: string };
 
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={getMessages(locale)}>
           {children}
           <Toaster />
         </NextIntlClientProvider>

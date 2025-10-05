@@ -23,6 +23,7 @@ export function UploadZone({
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const t = useTranslations('upload');
+  const tHome = useTranslations('home');
 
   const validateFile = (file: File): boolean => {
     if (file.size > maxSize) {
@@ -152,7 +153,7 @@ export function UploadZone({
             {t('drag_drop')}
           </p>
           <p className="text-sm text-[#6B7280]">
-            {t('supported_formats', { ns: 'home' })}
+            {tHome('supported_formats')}
           </p>
         </div>
       </label>

@@ -3,11 +3,12 @@ import { Footer } from '@/components/siosi/footer';
 import { CircleCheck as CheckCircle, CircleAlert as AlertCircle, TriangleAlert as AlertTriangle } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
-interface AboutPageProps {
-  params: { locale: string };
-}
+import type { ParamsWithLocale } from '@/lib/types';
 
-export default async function AboutPage({ params: { locale } }: AboutPageProps) {
+interface AboutPageProps extends ParamsWithLocale {}
+
+export default async function AboutPage({ params }: AboutPageProps) {
+  const { locale } = await params!;
   const t = await getTranslations({ locale });
 
   return (

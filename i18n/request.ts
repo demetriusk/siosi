@@ -1,8 +1,3 @@
+export { default } from '../i18n';
 // @ts-nocheck
-import {getRequestConfig} from 'next-intl/server';
- 
-export default getRequestConfig(async ({locale}) => {
-  return {
-    messages: (await import(`../messages/${locale}.json`)).default
-  };
-});
+// This file is deprecated - configuration moved to root i18n.ts

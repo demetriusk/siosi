@@ -1,0 +1,145 @@
+{
+  "common": {
+    "upload": "Hochladen",
+    "analyze": "Analysieren",
+    "share": "Teilen",
+    "save": "Speichern",
+    "skip": "Überspringen",
+    "cancel": "Abbrechen",
+    "continue": "Fortfahren",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg"
+  },
+  "nav": {
+    "home": "Start",
+    "sessions": "Meine Sitzungen",
+    "profile": "Profil",
+    "about": "Über"
+  },
+  "home": {
+    "hero_title": "Hochladen. Analysieren. Perfektionieren.",
+    "hero_subtitle": "Sofortige KI-Make-up-Analyse mit Vertrauenswerten",
+    "upload_cta": "Oder jetzt Foto aufnehmen",
+    "supported_formats": "Unterstützte Formate: JPG, PNG, HEIC (max. 10MB)",
+    "what_analyzed_title": "Was analysiert wird",
+    "labs": {
+      "flashback": "Flashback",
+      "pores": "Poren",
+      "texture": "Textur",
+      "undertone": "Unterton",
+      "transfer": "Übertragung",
+      "longevity": "Haltbarkeit",
+      "oxidation": "Oxidation",
+      "creasing": "Faltenbildung",
+      "blending": "Verblenden"
+    },
+    "how_it_works": "Wie es funktioniert",
+    "step1": "Laden Sie Ihr Make-up-Foto hoch",
+    "step2": "Die KI analysiert 4–9 verschiedene Aspekte",
+    "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen"
+  },
+  "upload": {
+    "supported_formats": "Unterstützte Formate: JPG, PNG, HEIC (max. 10MB)",
+    "drag_drop": "Ziehen Sie das Foto hierher oder klicken Sie, um zu suchen",
+    "take_photo": "Foto aufnehmen",
+    "file_too_large": "Datei ist zu groß. Maximale Größe ist 10MB",
+    "invalid_format": "Ungültiges Dateiformat. Bitte laden Sie JPG, PNG oder HEIC hoch",
+    "analyze_button": "Mein Make-up analysieren",
+    "occasion_title": "Wofür ist das?",
+    "occasion_optional": "(optional)",
+    "occasions": {
+      "photoshoot": "Fotoshooting",
+      "wedding": "Hochzeit",
+      "party": "Party/Event",
+      "video": "Video/Streaming",
+      "testing": "Nur testen"
+    },
+    "concerns_title": "Gibt es besondere Bedenken?",
+    "concerns": {
+      "flash": "Blitzfotografie",
+      "lasting": "Hält 6+ Stunden",
+      "closeup": "Nahaufnahmen",
+      "weather": "Heißes/feuchtes Wetter",
+      "transfer": "Übertragung auf Kleidung"
+    },
+    "progress": {
+      "analyzing_flashback": "Analysiere Flashback-Risiko...",
+      "checking_pores": "Überprüfe Porensichtbarkeit...",
+      "detecting_undertone": "Erkenne Unterton...",
+      "evaluating_texture": "Bewerte Textur...",
+      "checking_transfer": "Überprüfe Übertragungsrisiko...",
+      "assessing_longevity": "Bewerte Haltbarkeit...",
+      "almost_there": "Fast fertig..."
+    }
+  },
+  "results": {
+    "overall_score": "Gesamtvorhersagewert",
+    "critical": "Kritisch",
+    "watch_these": "Achten Sie auf diese",
+    "looking_good": "Sieht gut aus",
+    "confidence": "{percent}% sicher",
+    "show_details": "Details anzeigen",
+    "hide_details": "Details verbergen",
+    "detected": "Erkannt",
+    "recommendations": "Empfehlungen",
+    "verdict": {
+      "yay": "JA",
+      "nay": "NEIN",
+      "maybe": "VIELLEICHT"
+    },
+    "email_report": "Diesen Bericht per E-Mail senden",
+    "share_instagram": "Bei Instagram teilen",
+    "saved": "In Ihren Sitzungen gespeichert",
+    "analyze_another": "Ein weiteres Foto analysieren"
+  },
+  "sessions": {
+    "title": "Meine Sitzungen",
+    "sessions_used": "{used}/{total} Sitzungen diesen Monat verwendet",
+    "resets": "Setzt zurück {date}",
+    "empty_title": "Noch keine Sitzungen",
+    "empty_subtitle": "Laden Sie Ihr erstes Foto hoch, um zu beginnen",
+    "view_report": "Bericht ansehen",
+    "score_badges": {
+      "excellent": "Ausgezeichnet",
+      "good": "Gut",
+      "needs_work": "Verbesserungswürdig",
+      "issues_found": "Probleme gefunden"
+    },
+    "upgrade_prompt": "Sie haben alle 3 kostenlosen Sitzungen verwendet",
+    "upgrade_button": "Auf Pro upgraden - $5/Monat"
+  },
+  "profile": {
+    "title": "Profil",
+    "skin_type": "Hauttyp",
+    "skin_types": {
+      "dry": "Trocken",
+      "normal": "Normal",
+      "combo": "Kombiniert",
+      "oily": "Ölig",
+      "not_sure": "Nicht sicher"
+    },
+    "skin_tone": "Hautfarbe",
+    "lid_type": "Lidtyp",
+    "lid_types": {
+      "hooded": "Schlupflid",
+      "standard": "Standard",
+      "deep_set": "Tief gelegen"
+    },
+    "complete_profile": "Vervollständigen Sie Ihr Profil, um 5 weitere Vorhersagen freizuschalten",
+    "progress": "{completed}/{total} abgeschlossen",
+    "save_profile": "Profil speichern",
+    "language_preference": "Spracheinstellung",
+    "danger_zone": "Gefahrenzone",
+    "delete_data": "Löschen Sie alle meine Daten"
+  },
+  "about": {
+    "title": "Was ist siosi.me?",
+    "description": "siosi.me ist eine KI-gestützte Make-up-Analyseplattform, die Ihnen hilft zu verstehen, wie Ihr Make-up in verschiedenen Situationen funktionieren wird. Laden Sie ein Foto hoch und erhalten Sie sofortige Vorhersagen zu mehreren Aspekten.",
+    "confidence_title": "Verstehen von Vertrauenswerten",
+    "confidence_high": "Sehr wahrscheinlich genau",
+    "confidence_medium": "Gute Vorhersage, gewisse Unsicherheit",
+    "confidence_low": "Grobe Schätzung, mit Vorsicht verwenden",
+    "disclaimer": "Unsere Vorhersagen basieren auf KI und sind Empfehlungen. Vertrauen Sie immer Ihrem eigenen Urteil und suchen Sie bei wichtigen Ereignissen professionellen Rat."
+  }
+}

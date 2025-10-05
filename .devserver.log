@@ -1,0 +1,112 @@
+
+> nextjs@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.4
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.132:3000
+
+ ✓ Starting...
+ ✓ Ready in 1425ms
+ ✓ Compiled /middleware in 230ms (199 modules)
+ ○ Compiling /[locale] ...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled /[locale] in 1537ms (781 modules)
+ ✓ Compiled in 338ms (295 modules)
+ GET /en 200 in 2265ms
+ ✓ Compiled in 442ms (980 modules)
+ ✓ Compiled in 419ms (980 modules)
+ ✓ Compiled in 134ms (199 modules)
+ ✓ Compiled in 108ms (199 modules)
+ ✓ Compiled in 306ms (480 modules)
+ ✓ Compiled in 302ms (295 modules)
+ ✓ Compiled in 197ms (295 modules)
+ ✓ Compiled in 178ms (295 modules)
+ ✓ Compiled in 196ms (295 modules)
+ ✓ Compiled in 186ms (295 modules)
+ ✓ Compiled /[locale] in 197ms (486 modules)
+ GET /en 200 in 437ms
+ GET /favicon.ico 200 in 81ms
+ ○ Compiling /[locale]/about ...
+ ✓ Compiled /[locale]/about in 697ms (782 modules)
+ GET /en/about 200 in 1089ms
+ GET /favicon.ico 200 in 409ms
+ ○ Compiling /[locale]/profile ...
+ ✓ Compiled /[locale]/profile in 1088ms (947 modules)
+ GET /en/profile 200 in 1473ms
+ GET /favicon.ico 200 in 135ms
+ ✓ Compiled in 416ms (961 modules)
+ GET /en/profile 200 in 52ms
+ GET /es/profile 200 in 20ms
+ GET /favicon.ico 200 in 164ms
+ GET /favicon.ico 200 in 80ms
+ GET /es 200 in 29ms
+ GET /favicon.ico 200 in 137ms
+ GET /es/profile 200 in 21ms
+ GET /favicon.ico 200 in 86ms
+ ✓ Compiled /[locale]/sessions in 433ms (1120 modules)
+ ⨯ Error: supabaseUrl is required.
+    at eval (webpack-internal:///(rsc)/./lib/supabase.ts:9:85)
+    at <unknown> (rsc)/./lib/supabase.ts (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:132:1)
+    at eval (webpack-internal:///(rsc)/./app/[locale]/sessions/page.tsx:14:71)
+    at <unknown> (rsc)/./app/[locale]/sessions/page.tsx (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:33:1) {
+  type: 'Error',
+  page: '/es/sessions'
+}
+ ✓ Compiled /_error in 280ms (1459 modules)
+ GET /es/sessions 500 in 1589ms
+ ⨯ Error: supabaseUrl is required.
+    at eval (webpack-internal:///(rsc)/./lib/supabase.ts:9:85)
+    at <unknown> (rsc)/./lib/supabase.ts (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:132:1)
+    at eval (webpack-internal:///(rsc)/./app/[locale]/sessions/page.tsx:14:71)
+    at <unknown> (rsc)/./app/[locale]/sessions/page.tsx (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:33:1) {
+  type: 'Error',
+  page: '/es/sessions'
+}
+ GET /es/sessions 500 in 655ms
+ ⨯ Error: supabaseUrl is required.
+    at eval (webpack-internal:///(rsc)/./lib/supabase.ts:9:85)
+    at <unknown> (rsc)/./lib/supabase.ts (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:132:1)
+    at eval (webpack-internal:///(rsc)/./app/[locale]/sessions/page.tsx:14:71)
+    at <unknown> (rsc)/./app/[locale]/sessions/page.tsx (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:33:1) {
+  type: 'Error',
+  page: '/es/sessions'
+}
+ GET /es/sessions 500 in 578ms
+ ⨯ Error: supabaseUrl is required.
+    at eval (webpack-internal:///(rsc)/./lib/supabase.ts:9:85)
+    at <unknown> (rsc)/./lib/supabase.ts (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:132:1)
+    at eval (webpack-internal:///(rsc)/./app/[locale]/sessions/page.tsx:14:71)
+    at <unknown> (rsc)/./app/[locale]/sessions/page.tsx (/Users/demetrius/Documents/_prj/siosi/siosi/.next/server/app/[locale]/sessions/page.js:33:1) {
+  type: 'Error',
+  page: '/es/sessions'
+}
+ GET /es/sessions 500 in 1207ms
+ GET /favicon.ico 200 in 594ms
+ GET /favicon.ico 200 in 217ms
+ GET /es/profile 200 in 248ms
+ GET /favicon.ico 200 in 95ms
+ GET /es/about 200 in 38ms
+ GET /favicon.ico 200 in 159ms
+ GET /favicon.ico 200 in 142ms
+ GET /en/about 200 in 36ms
+ GET /favicon.ico 200 in 73ms
+ GET /en 200 in 24ms
+ GET /favicon.ico 200 in 88ms
+ ○ Compiling /[locale]/analyze ...
+ ✓ Compiled /[locale]/analyze in 575ms (1613 modules)
+ GET /en/analyze 200 in 1172ms
+ GET /favicon.ico 200 in 538ms
+ GET /favicon.ico 200 in 67ms
+ ✓ Compiled in 665ms (1687 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 980ms (1608 modules)
+ GET /en 200 in 295ms
+ GET /favicon.ico 200 in 430ms
+ GET /en 200 in 101ms
+ GET /favicon.ico 200 in 80ms
+ GET /en/profile 200 in 28ms
+ GET /favicon.ico 200 in 91ms
+/Users/demetrius/.volta/tools/image/npm/11.6.1/bin/npm: line 10: 10294 Hangup: 1               node "$basedir/npm-cli.js" "$@"
