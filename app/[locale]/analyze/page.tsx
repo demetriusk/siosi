@@ -12,11 +12,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { getSupabase } from '@/lib/supabase';
-import { generateMockAnalysis, calculateOverallScore, calculateCriticalCount, calculateConfidenceAverage } from '@/lib/mock-analysis';
+import { calculateCriticalCount } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
 import { useEffect } from 'react';
-import { saveSession } from '@/lib/save-session';
-import { supabase } from '@/lib/supabase';
 
 const progressMessages = [
   'progress.analyzing_flashback',

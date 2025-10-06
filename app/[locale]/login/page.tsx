@@ -4,10 +4,7 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { LoginForm } from '@/components/login-form'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
-import Link from 'next/link'
 import { toast } from 'sonner'
-import { Separator } from '@/components/ui/separator'
 
 export default function LoginPage() {
   const params = useParams()

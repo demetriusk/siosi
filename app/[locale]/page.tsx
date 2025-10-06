@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Camera, Sparkles, Upload as UploadIcon, CircleCheck as CheckCircle } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { UploadZone } from '@/components/siosi/upload-zone';

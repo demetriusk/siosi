@@ -2,11 +2,13 @@
   "name": "nextjs",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint app components lib hooks scripts",
+    "lint:fix": "eslint app components lib hooks scripts --fix",
     "typecheck": "tsc --noEmit",
     "validate:i18n": "node scripts/validate-messages.js",
     "check:params": "node scripts/check-params-destructure.js"
@@ -53,7 +55,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
-  "eslint": "9.37.0",
+    "eslint": "9.37.0",
     "eslint-config-next": "15.0.1",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.446.0",
@@ -76,5 +78,11 @@
     "typescript": "5.6.3",
     "vaul": "^0.9.9",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "eslint-plugin-unused-imports": "^4.2.0"
   }
 }

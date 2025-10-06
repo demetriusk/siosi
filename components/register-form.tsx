@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuthForm } from '@/hooks/useAuthForm'
-import { validateEmail, validatePassword } from '@/lib/validators'
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'

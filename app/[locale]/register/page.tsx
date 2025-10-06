@@ -4,9 +4,7 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { RegisterForm } from '@/components/register-form'
-import Link from 'next/link'
 import { toast } from 'sonner'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 
 export default function RegisterPage() {
   const params = useParams()
