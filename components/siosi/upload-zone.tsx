@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useEffect } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -45,12 +46,34 @@ export function UploadZone({
     (file: File) => {
       if (validateFile(file)) {
         onFileSelect(file);
-        const url = URL.createObjectURL(file);
-        setPreviewUrl(url);
+        // Revoke previous preview URL if any before creating a new one
+        setPreviewUrl(prev => {
+          if (prev) {
+            try { URL.revokeObjectURL(prev); } catch {}
+          }
+          return URL.createObjectURL(file);
+        });
       }
     },
     [onFileSelect, maxSize, accept]
   );
+
+  // If a selectedFile is provided from outside (for example restored from
+  // sessionStorage in the analyze page), create an object URL so the
+  // preview can be shown. Clean up the object URL on change/unmount.
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(selectedFile);
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [selectedFile]);
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();

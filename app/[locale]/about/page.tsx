@@ -18,7 +18,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
       <main className="flex-1 bg-white py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-[#0A0A0A] mb-4">
+            <h1 className="text-4xl text-[#0A0A0A] mb-4">
               {t('about.title')}
             </h1>
             <p className="text-lg text-[#374151] leading-relaxed">
@@ -28,12 +28,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
           <div className="space-y-12">
             <section>
-              <h2 className="text-2xl font-bold text-[#0A0A0A] mb-6">
+              <h2 className="text-2xl text-[#0A0A0A] mb-6">
                 How It Works
               </h2>
               <div className="space-y-4 text-[#374151]">
                 <p>
-                  siosi.me uses advanced AI models trained on thousands of makeup photos to predict how
+                  siOsi uses advanced AI models trained on thousands of makeup photos to predict how
                   your makeup will perform in different situations. Our analysis covers multiple aspects:
                 </p>
                 <ul className="space-y-2 ml-6">
@@ -62,14 +62,14 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-[#0A0A0A] mb-6">
+              <h2 className="text-2xl text-[#0A0A0A] mb-6">
                 {t('about.confidence_title')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <CheckCircle className="w-6 h-6 text-[#10B981]" />
-                    <h3 className="text-lg font-semibold text-[#0A0A0A]">High</h3>
+                    <h3 className="text-lg text-[#0A0A0A]">High</h3>
                   </div>
                   <p className="text-sm text-[#6B7280] mb-2">80-100% confident</p>
                   <p className="text-sm text-[#374151]">
@@ -80,7 +80,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <AlertTriangle className="w-6 h-6 text-[#F59E0B]" />
-                    <h3 className="text-lg font-semibold text-[#0A0A0A]">Medium</h3>
+                    <h3 className="text-lg text-[#0A0A0A]">Medium</h3>
                   </div>
                   <p className="text-sm text-[#6B7280] mb-2">50-79% confident</p>
                   <p className="text-sm text-[#374151]">
@@ -91,7 +91,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <AlertCircle className="w-6 h-6 text-[#F97316]" />
-                    <h3 className="text-lg font-semibold text-[#0A0A0A]">Low</h3>
+                    <h3 className="text-lg text-[#0A0A0A]">Low</h3>
                   </div>
                   <p className="text-sm text-[#6B7280] mb-2">0-49% confident</p>
                   <p className="text-sm text-[#374151]">
@@ -102,7 +102,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-[#0A0A0A] mb-6">
+              <h2 className="text-2xl text-[#0A0A0A] mb-6">
                 Understanding Verdicts
               </h2>
               <div className="space-y-4">
@@ -137,7 +137,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </section>
 
             <section className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-sm p-8">
-              <h2 className="text-xl font-bold text-[#0A0A0A] mb-4">
+              <h2 className="text-xl text-[#0A0A0A] mb-4">
                 Important Disclaimer
               </h2>
               <p className="text-[#374151] leading-relaxed">
@@ -146,12 +146,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-[#0A0A0A] mb-6">
+              <h2 className="text-2xl text-[#0A0A0A] mb-6">
                 Frequently Asked Questions
               </h2>
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">
+                  <h3 className="text-lg text-[#0A0A0A] mb-2">
                     How accurate is the analysis?
                   </h3>
                   <p className="text-[#374151]">
@@ -161,7 +161,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">
+                  <h3 className="text-lg text-[#0A0A0A] mb-2">
                     What kind of photos work best?
                   </h3>
                   <p className="text-[#374151]">
@@ -170,7 +170,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">
+                  <h3 className="text-lg text-[#0A0A0A] mb-2">
                     Is my data private?
                   </h3>
                   <p className="text-[#374151]">

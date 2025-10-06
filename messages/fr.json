@@ -18,7 +18,7 @@
     "about": "À propos"
   },
   "home": {
-    "hero_title": "Téléversez. Analysez. Perfectionnez.",
+    "hero_title": "Ose et rayonne",
     "hero_subtitle": "Analyse de maquillage IA instantanée avec scores de confiance",
     "upload_cta": "Ou prenez une photo maintenant",
     "supported_formats": "Formats pris en charge : JPG, PNG, HEIC (max 10 Mo)",
@@ -32,7 +32,8 @@
       "longevity": "Durée",
       "oxidation": "Oxydation",
       "creasing": "Plis",
-      "blending": "Estompage"
+      "blending": "Estompage",
+      "more": "More Labs Coming Soon"
     },
     "how_it_works": "Comment ça marche",
     "step1": "Téléversez votre photo de maquillage",

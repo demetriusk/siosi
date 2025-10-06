@@ -18,21 +18,22 @@
     "about": "About"
   },
   "home": {
-    "hero_title": "Upload. Analyze. Perfect.",
+    "hero_title": "Know Before You Glow",
     "hero_subtitle": "Get instant AI makeup analysis with confidence scores",
     "upload_cta": "Or take photo now",
     "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
     "what_analyzed_title": "What gets analyzed",
     "labs": {
-      "flashback": "Flashback",
-      "pores": "Pores",
-      "texture": "Texture",
-      "undertone": "Undertone",
-      "transfer": "Transfer",
-      "longevity": "Longevity",
-      "oxidation": "Oxidation",
-      "creasing": "Creasing",
-      "blending": "Blending"
+      "flashback": "Flashback Lab",
+      "pores": "Pore Proof",
+      "texture": "Texture Trigger",
+      "undertone": "Zoom Face Check",
+      "transfer": "Crease Police",
+      "longevity": "Melt Meter",
+      "oxidation": "Golden Hour Match",
+      "creasing": "Harsh Light Survivor",
+      "blending": "Lash Shadow Check",
+      "more": "Vein Undertone Truth"
     },
     "how_it_works": "How it works",
     "step1": "Upload your makeup photo",
@@ -134,8 +135,8 @@
     "delete_data": "Delete all my data"
   },
   "about": {
-    "title": "What is siosi.me?",
-    "description": "siosi.me is an AI-powered makeup analysis platform that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
+    "title": "What is siOsi?",
+    "description": "siOsi is an AI-powered makeup analyst that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
     "confidence_title": "Understanding Confidence Scores",
     "confidence_high": "Very likely accurate",
     "confidence_medium": "Good prediction, some uncertainty",

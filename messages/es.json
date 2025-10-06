@@ -18,7 +18,7 @@
     "about": "Acerca de"
   },
   "home": {
-    "hero_title": "Sube. Analiza. Perfecciona.",
+    "hero_title": "Confía y brilla",
     "hero_subtitle": "Obtén análisis instantáneo de maquillaje con puntuaciones de confianza",
     "upload_cta": "O toma una foto ahora",
     "supported_formats": "Formatos soportados: JPG, PNG, HEIC (máx. 10MB)",
@@ -32,7 +32,8 @@
       "longevity": "Duración",
       "oxidation": "Oxidación",
       "creasing": "Pliegues",
-      "blending": "Difuminado"
+      "blending": "Difuminado",
+      "more": "More Labs Coming Soon"
     },
     "how_it_works": "Cómo funciona",
     "step1": "Sube tu foto de maquillaje",

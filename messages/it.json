@@ -18,7 +18,7 @@
     "about": "Informazioni"
   },
   "home": {
-    "hero_title": "Carica. Analizza. Perfeziona.",
+    "hero_title": "Scopri e risplendi",
     "hero_subtitle": "Analisi del trucco IA istantanea con punteggi di confidenza",
     "upload_cta": "O scatta una foto ora",
     "supported_formats": "Formati supportati: JPG, PNG, HEIC (max 10MB)",
@@ -32,7 +32,8 @@
       "longevity": "Longevità",
       "oxidation": "Ossidazione",
       "creasing": "Piega",
-      "blending": "Sfocatura"
+      "blending": "Sfocatura",
+      "more": "More Labs Coming Soon"
     },
     "how_it_works": "Come funziona",
     "step1": "Carica la tua foto del trucco",

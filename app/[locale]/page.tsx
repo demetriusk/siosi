@@ -24,24 +24,40 @@ export default function HomePage() {
     setSelectedFile(null);
   };
 
-  const handleAnalyze = () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+  const handleAnalyze = async () => {
+    if (!selectedFile) return;
+    
+    // Convert file to base64 for storage
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      
+      // Store in sessionStorage
+      sessionStorage.setItem('siosi_upload_photo', base64);
+      sessionStorage.setItem('siosi_upload_photo_name', selectedFile.name);
+      sessionStorage.setItem('siosi_upload_photo_type', selectedFile.type);
+      sessionStorage.setItem('siosi_upload_photo_size', selectedFile.size.toString());
+      
+      // Navigate to analyze page
       router.push(`/${locale}/analyze`);
-    }
+    };
+    
+    reader.readAsDataURL(selectedFile);
   };
 
+  // Using placeholder images for the "What gets analyzed" icons.
+  // The user will replace the filenames with their own AVIFs later.
   const labs = [
-    { key: 'flashback', icon: Sparkles },
-    { key: 'pores', icon: Sparkles },
-    { key: 'texture', icon: Sparkles },
-    { key: 'undertone', icon: Sparkles },
-    { key: 'transfer', icon: Sparkles },
-    { key: 'longevity', icon: Sparkles },
-    { key: 'oxidation', icon: Sparkles },
-    { key: 'creasing', icon: Sparkles },
-    { key: 'blending', icon: Sparkles },
+    { key: 'flashback', src: '/ico/siosi-flashback-lab.avif' },
+    { key: 'pores', src: '/ico/siosi-pore-proof.avif' },
+    { key: 'texture', src: '/ico/siosi-texture-trigger.avif' },
+    { key: 'undertone', src: '/ico/siosi-zoom-face-check.avif' },
+    { key: 'transfer', src: '/ico/siosi-crease-police.avif' },
+    { key: 'longevity', src: '/ico/siosi-glitter-fallout-gate.avif' },
+    { key: 'oxidation', src: '/ico/siosi-golden-hour-match.avif' },
+    { key: 'creasing', src: '/ico/siosi-harsh-light-survivor.avif' },
+    { key: 'blending', src: '/ico/siosi-lash-shadow-check.avif' },
+    { key: 'more', src: '/ico/siosi-vein-undertone-truth.avif' },
   ];
 
   return (
@@ -52,7 +68,7 @@ export default function HomePage() {
         <section className="bg-white py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h1 className="text-5xl md:text-6xl font-bold text-[#0A0A0A] mb-4">
+              <h1 className="text-5xl md:text-6xl tracking-tighter text-[#0A0A0A] mb-4">
                 {t('home.hero_title')}
               </h1>
               <p className="text-xl text-[#6B7280] max-w-2xl mx-auto">
@@ -87,27 +103,30 @@ export default function HomePage() {
                 </Button>
               </div>
 
-              <p className="text-sm text-center text-[#6B7280]">
-                {t('home.supported_formats')}
-              </p>
             </div>
           </div>
         </section>
 
         <section className="bg-[#F9FAFB] py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-[#0A0A0A] text-center mb-12">
+            <h2 className="text-3xl text-[#0A0A0A] text-center mb-12">
               {t('home.what_analyzed_title')}
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {labs.map(({ key, icon: Icon }) => (
+              {labs.map(({ key, src }) => (
                 <div
                   key={key}
                   className="flex flex-col items-center gap-3 p-4 bg-white border border-[#E5E7EB] rounded-sm hover:shadow-md transition-all"
                 >
-                  <Icon className="w-8 h-8 text-[#0A0A0A]" />
-                  <span className="text-sm font-medium text-[#0A0A0A] text-center">
+                  <img
+                    src={src}
+                    alt={t(`home.labs.${key}`)}
+                    width={240}
+                    height={240}
+                    className="w-48 h-48 object-contain"
+                  />
+                  <span className="text-md text-[#0A0A0A] text-center">
                     {t(`home.labs.${key}`)}
                   </span>
                 </div>
@@ -118,22 +137,28 @@ export default function HomePage() {
 
         <section className="bg-white py-16">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-[#0A0A0A] text-center mb-12">
+            <h2 className="text-3xl text-[#0A0A0A] text-center mb-12">
               {t('home.how_it_works')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { step: '1', text: t('home.step1'), icon: UploadIcon },
-                { step: '2', text: t('home.step2'), icon: Sparkles },
-                { step: '3', text: t('home.step3'), icon: CheckCircle },
-              ].map(({ step, text, icon: Icon }) => (
+                { step: '1', text: t('home.step1'), img: '/ico/siosi-upload-makeup.avif' },
+                { step: '2', text: t('home.step2'), img: '/ico/siosi-ai-analyze-makeup.avif' },
+                { step: '3', text: t('home.step3'), img: '/ico/siosi-ai-makeup-recommendations.avif' },
+              ].map(({ step, text, img }) => (
                 <div key={step} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#0A0A0A] text-white text-2xl font-bold rounded-full mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#0A0A0A] text-white text-2xl rounded-full mb-4">
                     {step}
                   </div>
                   <div className="flex justify-center mb-4">
-                    <Icon className="w-12 h-12 text-[#6B7280]" />
+                    <img
+                      src={img}
+                      alt={text}
+                      width={240}
+                      height={240}
+                      className="w-48 h-48 object-contain"
+                    />
                   </div>
                   <p className="text-base text-[#374151]">{text}</p>
                 </div>
@@ -145,7 +170,7 @@ export default function HomePage() {
         <section className="bg-[#F9FAFB] py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-8 md:p-12 text-center">
-              <h2 className="text-2xl font-bold text-[#0A0A0A] mb-4">
+              <h2 className="text-2xl text-[#0A0A0A] mb-4">
                 Ready to analyze your makeup?
               </h2>
               <p className="text-[#6B7280] mb-8">

@@ -19,7 +19,7 @@ export function Header({ locale }: HeaderProps) {
   const t = useTranslations('nav');
 
   const navigation = [
-    { name: t('home'), href: `/${locale}` },
+    // { name: t('home'), href: `/${locale}` },
     { name: t('sessions'), href: `/${locale}/sessions` },
     { name: t('profile'), href: `/${locale}/profile` },
     { name: t('about'), href: `/${locale}/about` },
@@ -41,8 +41,11 @@ export function Header({ locale }: HeaderProps) {
     <header className="bg-white border-b border-[#E5E7EB] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href={`/${locale}`} className="flex items-center">
-            <span className="text-2xl font-bold text-[#0A0A0A]">siOsi</span>
+          <Link href={`/${locale}`} className="flex items-center group">
+            <div className="flex items-center">
+              <div className="logo-mask w-8 h-8 mr-3" aria-hidden="true" />
+              <span className="text-2xl tracking-tight text-[#0A0A0A]">siOsi</span>
+            </div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

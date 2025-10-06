@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { generateMockAnalysis, calculateOverallScore, calculateCriticalCount, calculateConfidenceAverage } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
-
+import { useEffect } from 'react';
 
 const progressMessages = [
   'progress.analyzing_flashback',
@@ -36,6 +36,24 @@ export default function AnalyzePage() {
   const [currentMessage, setCurrentMessage] = useState(0);
   const router = useRouter();
   const t = useTranslations();
+
+  useEffect(() => {
+    const photoData = sessionStorage.getItem('siosi_upload_photo');
+    const photoName = sessionStorage.getItem('siosi_upload_photo_name');
+    const photoType = sessionStorage.getItem('siosi_upload_photo_type');
+    
+    if (photoData && photoName && photoType) {
+      fetch(photoData)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], photoName, { 
+            type: photoType,
+            lastModified: Date.now()
+          });
+          setSelectedFile(file);
+        });
+    }
+  }, []);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -132,6 +150,12 @@ export default function AnalyzePage() {
         .eq('id', sessionData.id);
 
       clearInterval(messageInterval);
+
+      sessionStorage.removeItem('siosi_upload_photo');
+      sessionStorage.removeItem('siosi_upload_photo_name');
+      sessionStorage.removeItem('siosi_upload_photo_type');
+      sessionStorage.removeItem('siosi_upload_photo_size');
+
       router.push(`/${locale}/session/${sessionData.id}`);
     } catch (error) {
       console.error('Analysis error:', error);
@@ -174,7 +198,7 @@ export default function AnalyzePage() {
       <main className="flex-1 bg-white py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#0A0A0A] mb-2">
+            <h1 className="text-3xl text-[#0A0A0A] mb-2">
               Upload Your Makeup Photo
             </h1>
             <p className="text-[#6B7280]">

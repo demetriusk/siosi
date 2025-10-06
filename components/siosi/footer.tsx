@@ -17,7 +17,10 @@ export function Footer({ locale }: FooterProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <span className="text-xl font-bold text-[#0A0A0A]">siOsi</span>
+            <div className="flex items-center">
+              <div className="logo-mask w-8 h-8 mr-3" aria-hidden="true" />
+              <span className="text-xl tracking-tight text-[#0A0A0A]">siOsi</span>
+            </div>
             <p className="mt-2 text-sm text-[#6B7280]">
               AI-powered makeup analysis with confidence scores
             </p>
@@ -73,7 +76,7 @@ export function Footer({ locale }: FooterProps) {
         </div>
 
           <div className="mt-8 pt-8 border-t border-[#E5E7EB] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[#6B7280]">© {currentYear} siOsi.</p>
+          <p className="text-sm text-[#6B7280]">© {currentYear} siOsi. Made with ❤️ in <abbr title="Granada, Andalucía">GRX</abbr></p>
           <div className="w-48">
             <LanguageSelect locale={locale} />
           </div>

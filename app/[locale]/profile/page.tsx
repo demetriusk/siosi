@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
 
@@ -37,7 +38,7 @@ export default function ProfilePage() {
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#0A0A0A] mb-2">
+            <h1 className="text-3xl text-[#0A0A0A] mb-2">
               {t('profile.title')}
             </h1>
             <p className="text-[#6B7280]">
@@ -146,26 +147,9 @@ export default function ProfilePage() {
               <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                 {t('profile.language_preference')}
               </Label>
-              <RadioGroup value={language} onValueChange={setLanguage}>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="en" id="lang-en" />
-                    <Label htmlFor="lang-en" className="cursor-pointer">English</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="es" id="lang-es" />
-                    <Label htmlFor="lang-es" className="cursor-pointer">Español</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ru" id="lang-ru" />
-                    <Label htmlFor="lang-ru" className="cursor-pointer">Русский</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ua" id="lang-ua" />
-                    <Label htmlFor="lang-ua" className="cursor-pointer">Українська</Label>
-                  </div>
-                </div>
-              </RadioGroup>
+              <div className="max-w-xs">
+                <LanguageSelect locale={locale} onChangeClose={() => { /* no-op */ }} />
+              </div>
             </div>
 
             <div className="bg-white border-2 border-[#EF4444] rounded-sm p-6">

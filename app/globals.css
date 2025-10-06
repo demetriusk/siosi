@@ -43,11 +43,11 @@
     line-height: 1.6;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply text-[#0A0A0A] font-semibold;
+    @apply text-[#0A0A0A] font-normal;
     line-height: 1.2;
   }
   h1 {
-    @apply text-4xl md:text-5xl font-bold;
+    @apply text-4xl md:text-5xl font-normal;
   }
   h2 {
     @apply text-2xl md:text-3xl;
@@ -60,5 +60,52 @@
   }
   small {
     @apply text-sm text-[#6B7280];
+  }
+}
+
+@layer utilities {
+  /* Logo mask: uses the SVG in public/ as a mask so we can animate a gradient behind it */
+  .logo-mask {
+    background: linear-gradient(90deg, #ff004d, #ff7300, #ffde00, #00d084, #007cff, #7a00ff, #ff007a);
+    background-size: 400% 100%;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    /* Use the SVG file as mask to keep markup simple */
+    -webkit-mask-image: url('/siosi-emblem.min.svg');
+    mask-image: url('/siosi-emblem.min.svg');
+    /* Default: show as solid (black) by setting a neutral background color under mask */
+    filter: grayscale(100%) brightness(0%);
+    transition: filter 300ms ease, background-position 600ms linear;
+  }
+
+  /* When parent link has .group:hover, animate to rainbow */
+  .group:hover .logo-mask,
+  .group:focus .logo-mask {
+    filter: none;
+    background-position: 100% 0;
+  }
+
+  /* Also allow hovering the logo-mask itself to trigger the animation (covers footer case) */
+  .logo-mask:hover,
+  .logo-mask:focus {
+    filter: none;
+    background-position: 100% 0;
+  }
+
+  /* Fallback for browsers that don't support mask-image - show the plain SVG */
+  @supports not (mask-image: url('/siosi-emblem.min.svg')) {
+    .logo-mask {
+      background: none;
+      -webkit-mask-image: none;
+      mask-image: none;
+      background-image: url('/siosi-emblem.min.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
   }
 }

@@ -18,7 +18,7 @@
     "about": "Sobre"
   },
   "home": {
-    "hero_title": "Carregue. Analise. Aprimore.",
+    "hero_title": "Confia e brilha",
     "hero_subtitle": "Análise instantânea de maquiagem por IA com pontuações de confiança",
     "upload_cta": "Ou tire uma foto agora",
     "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10MB)",
@@ -32,7 +32,8 @@
       "longevity": "Longevidade",
       "oxidation": "Oxidação",
       "creasing": "Vinco",
-      "blending": "Mistura"
+      "blending": "Mistura",
+      "more": "More Labs Coming Soon"
     },
     "how_it_works": "Como funciona",
     "step1": "Carregue sua foto de maquiagem",

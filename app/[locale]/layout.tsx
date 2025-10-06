@@ -42,7 +42,7 @@ function getMessages(locale: string) {
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'siOsi.me - AI Makeup Analysis',
+  title: 'siOsi — AI Makeup Analysis',
   description: 'Get instant AI makeup analysis with confidence scores',
   icons: {
     icon: [
