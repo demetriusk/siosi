@@ -15,7 +15,10 @@
     "home": "Главная",
     "sessions": "Мои сессии",
     "profile": "Профиль",
-    "about": "О приложении"
+    "about": "О приложении",
+    "login": "Войти",
+    "logout": "Выйти",
+    "register": "Регистрация"
   },
   "home": {
     "hero_title": "Знай и блистай",
@@ -95,6 +98,33 @@
     "share_instagram": "Поделиться в Instagram",
     "saved": "Сохранено в ваших сессиях",
     "analyze_another": "Проанализировать другое фото"
+  },
+  "auth": {
+    "login": {
+      "title": "С возвращением",
+      "description": "Войдите через ваш аккаунт Apple или Google",
+      "button": "Войти",
+      "sso_continue_with": "Продолжить с {provider}",
+      "email_label": "Электронная почта",
+      "password_label": "Пароль",
+      "forgot_password": "Забыли пароль?",
+      "signup_cta": "Нет аккаунта? Регистрация"
+    },
+    "register": {
+      "title": "Создайте аккаунт",
+      "description": "Создайте аккаунт, чтобы сохранять сессии и получать персональные рекомендации",
+      "button": "Создать аккаунт",
+      "sso_continue_with": "Продолжить с {provider}",
+      "email_label": "Электронная почта",
+      "password_label": "Пароль",
+      "signin_cta": "Уже есть аккаунт? Войти"
+    },
+    "reset": {
+      "title": "Сброс пароля",
+      "sent": "Проверьте вашу почту для ссылки сброса.",
+      "button": "Отправить ссылку для сброса",
+      "back_to_signin": "Вернуться к входу"
+    }
   },
   "sessions": {
     "title": "Мои сессии",

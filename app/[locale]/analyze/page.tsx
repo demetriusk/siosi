@@ -11,10 +11,12 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { generateMockAnalysis, calculateOverallScore, calculateCriticalCount, calculateConfidenceAverage } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
 import { useEffect } from 'react';
+import { saveSession } from '@/lib/save-session';
+import { supabase } from '@/lib/supabase';
 
 const progressMessages = [
   'progress.analyzing_flashback',
@@ -71,100 +73,96 @@ export default function AnalyzePage() {
     );
   };
 
-  const handleAnalyze = async () => {
-    if (!selectedFile) return;
-
-    const supabaseClient = supabase!;
-
-    setIsAnalyzing(true);
-
-    const messageInterval = setInterval(() => {
-      setCurrentMessage(prev => (prev + 1) % progressMessages.length);
-    }, 2000);
-
-    try {
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-      const { data: uploadData, error: uploadError } = await supabaseClient.storage
-        .from('makeup-photos')
-        .upload(fileName, selectedFile);
-
-      let photoUrl = '';
-      if (uploadError) {
-        console.warn('Upload error, using placeholder:', uploadError);
-        photoUrl = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80';
-      } else {
-        const { data: { publicUrl } } = supabaseClient.storage
-          .from('makeup-photos')
-          .getPublicUrl(fileName);
-        photoUrl = publicUrl;
-      }
-
-      const { data: sessionData, error: sessionError } = await supabaseClient
-        .from('sessions')
-        .insert({
-          photo_url: photoUrl,
-          occasion: occasion || null,
-          concerns: concerns.length > 0 ? concerns : null,
-          overall_score: 0,
-          critical_count: 0,
-          confidence_avg: 0,
-        })
-        .select()
-        .single();
-
-      if (sessionError) throw sessionError;
-
-      const analyses = await generateMockAnalysis(sessionData.id, {
-        occasion,
-        concerns: concerns.length > 0 ? concerns : undefined,
-      });
-
-      const analysisInserts = analyses.map(analysis => ({
-        session_id: sessionData.id,
-        lab_name: analysis.lab_name,
-        verdict: analysis.verdict,
-        confidence: analysis.confidence,
-        score: analysis.score,
-        detected: analysis.detected,
-        recommendations: analysis.recommendations,
-        zones_affected: analysis.zones_affected || null,
-      }));
-
-      const { error: analysisError } = await supabaseClient
-        .from('analyses')
-        .insert(analysisInserts);
-
-      if (analysisError) throw analysisError;
-
-      const overallScore = calculateOverallScore(analyses);
-      const criticalCount = calculateCriticalCount(analyses);
-      const confidenceAvg = calculateConfidenceAverage(analyses);
-
-      await supabaseClient
-        .from('sessions')
-        .update({
-          overall_score: overallScore,
-          critical_count: criticalCount,
-          confidence_avg: confidenceAvg,
-        })
-        .eq('id', sessionData.id);
-
-      clearInterval(messageInterval);
-
-      sessionStorage.removeItem('siosi_upload_photo');
-      sessionStorage.removeItem('siosi_upload_photo_name');
-      sessionStorage.removeItem('siosi_upload_photo_type');
-      sessionStorage.removeItem('siosi_upload_photo_size');
-
-      router.push(`/${locale}/session/${sessionData.id}`);
-    } catch (error) {
-      console.error('Analysis error:', error);
-      clearInterval(messageInterval);
-      setIsAnalyzing(false);
+  async function handleAnalyze() {
+    setIsAnalyzing(true)
+    
+    // 1. Upload photo to Supabase Storage
+    const supabase = getSupabase();
+    if (!supabase) {
+      throw new Error('Supabase client is not initialized.');
     }
-  };
+    if (!selectedFile) {
+      throw new Error('No file selected for upload.');
+    }
+
+    const fileName = `${Date.now()}.jpg`;
+    const { data: uploadData, error: uploadError } = await supabase
+      .storage
+      .from('makeup-photos')
+      .upload(fileName, selectedFile)
+
+    // Debug logging to capture Supabase storage response for troubleshooting
+    console.log('Supabase upload response:', { uploadData, uploadError });
+
+    if (uploadError) {
+      // Provide extra context when re-throwing so console/network include helpful info
+      const err = new Error(`Supabase storage upload error: ${uploadError.message || uploadError}`);
+      // Attach original object for inspection in devtools
+      (err as any).supabase = { uploadData, uploadError };
+      throw err;
+    }
+
+    const photoUrl = supabase.storage
+      .from('makeup-photos')
+      .getPublicUrl(uploadData.path).data.publicUrl
+    
+    // 2. Call analysis API
+    // TODO: Replace with actual profile data retrieval logic
+    const profile = {
+      skinType: 'normal',
+      skinTone: 'medium',
+      lidType: 'monolid'
+    };
+
+    const analysisRes = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        photoUrl,
+        skinType: profile.skinType,
+        skinTone: profile.skinTone,
+        lidType: profile.lidType
+      })
+    })
+    
+    const analysis = await analysisRes.json()
+    
+    // 3. Save to database via server API - include user id if present
+    const analyses = analysis?.analyses ?? [];
+
+    let userId: string | undefined = undefined;
+    try {
+      // v2: getUser() returns { data: { user } }
+      if (typeof (supabase as any).auth?.getUser === 'function') {
+        const res = await (supabase as any).auth.getUser();
+        userId = res?.data?.user?.id;
+      } else if (typeof (supabase as any).auth?.user === 'function') {
+        // older fallback
+        const u = (supabase as any).auth.user();
+        userId = u?.id;
+      }
+    } catch (e) {
+      // ignore - unauthenticated
+    }
+
+    const createRes = await fetch('/api/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        photo_url: photoUrl,
+        analyses,
+        overall_score: analysis?.overall_score ?? 0,
+        confidence_avg: analysis?.confidence_avg ?? 0,
+        critical_count: calculateCriticalCount(analyses),
+        user_id: userId,
+      })
+    });
+
+    const session = await createRes.json();
+
+    // 4. Navigate to results
+    router.push(`/session/${session.id}`)
+  }
 
   if (isAnalyzing) {
     return (
@@ -200,12 +198,9 @@ export default function AnalyzePage() {
       <main className="flex-1 bg-white py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl text-[#0A0A0A] mb-2">
-              Upload Your Makeup Photo
+            <h1 className="text-3xl text-[#0A0A0A] mb-0">
+              Analyze Makeup
             </h1>
-            <p className="text-[#6B7280]">
-              Get instant AI analysis with confidence scores
-            </p>
           </div>
 
           <div className="space-y-8">
@@ -302,3 +297,9 @@ export default function AnalyzePage() {
     </div>
   );
 }
+function countCritical(analyses: any) {
+  if (!Array.isArray(analyses)) return 0;
+  // Assume each analysis has a 'critical' boolean property
+  return analyses.filter((a: any) => a.critical === true).length;
+}
+

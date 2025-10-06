@@ -14,8 +14,38 @@
   "nav": {
     "home": "Início",
     "sessions": "Minhas Sessões",
+    "login": "Entrar",
+    "logout": "Sair",
+    "register": "Registrar",
     "profile": "Perfil",
     "about": "Sobre"
+  },
+  "auth": {
+    "login": {
+      "title": "Bem-vindo de volta",
+      "description": "Entre com sua conta Apple ou Google",
+      "button": "Entrar",
+      "sso_continue_with": "Continuar com {provider}",
+      "email_label": "E-mail",
+      "password_label": "Senha",
+      "forgot_password": "Esqueceu sua senha?",
+      "signup_cta": "Ainda não tem conta? Registre-se"
+    },
+    "register": {
+      "title": "Crie sua conta",
+      "description": "Crie uma conta para salvar sessões e obter recomendações personalizadas",
+      "button": "Criar conta",
+      "sso_continue_with": "Continuar com {provider}",
+      "email_label": "E-mail",
+      "password_label": "Senha",
+      "signin_cta": "Já tem uma conta? Entrar"
+    },
+    "reset": {
+      "title": "Redefina sua senha",
+      "sent": "Verifique seu e-mail para um link de redefinição.",
+      "button": "Enviar link de redefinição",
+      "back_to_signin": "Voltar para o login"
+    }
   },
   "home": {
     "hero_title": "Confia e brilha",

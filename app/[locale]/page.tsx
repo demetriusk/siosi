@@ -18,6 +18,30 @@ export default function HomePage() {
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
+
+    // Immediately prepare the file and navigate to the analyze page.
+    // This mirrors what the manual "Analyze" button does but happens
+    // automatically right after a successful file selection.
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+
+      // Store in sessionStorage so the analyze page can read it
+      try {
+        sessionStorage.setItem('siosi_upload_photo', base64);
+        sessionStorage.setItem('siosi_upload_photo_name', file.name);
+        sessionStorage.setItem('siosi_upload_photo_type', file.type);
+        sessionStorage.setItem('siosi_upload_photo_size', file.size.toString());
+      } catch (e) {
+        // Ignore sessionStorage errors (e.g., disabled), fallback to staying on page
+        console.warn('Could not save upload to sessionStorage', e);
+      }
+
+      // Navigate to analyze page
+      router.push(`/${locale}/analyze`);
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleClearFile = () => {
@@ -83,16 +107,6 @@ export default function HomePage() {
                 onClearFile={handleClearFile}
               />
 
-              {selectedFile && (
-                <Button
-                  onClick={handleAnalyze}
-                  className="w-full bg-[#0A0A0A] text-white hover:bg-[#1F1F1F] h-12 text-base font-semibold"
-                >
-                  <UploadIcon className="w-5 h-5 mr-2" />
-                  {t('upload.analyze_button')}
-                </Button>
-              )}
-
               <div className="text-center">
                 <Button
                   variant="outline"
@@ -147,7 +161,7 @@ export default function HomePage() {
                 { step: '2', text: t('home.step2'), img: '/ico/siosi-ai-analyze-makeup.avif' },
                 { step: '3', text: t('home.step3'), img: '/ico/siosi-ai-makeup-recommendations.avif' },
               ].map(({ step, text, img }) => (
-                <div key={step} className="text-center">
+                <div key={step} className="text-center group">
                   <div
                     className="inline-flex items-center justify-center w-16 h-16 text-white text-2xl rounded-full mb-4 rainbow-hover bg-[#0A0A0A]"
                     role="img"

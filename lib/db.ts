@@ -6,6 +6,12 @@ export async function saveSession(data: {
   overall_score: number
   confidence_avg: number
   critical_count: number
+  occasion?: string
+  concerns?: string[]
+  skin_type?: string
+  skin_tone?: string
+  lid_type?: string
+  user_id?: string
 }) {
   const supabase = getSupabase();
 

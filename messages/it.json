@@ -14,8 +14,38 @@
   "nav": {
     "home": "Home",
     "sessions": "Le mie sessioni",
+    "login": "Accedi",
+    "logout": "Disconnetti",
+    "register": "Registrati",
     "profile": "Profilo",
     "about": "Informazioni"
+  },
+  "auth": {
+    "login": {
+      "title": "Bentornato",
+      "description": "Accedi con il tuo account Apple o Google",
+      "button": "Accedi",
+      "sso_continue_with": "Continua con {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "forgot_password": "Hai dimenticato la password?",
+      "signup_cta": "Non hai un account? Registrati"
+    },
+    "register": {
+      "title": "Crea il tuo account",
+      "description": "Crea un account per salvare le sessioni e ricevere raccomandazioni personalizzate",
+      "button": "Crea account",
+      "sso_continue_with": "Continua con {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "signin_cta": "Hai già un account? Accedi"
+    },
+    "reset": {
+      "title": "Reimposta la tua password",
+      "sent": "Controlla la tua email per il link di ripristino.",
+      "button": "Invia link di ripristino",
+      "back_to_signin": "Torna al login"
+    }
   },
   "home": {
     "hero_title": "Scopri e risplendi",

@@ -14,8 +14,38 @@
   "nav": {
     "home": "Home",
     "sessions": "My Sessions",
+    "login": "Log in",
+    "logout": "Log out",
+    "register": "Register",
     "profile": "Profile",
     "about": "About"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "description": "Login with your Apple or Google account",
+      "button": "Login",
+      "sso_continue_with": "Continue with {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "forgot_password": "Forgot your password?",
+      "signup_cta": "Don't have an account? Sign up"
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "Create an account to save sessions and get personalized recommendations",
+      "button": "Create account",
+      "sso_continue_with": "Continue with {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "signin_cta": "Already have an account? Sign in"
+    },
+    "reset": {
+      "title": "Reset your password",
+      "sent": "Check your email for a reset link.",
+      "button": "Send reset link",
+      "back_to_signin": "Back to sign in"
+    }
   },
   "home": {
     "hero_title": "Know Before You Glow",
@@ -36,7 +66,7 @@
       "more": "Vein Undertone Truth"
     },
     "how_it_works": "How it works",
-    "step1": "Upload your makeup photo",
+    "step1": "Upload makeup photo",
     "step2": "AI analyzes 4-9 different aspects",
     "step3": "Get scored report with recommendations"
     ,
@@ -48,7 +78,7 @@
     "take_photo": "Take Photo",
     "file_too_large": "File is too large. Maximum size is 10MB",
     "invalid_format": "Invalid file format. Please upload JPG, PNG, or HEIC",
-    "analyze_button": "Analyze My Makeup",
+    "analyze_button": "Analyze Makeup",
     "occasion_title": "What's this for?",
     "occasion_optional": "(optional)",
     "occasions": {
@@ -77,6 +107,7 @@
     }
   },
   "results": {
+    "share": "Share",
     "overall_score": "Overall Prediction Score",
     "critical": "Critical",
     "watch_these": "Watch These",

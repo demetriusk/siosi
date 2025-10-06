@@ -49,18 +49,29 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const session = await getSession(id);
   const t = await getTranslations({ locale });
 
-  if (!session) {
-    notFound();
-  }
+  // Safe translation helper: if a message key is missing, return a sensible fallback
+  const safeT = (key: string, fallback?: string) => {
+    try {
+      return t(key);
+    } catch (e) {
+      return fallback ?? key;
+    }
+  };
 
-  const criticalAnalyses = session.analyses.filter(
+  // If session is missing, render a friendly empty state instead of a 404.
+  // Provide safe defaults so the rest of the page can render deterministically.
+  const createdAt = session?.created_at ?? new Date().toISOString();
+  const overallScore = session?.overall_score ?? 0;
+  const analyses = session?.analyses ?? [];
+
+  const criticalAnalyses = analyses.filter(
     a => a.verdict === 'NAY' && a.confidence >= 80
   );
-  const watchAnalyses = session.analyses.filter(
+  const watchAnalyses = analyses.filter(
     a => (a.verdict === 'MAYBE' && a.confidence >= 50) ||
        (a.verdict === 'NAY' && a.confidence < 80)
   );
-  const goodAnalyses = session.analyses.filter(
+  const goodAnalyses = analyses.filter(
     a => a.verdict === 'YAY' && a.confidence >= 70
   );
 
@@ -73,22 +84,22 @@ export default async function SessionPage({ params }: SessionPageProps) {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
             <div>
               <time className="text-sm text-[#6B7280]">
-                {format(new Date(session.created_at), 'MMMM d, yyyy • h:mm a')}
+                {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
               </time>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Button variant="outline" size="sm" className="border-[#E5E7EB]">
                 <Share2 className="w-4 h-4 mr-2" />
-                {t('results.share')}
+                {safeT('results.share', 'Share')}
               </Button>
               <Button variant="outline" size="sm" className="border-[#E5E7EB]">
                 <Download className="w-4 h-4 mr-2" />
-                {t('common.save')}
+                {safeT('common.save', 'Save')}
               </Button>
               <Link href={`/${locale}/analyze`}>
                 <Button variant="outline" size="sm" className="border-[#E5E7EB]">
                   <Upload className="w-4 h-4 mr-2" />
-                  {t('results.analyze_another')}
+                  {safeT('results.analyze_another', 'Analyze another')}
                 </Button>
               </Link>
             </div>
@@ -112,18 +123,18 @@ export default async function SessionPage({ params }: SessionPageProps) {
                   stroke="#0A0A0A"
                   strokeWidth="8"
                   fill="none"
-                  strokeDasharray={`${(session.overall_score / 10) * 351.86} 351.86`}
+                  strokeDasharray={`${(overallScore / 10) * 351.86} 351.86`}
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-4xl font-bold text-[#0A0A0A]">
-                  {session.overall_score.toFixed(1)}
+                  <span className="text-4xl font-bold text-[#0A0A0A]">
+                  {overallScore.toFixed(1)}
                 </span>
               </div>
             </div>
             <h2 className="text-xl font-semibold text-[#6B7280]">
-              {t('results.overall_score')}
+              {safeT('results.overall_score', 'Overall score')}
             </h2>
           </div>
 
@@ -131,7 +142,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {t('results.critical')}
+                  {safeT('results.critical', 'Critical')}
                 </h3>
                 <span className="px-2.5 py-0.5 bg-[#EF4444] text-white text-xs font-semibold rounded-full">
                   {criticalAnalyses.length}
@@ -149,7 +160,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {t('results.watch_these')}
+                  {safeT('results.watch_these', 'Watch these')}
                 </h3>
                 <span className="px-2.5 py-0.5 bg-[#F59E0B] text-white text-xs font-semibold rounded-full">
                   {watchAnalyses.length}
@@ -167,7 +178,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {t('results.looking_good')}
+                  {safeT('results.looking_good', 'Looking good')}
                 </h3>
                 <span className="px-2.5 py-0.5 bg-[#10B981] text-white text-xs font-semibold rounded-full">
                   {goodAnalyses.length}
@@ -184,17 +195,17 @@ export default async function SessionPage({ params }: SessionPageProps) {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-12 p-6 bg-white border border-[#E5E7EB] rounded-sm">
             <Button variant="outline" className="border-[#E5E7EB]">
               <Mail className="w-4 h-4 mr-2" />
-              {t('results.email_report')}
+              {safeT('results.email_report', 'Email report')}
             </Button>
             <Button variant="outline" className="border-[#E5E7EB]">
               <Share2 className="w-4 h-4 mr-2" />
-              {t('results.share_instagram')}
+              {safeT('results.share_instagram', 'Share to Instagram')}
             </Button>
           </div>
 
           <p className="text-center text-sm text-[#10B981] mt-4 flex items-center justify-center gap-2">
             <span>✓</span>
-            {t('results.saved')}
+            {safeT('results.saved', 'Saved')}
           </p>
         </div>
       </main>

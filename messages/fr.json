@@ -14,8 +14,38 @@
   "nav": {
     "home": "Accueil",
     "sessions": "Mes sessions",
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "register": "S'inscrire",
     "profile": "Profil",
     "about": "À propos"
+  },
+  "auth": {
+    "login": {
+      "title": "Content de vous revoir",
+      "description": "Connectez-vous avec votre compte Apple ou Google",
+      "button": "Se connecter",
+      "sso_continue_with": "Continuer avec {provider}",
+      "email_label": "E-mail",
+      "password_label": "Mot de passe",
+      "forgot_password": "Mot de passe oublié ?",
+      "signup_cta": "Pas de compte ? Inscrivez-vous"
+    },
+    "register": {
+      "title": "Créez votre compte",
+      "description": "Créez un compte pour enregistrer des sessions et obtenir des recommandations personnalisées",
+      "button": "Créer un compte",
+      "sso_continue_with": "Continuer avec {provider}",
+      "email_label": "E-mail",
+      "password_label": "Mot de passe",
+      "signin_cta": "Vous avez déjà un compte ? Connectez-vous"
+    },
+    "reset": {
+      "title": "Réinitialisez votre mot de passe",
+      "sent": "Vérifiez votre e-mail pour un lien de réinitialisation.",
+      "button": "Envoyer le lien de réinitialisation",
+      "back_to_signin": "Retour à la connexion"
+    }
   },
   "home": {
     "hero_title": "Ose et rayonne",

@@ -231,17 +231,20 @@ export async function generateMockAnalysis(
 }
 
 export function calculateOverallScore(analyses: LabAnalysis[]): number {
-  const totalScore = analyses.reduce((sum, analysis) => sum + analysis.score, 0);
+  if (!Array.isArray(analyses) || analyses.length === 0) return 0;
+  const totalScore = analyses.reduce((sum, analysis) => sum + (analysis?.score || 0), 0);
   return Math.round((totalScore / analyses.length) * 10) / 10;
 }
 
 export function calculateCriticalCount(analyses: LabAnalysis[]): number {
+  if (!Array.isArray(analyses) || analyses.length === 0) return 0;
   return analyses.filter(
-    analysis => analysis.verdict === 'NAY' && analysis.confidence >= 80
+    analysis => analysis && analysis.verdict === 'NAY' && (analysis.confidence ?? 0) >= 80
   ).length;
 }
 
 export function calculateConfidenceAverage(analyses: LabAnalysis[]): number {
-  const totalConfidence = analyses.reduce((sum, analysis) => sum + analysis.confidence, 0);
+  if (!Array.isArray(analyses) || analyses.length === 0) return 0;
+  const totalConfidence = analyses.reduce((sum, analysis) => sum + (analysis?.confidence || 0), 0);
   return Math.round((totalConfidence / analyses.length) * 10) / 10;
 }

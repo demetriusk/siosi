@@ -14,8 +14,38 @@
   "nav": {
     "home": "Start",
     "sessions": "Meine Sitzungen",
+    "login": "Einloggen",
+    "logout": "Ausloggen",
+    "register": "Registrieren",
     "profile": "Profil",
     "about": "Über"
+  },
+  "auth": {
+    "login": {
+      "title": "Willkommen zurück",
+      "description": "Melden Sie sich mit Ihrem Apple- oder Google-Konto an",
+      "button": "Einloggen",
+      "sso_continue_with": "Weiter mit {provider}",
+      "email_label": "E-Mail",
+      "password_label": "Passwort",
+      "forgot_password": "Passwort vergessen?",
+      "signup_cta": "Noch kein Konto? Registrieren"
+    },
+    "register": {
+      "title": "Erstellen Sie Ihr Konto",
+      "description": "Erstellen Sie ein Konto, um Sitzungen zu speichern und personalisierte Empfehlungen zu erhalten",
+      "button": "Konto erstellen",
+      "sso_continue_with": "Weiter mit {provider}",
+      "email_label": "E-Mail",
+      "password_label": "Passwort",
+      "signin_cta": "Sie haben bereits ein Konto? Einloggen"
+    },
+    "reset": {
+      "title": "Setzen Sie Ihr Passwort zurück",
+      "sent": "Überprüfen Sie Ihre E-Mails auf einen Link zum Zurücksetzen.",
+      "button": "Reset-Link senden",
+      "back_to_signin": "Zurück zum Einloggen"
+    }
   },
   "home": {
     "hero_title": "Hochladen. Analysieren. Perfektionieren.",
