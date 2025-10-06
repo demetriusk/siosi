@@ -1,12 +1,17 @@
 import { NextRequest } from 'next/server'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-})
-
 export async function POST(req: NextRequest) {
   try {
+    // lazily construct the OpenAI client so builds (or environments without
+    // OPENAI_API_KEY) don't throw at module import time.
+    const apiKey = process.env.OPENAI_API_KEY
+    if (!apiKey) {
+      console.error('Missing OPENAI_API_KEY')
+      return Response.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 })
+    }
+
+    const openai = new OpenAI({ apiKey })
     const { photoUrl, skinType, skinTone, lidType } = await req.json()
     
     const response = await openai.chat.completions.create({
@@ -47,7 +52,7 @@ Return valid JSON only.`
       max_tokens: 1500
     })
     
-    const result = JSON.parse(response.choices[0].message.content!)
+  const result = JSON.parse(response.choices[0].message.content!)
     
     return Response.json({
       analyses: result,
