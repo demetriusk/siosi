@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { notFound } from 'next/navigation';
 import { format } from 'date-fns';
 import { Share2, Mail, Download, Upload } from 'lucide-react';
