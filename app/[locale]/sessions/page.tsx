@@ -4,7 +4,7 @@ import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { SessionCard } from '@/components/siosi/session-card';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { Session } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 
@@ -13,6 +13,8 @@ import type { ParamsWithLocale } from '@/lib/types';
 interface SessionsPageProps extends ParamsWithLocale {}
 
 async function getSessions(): Promise<Session[]> {
+  const supabase = getSupabase();
+
   const { data, error } = await supabase
     .from('sessions')
     .select('*')

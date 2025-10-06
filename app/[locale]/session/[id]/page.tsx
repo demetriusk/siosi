@@ -6,7 +6,7 @@ import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 
@@ -15,6 +15,8 @@ import type { ParamsWithLocaleAndId } from '@/lib/types';
 interface SessionPageProps extends ParamsWithLocaleAndId {}
 
 async function getSession(id: string): Promise<SessionWithAnalyses | null> {
+  const supabase = getSupabase();
+
   const { data: session, error: sessionError } = await supabase
     .from('sessions')
     .select('*')

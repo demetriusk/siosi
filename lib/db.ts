@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 export async function saveSession(data: {
   photo_url: string
@@ -7,6 +7,8 @@ export async function saveSession(data: {
   confidence_avg: number
   critical_count: number
 }) {
+  const supabase = getSupabase();
+
   const { data: session, error } = await supabase
     .from('sessions')
     .insert(data)
@@ -18,6 +20,8 @@ export async function saveSession(data: {
 }
 
 export async function getSessions(limit = 10) {
+  const supabase = getSupabase();
+
   const { data, error } = await supabase
     .from('sessions')
     .select('*')

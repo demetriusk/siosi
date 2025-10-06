@@ -74,6 +74,8 @@ export default function AnalyzePage() {
   const handleAnalyze = async () => {
     if (!selectedFile) return;
 
+    const supabaseClient = supabase!;
+
     setIsAnalyzing(true);
 
     const messageInterval = setInterval(() => {
@@ -84,7 +86,7 @@ export default function AnalyzePage() {
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
         .from('makeup-photos')
         .upload(fileName, selectedFile);
 
@@ -93,13 +95,13 @@ export default function AnalyzePage() {
         console.warn('Upload error, using placeholder:', uploadError);
         photoUrl = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80';
       } else {
-        const { data: { publicUrl } } = supabase.storage
+        const { data: { publicUrl } } = supabaseClient.storage
           .from('makeup-photos')
           .getPublicUrl(fileName);
         photoUrl = publicUrl;
       }
 
-      const { data: sessionData, error: sessionError } = await supabase
+      const { data: sessionData, error: sessionError } = await supabaseClient
         .from('sessions')
         .insert({
           photo_url: photoUrl,
@@ -130,7 +132,7 @@ export default function AnalyzePage() {
         zones_affected: analysis.zones_affected || null,
       }));
 
-      const { error: analysisError } = await supabase
+      const { error: analysisError } = await supabaseClient
         .from('analyses')
         .insert(analysisInserts);
 
@@ -140,7 +142,7 @@ export default function AnalyzePage() {
       const criticalCount = calculateCriticalCount(analyses);
       const confidenceAvg = calculateConfidenceAverage(analyses);
 
-      await supabase
+      await supabaseClient
         .from('sessions')
         .update({
           overall_score: overallScore,
