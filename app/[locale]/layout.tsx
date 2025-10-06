@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/sonner';
 import type { ParamsWithLocale } from '@/lib/types';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Import messages statically
 import enMessages from '../../messages/en.json';
