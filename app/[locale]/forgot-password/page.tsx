@@ -1,6 +1,7 @@
-'use client'
+"use client"
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -43,9 +44,9 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <Card>
           <div className="flex flex-col items-center pt-6">
-            <a href={`/${locale}`} aria-label="Home">
-              <img src="/siosi-emblem.min.svg" alt="siOsi" className="w-12 h-12 mx-auto" />
-            </a>
+              <a href={`/${locale}`} aria-label="Home">
+                <Image src="/siosi-emblem.min.svg" alt="siOsi" width={48} height={48} className="w-12 h-12 mx-auto" />
+              </a>
           </div>
           <CardHeader>
             <CardTitle>Reset your password</CardTitle>

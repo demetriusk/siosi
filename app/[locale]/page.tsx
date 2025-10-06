@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Camera, Sparkles, Upload as UploadIcon, CircleCheck as CheckCircle } from 'lucide-react';
@@ -133,7 +134,7 @@ export default function HomePage() {
                   key={key}
                   className="flex flex-col items-center gap-3 p-4 bg-white border border-[#E5E7EB] rounded-sm hover:shadow-md transition-all"
                 >
-                  <img
+                  <Image
                     src={src}
                     alt={t(`home.labs.${key}`)}
                     width={240}
@@ -170,7 +171,7 @@ export default function HomePage() {
                     <span className="relative z-10">{step}</span>
                   </div>
                   <div className="flex justify-center mb-4">
-                    <img
+                    <Image
                       src={img}
                       alt={text}
                       width={240}

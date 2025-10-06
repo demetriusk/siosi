@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { ArrowRight, CircleAlert as AlertCircle } from 'lucide-react';
 import { Session } from '@/lib/types';
@@ -33,10 +34,12 @@ export function SessionCard({ session, locale }: SessionCardProps) {
       <div className="bg-white border border-[#E5E7EB] rounded-sm overflow-hidden hover:shadow-lg transition-all group">
         <div className="aspect-video bg-[#F9FAFB] relative overflow-hidden">
           {session.photo_url ? (
-            <img
+            <Image
               src={session.photo_url}
               alt="Makeup analysis"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-[#D1D5DB]">

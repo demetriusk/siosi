@@ -26,13 +26,13 @@ export function UploadZone({
   const t = useTranslations('upload');
   const tHome = useTranslations('home');
 
-  const validateFile = (file: File): boolean => {
+  const validateFile = useCallback((file: File): boolean => {
     if (file.size > maxSize) {
       setError(t('file_too_large'));
       return false;
     }
 
-    const acceptedTypes = accept.split(',').map(t => t.trim());
+    const acceptedTypes = accept.split(',').map((s) => s.trim());
     if (!acceptedTypes.includes(file.type)) {
       setError(t('invalid_format'));
       return false;
@@ -40,7 +40,7 @@ export function UploadZone({
 
     setError(null);
     return true;
-  };
+  }, [maxSize, accept, t]);
 
   const handleFile = useCallback(
     (file: File) => {
@@ -55,7 +55,7 @@ export function UploadZone({
         });
       }
     },
-    [onFileSelect, maxSize, accept]
+    [onFileSelect, validateFile]
   );
 
   // If a selectedFile is provided from outside (for example restored from
@@ -129,6 +129,7 @@ export function UploadZone({
           <X className="w-4 h-4 text-[#0A0A0A]" />
         </button>
         <div className="aspect-video relative overflow-hidden rounded">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={previewUrl}
             alt="Preview"

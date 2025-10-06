@@ -175,7 +175,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   </h3>
                   <p className="text-[#374151]">
                     Yes. Your photos and analysis results are stored securely and are only accessible to you.
-                    We don't share your data with third parties or use it for advertising.
+                    We don&apos;t share your data with third parties or use it for advertising.
                   </p>
                 </div>
               </div>

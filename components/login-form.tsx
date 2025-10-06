@@ -16,6 +16,7 @@ import { supabase } from '@/lib/supabase'
 import { FaApple, FaFacebookF, FaGoogle } from 'react-icons/fa'
 
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function LoginForm({
   className,
@@ -60,8 +61,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <div className="flex flex-col items-center pt-6">
-          <a href={homeHref} aria-label="Home">
-            <img src="/siosi-emblem.min.svg" alt="siOsi" className="w-12 h-12 mx-auto" />
+            <a href={homeHref} aria-label="Home">
+            <Image src="/siosi-emblem.min.svg" alt="siOsi" width={48} height={48} className="w-12 h-12 mx-auto" />
           </a>
         </div>
         <CardHeader className="text-center">

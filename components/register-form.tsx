@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { useAuthForm } from '@/hooks/useAuthForm'
 import { validateEmail, validatePassword } from '@/lib/validators'
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { FaApple, FaFacebookF, FaGoogle } from 'react-icons/fa'
 
@@ -55,7 +56,7 @@ export function RegisterForm({
       <Card>
         <div className="flex flex-col items-center pt-6">
           <a href={homeHref} aria-label="Home">
-            <img src="/siosi-emblem.min.svg" alt="siOsi" className="w-12 h-12 mx-auto" />
+            <Image src="/siosi-emblem.min.svg" alt="siOsi" width={48} height={48} className="w-12 h-12 mx-auto" />
           </a>
         </div>
         <CardHeader className="text-center">
