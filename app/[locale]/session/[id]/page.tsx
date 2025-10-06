@@ -52,8 +52,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const safeT = (key: string, fallback?: string) => {
     try {
       return t(key);
-    } catch (e) {
-      return fallback ?? key; // unused 'e' parameter
+    } catch {
+      return fallback ?? key;
     }
   };
 

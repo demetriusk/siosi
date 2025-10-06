@@ -37,4 +37,12 @@ export default [
       'no-console': 'warn'
     },
   },
+
+  // Ensure scripts and server routes (app/api) can use console without warnings
+  {
+    files: ['scripts/**', 'app/api/**'],
+    rules: {
+      'no-console': 'off'
+    }
+  }
 ]

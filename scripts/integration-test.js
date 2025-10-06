@@ -29,7 +29,7 @@ async function run() {
   const password = 'password123!';
 
   console.log('Signing up user', email);
-  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+  const { data: _signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
   if (signUpError) {
     console.error('Sign up error', signUpError);
     process.exit(1);

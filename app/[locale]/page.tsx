@@ -35,6 +35,7 @@ export default function HomePage() {
         sessionStorage.setItem('siosi_upload_photo_size', file.size.toString());
       } catch (e) {
         // Ignore sessionStorage errors (e.g., disabled), fallback to staying on page
+        // eslint-disable-next-line no-console
         console.warn('Could not save upload to sessionStorage', e);
       }
 

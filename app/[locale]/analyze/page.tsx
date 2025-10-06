@@ -89,8 +89,9 @@ export default function AnalyzePage() {
       .from('makeup-photos')
       .upload(fileName, selectedFile)
 
-    // Debug logging to capture Supabase storage response for troubleshooting
-    console.log('Supabase upload response:', { uploadData, uploadError });
+  // Debug logging to capture Supabase storage response for troubleshooting
+  // eslint-disable-next-line no-console
+  console.log('Supabase upload response:', { uploadData, uploadError });
 
     if (uploadError) {
       // Provide extra context when re-throwing so console/network include helpful info

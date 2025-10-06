@@ -53,12 +53,14 @@ export default function SessionsPage() {
           .limit(50);
 
         if (error) {
+          // eslint-disable-next-line no-console
           console.error('Error fetching sessions:', error);
           setSessions([]);
         } else {
           if (mounted) setSessions(data ?? []);
         }
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(e);
       } finally {
         if (mounted) setLoading(false);

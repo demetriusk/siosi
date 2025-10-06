@@ -201,7 +201,7 @@ function getRandomItems<T>(array: T[], count: number): T[] {
 
 export async function generateMockAnalysis(
   sessionId: string,
-  context?: UploadContext
+  _context?: UploadContext
 ): Promise<LabAnalysis[]> {
   await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 3000));
 

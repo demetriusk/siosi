@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
   const locale = (params as any)?.locale as string;
   const [_email, _setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const { errors, validateLogin } = useAuthForm()
+  const { errors, validateLogin: _validateLogin } = useAuthForm()
 
   async function handleReset(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
