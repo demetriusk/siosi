@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/sonner';
 import type { ParamsWithLocale } from '@/lib/types';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 
 // Import messages statically
 import enMessages from '../../messages/en.json';
