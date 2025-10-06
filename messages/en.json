@@ -39,6 +39,8 @@
     "step1": "Upload your makeup photo",
     "step2": "AI analyzes 4-9 different aspects",
     "step3": "Get scored report with recommendations"
+    ,
+    "step_number": "Step {number}"
   },
   "upload": {
     "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",

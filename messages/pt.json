@@ -39,6 +39,8 @@
     "step1": "Carregue sua foto de maquiagem",
     "step2": "IA analisa 4-9 aspectos diferentes",
     "step3": "Receba um relatório com pontuações e recomendações"
+    ,
+    "step_number": "Passo {number}"
   },
   "upload": {
     "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10MB)",

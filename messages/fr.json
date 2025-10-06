@@ -39,6 +39,8 @@
     "step1": "Téléversez votre photo de maquillage",
     "step2": "L'IA analyse 4 à 9 aspects différents",
     "step3": "Obtenez un rapport noté avec des recommandations"
+    ,
+    "step_number": "Étape {number}"
   },
   "upload": {
     "supported_formats": "Formats pris en charge : JPG, PNG, HEIC (max 10 Mo)",

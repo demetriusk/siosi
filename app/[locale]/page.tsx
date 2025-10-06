@@ -148,8 +148,12 @@ export default function HomePage() {
                 { step: '3', text: t('home.step3'), img: '/ico/siosi-ai-makeup-recommendations.avif' },
               ].map(({ step, text, img }) => (
                 <div key={step} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-[#0A0A0A] text-white text-2xl rounded-full mb-4">
-                    {step}
+                  <div
+                    className="inline-flex items-center justify-center w-16 h-16 text-white text-2xl rounded-full mb-4 rainbow-hover bg-[#0A0A0A]"
+                    role="img"
+                    aria-label={t('home.step_number', { number: step })}
+                  >
+                    <span className="relative z-10">{step}</span>
                   </div>
                   <div className="flex justify-center mb-4">
                     <img

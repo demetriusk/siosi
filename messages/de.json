@@ -39,6 +39,8 @@
     "step1": "Laden Sie Ihr Make-up-Foto hoch",
     "step2": "Die KI analysiert 4–9 verschiedene Aspekte",
     "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen"
+    ,
+    "step_number": "Schritt {number}"
   },
   "upload": {
     "supported_formats": "Unterstützte Formate: JPG, PNG, HEIC (max. 10MB)",

@@ -96,6 +96,40 @@
     background-position: 100% 0;
   }
 
+  /* Reusable rainbow hover for circular elements (gradient sits in a ::before layer behind content) */
+  .rainbow-hover {
+    position: relative;
+    overflow: hidden;
+    /* keep a solid dark fallback so text is readable */
+    background-color: #0A0A0A;
+  }
+
+  .rainbow-hover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(90deg, #ff004d, #ff7300, #ffde00, #00d084, #007cff, #7a00ff, #ff007a);
+    background-size: 400% 100%;
+    filter: grayscale(100%) brightness(0%);
+    transition: filter 300ms ease, background-position 600ms linear, opacity 300ms ease;
+    opacity: 0;
+  }
+
+  /* keep the text/content above the gradient */
+  .rainbow-hover > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .rainbow-hover:hover::before,
+  .group:hover .rainbow-hover::before,
+  .rainbow-hover:focus::before {
+    filter: none;
+    background-position: 100% 0;
+    opacity: 1;
+  }
+
   /* Fallback for browsers that don't support mask-image - show the plain SVG */
   @supports not (mask-image: url('/siosi-emblem.min.svg')) {
     .logo-mask {

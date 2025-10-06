@@ -39,6 +39,8 @@
     "step1": "Carica la tua foto del trucco",
     "step2": "L'IA analizza 4-9 aspetti diversi",
     "step3": "Ricevi un rapporto valutato con raccomandazioni"
+    ,
+    "step_number": "Passo {number}"
   },
   "upload": {
     "supported_formats": "Formati supportati: JPG, PNG, HEIC (max 10MB)",
