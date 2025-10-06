@@ -10,23 +10,23 @@ export default function RegisterPage() {
   const params = useParams()
   const locale = (params as any)?.locale as string
   const router = useRouter()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [_name, _setName] = useState('')
+  const [_email, _setEmail] = useState('')
+  const [_password, _setPassword] = useState('')
+  const [_loading, _setLoading] = useState(false)
 
   async function handleRegister(e: any) {
     e.preventDefault()
-    setLoading(true)
+    _setLoading(true)
     const form = e.currentTarget as HTMLFormElement
     const fd = new FormData(form)
-    const name = String(fd.get('name') || '')
+  const _name = String(fd.get('name') || '')
     const email = String(fd.get('email') || '')
     const password = String(fd.get('password') || '')
 
     if (!email || !password) {
       toast.error('Please provide email and password')
-      setLoading(false)
+      _setLoading(false)
       return
     }
     try {
@@ -37,7 +37,7 @@ export default function RegisterPage() {
     } catch (err: any) {
       toast.error(err.message || 'Registration failed')
     } finally {
-      setLoading(false)
+      _setLoading(false)
     }
   }
 

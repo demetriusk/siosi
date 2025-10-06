@@ -49,7 +49,7 @@ export function LoginForm({
   async function handleSSO(provider: 'google' | 'apple' | 'facebook') {
     try {
       await (supabase as any).auth.signInWithOAuth({ provider })
-    } catch (err) {
+    } catch {
       // noop: pages using toast can show messages on return
       // Supabase will redirect to OAuth flow
     }

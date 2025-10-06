@@ -15,7 +15,7 @@ import { validateEmail } from '@/lib/validators'
 export default function ForgotPasswordPage() {
   const params = useParams();
   const locale = (params as any)?.locale as string;
-  const [email, setEmail] = useState('');
+  const [_email, _setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const { errors, validateLogin } = useAuthForm()
 

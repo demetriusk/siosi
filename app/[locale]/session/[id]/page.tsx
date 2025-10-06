@@ -53,7 +53,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
     try {
       return t(key);
     } catch (e) {
-      return fallback ?? key;
+      return fallback ?? key; // unused 'e' parameter
     }
   };
 

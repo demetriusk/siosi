@@ -32,9 +32,9 @@ export function Header({ locale }: HeaderProps) {
           const u = (supabase as any).auth.user();
           if (mounted) setUser(u ?? null);
         }
-      } catch (e) {
-        // ignore
-      }
+      } catch {
+          // ignore
+        }
     }
     load();
     return () => { mounted = false };
@@ -57,7 +57,7 @@ export function Header({ locale }: HeaderProps) {
     return pathname.startsWith(href);
   };
 
-  const switchLocale = (newLocale: string) => {
+  const _switchLocale = (newLocale: string) => {
     const pathWithoutLocale = pathname.replace(`/${locale}`, '');
     return `/${newLocale}${pathWithoutLocale}`;
   };
@@ -105,9 +105,9 @@ export function Header({ locale }: HeaderProps) {
                   onClick={async () => {
                     try {
                       await (supabase as any).auth.signOut();
-                    } catch (err) {
-                      // ignore sign out errors
-                    }
+                    } catch {
+                                      // ignore sign out errors
+                                    }
                     // send the user to the login screen for this locale
                     router.push(`/${locale}/login`);
                   }}
@@ -167,7 +167,7 @@ export function Header({ locale }: HeaderProps) {
                   onClick={async () => {
                     try {
                       await (supabase as any).auth.signOut();
-                    } catch (err) {
+                    } catch {
                       // ignore
                     }
                     setMobileMenuOpen(false);

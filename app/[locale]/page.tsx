@@ -49,7 +49,7 @@ export default function HomePage() {
     setSelectedFile(null);
   };
 
-  const handleAnalyze = async () => {
+  const _handleAnalyze = async () => {
     if (!selectedFile) return;
     
     // Convert file to base64 for storage

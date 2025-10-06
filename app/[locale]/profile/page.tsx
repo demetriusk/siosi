@@ -19,7 +19,7 @@ export default function ProfilePage() {
   const [skinType, setSkinType] = useState<SkinType | undefined>();
   const [skinTone, setSkinTone] = useState<SkinTone | undefined>();
   const [lidType, setLidType] = useState<LidType | undefined>();
-  const [language, setLanguage] = useState<string>(locale);
+  const [_language, _setLanguage] = useState<string>(locale);
   const t = useTranslations();
 
   const handleSave = () => {

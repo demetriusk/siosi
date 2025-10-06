@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     const openai = new OpenAI({ apiKey })
-    const { photoUrl, skinType, skinTone, lidType } = await req.json()
+  const { photoUrl, skinType, skinTone } = await req.json()
     
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -60,8 +60,8 @@ Return valid JSON only.`
       confidence_avg: calculateAvgConfidence(result)
     })
     
-  } catch (error) {
-    console.error('Analysis error:', error)
+  } catch {
+    console.error('Analysis error:')
     return Response.json({ error: 'Analysis failed' }, { status: 500 })
   }
 }

@@ -33,7 +33,7 @@ export default function AnalyzePage() {
   const [occasion, setOccasion] = useState<Occasion | undefined>();
   const [concerns, setConcerns] = useState<Concern[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState(0);
+  const [currentMessage] = useState(0);
   const router = useRouter();
   const t = useTranslations();
 
@@ -139,7 +139,7 @@ export default function AnalyzePage() {
         const u = (supabase as any).auth.user();
         userId = u?.id;
       }
-    } catch (e) {
+    } catch {
       // ignore - unauthenticated
     }
 
@@ -159,7 +159,7 @@ export default function AnalyzePage() {
     const session = await createRes.json();
 
     // 4. Navigate to results
-    router.push(`/session/${session.id}`)
+      router.push(`/session/${session.id}`)
   }
 
   if (isAnalyzing) {
@@ -295,9 +295,5 @@ export default function AnalyzePage() {
     </div>
   );
 }
-function countCritical(analyses: any) {
-  if (!Array.isArray(analyses)) return 0;
-  // Assume each analysis has a 'critical' boolean property
-  return analyses.filter((a: any) => a.critical === true).length;
-}
+// removed unused helper: countCritical
 

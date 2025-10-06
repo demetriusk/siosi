@@ -10,19 +10,19 @@ export default function LoginPage() {
   const params = useParams()
   const locale = (params as any)?.locale as string
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const [_loading, _setLoading] = useState(false)
 
   async function handleEmailSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
+  _setLoading(true)
     const form = e.currentTarget as HTMLFormElement
     const formData = new FormData(form)
     const email = String(formData.get('email') || '')
     const password = String(formData.get('password') || '')
 
     if (!email || !password) {
-      toast.error('Please enter both email and password')
-      setLoading(false)
+  toast.error('Please enter both email and password')
+  _setLoading(false)
       return
     }
     try {
@@ -31,9 +31,9 @@ export default function LoginPage() {
       toast.success('Signed in')
       router.push(`/${locale}/sessions`)
     } catch (err: any) {
-      toast.error(err.message || 'Login failed')
+  toast.error(err.message || 'Login failed')
     } finally {
-      setLoading(false)
+  _setLoading(false)
     }
   }
 
