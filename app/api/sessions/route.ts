@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import logger from '@/lib/logger'
 import { getSupabase } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
 
       if (!resp.ok) {
         const txt = await resp.text();
-        console.warn('Supabase token validation failed', txt);
+  logger.warn('Supabase token validation failed', txt);
         return Response.json({ error: 'Invalid token' }, { status: 401 });
       }
 
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
         return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
       }
     } catch (e) {
-      console.warn('Token validation error', e);
+  logger.warn('Token validation error', e);
       return Response.json({ error: 'Token validation failed' }, { status: 401 });
     }
 
@@ -64,13 +65,13 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
-      console.error('Error inserting session:', error)
+  logger.error('Error inserting session:', error)
       return Response.json({ error: error.message || 'Insert failed' }, { status: 500 })
     }
 
     return Response.json(data)
   } catch (err) {
-    console.error('Sessions API error:', err)
+  logger.error('Sessions API error:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
   }
 }

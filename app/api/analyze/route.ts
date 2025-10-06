@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import OpenAI from 'openai'
+import logger from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,7 +8,7 @@ export async function POST(req: NextRequest) {
     // OPENAI_API_KEY) don't throw at module import time.
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
-      console.error('Missing OPENAI_API_KEY')
+      logger.error('Missing OPENAI_API_KEY')
       return Response.json({ error: 'Missing OPENAI_API_KEY' }, { status: 500 })
     }
 
@@ -60,8 +61,8 @@ Return valid JSON only.`
       confidence_avg: calculateAvgConfidence(result)
     })
     
-  } catch {
-    console.error('Analysis error:')
+  } catch (err) {
+    logger.error('Analysis error:', err)
     return Response.json({ error: 'Analysis failed' }, { status: 500 })
   }
 }

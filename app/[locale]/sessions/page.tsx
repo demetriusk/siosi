@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Session } from '@/lib/types';
 import { useTranslations } from 'next-intl';
+import logger from '@/lib/logger';
 
 export default function SessionsPage() {
   const params = useParams();
@@ -53,15 +54,13 @@ export default function SessionsPage() {
           .limit(50);
 
         if (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error fetching sessions:', error);
+          logger.error('Error fetching sessions:', error);
           setSessions([]);
         } else {
           if (mounted) setSessions(data ?? []);
         }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
+        } catch (e) {
+        logger.error(e);
       } finally {
         if (mounted) setLoading(false);
       }

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Loader as Loader2 } from 'lucide-react';
+import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { UploadZone } from '@/components/siosi/upload-zone';
@@ -90,8 +91,7 @@ export default function AnalyzePage() {
       .upload(fileName, selectedFile)
 
   // Debug logging to capture Supabase storage response for troubleshooting
-  // eslint-disable-next-line no-console
-  console.log('Supabase upload response:', { uploadData, uploadError });
+  logger.debug('Supabase upload response:', { uploadData, uploadError });
 
     if (uploadError) {
       // Provide extra context when re-throwing so console/network include helpful info

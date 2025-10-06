@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import logger from '@/lib/logger';
 import { Camera } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -35,8 +36,7 @@ export default function HomePage() {
         sessionStorage.setItem('siosi_upload_photo_size', file.size.toString());
       } catch (e) {
         // Ignore sessionStorage errors (e.g., disabled), fallback to staying on page
-        // eslint-disable-next-line no-console
-        console.warn('Could not save upload to sessionStorage', e);
+        logger.warn('Could not save upload to sessionStorage', e);
       }
 
       // Navigate to analyze page
