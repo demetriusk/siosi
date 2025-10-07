@@ -11,6 +11,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   locale: string;
@@ -160,9 +163,7 @@ export default function ProfileClient({ locale }: Props) {
               <p className="text-sm text-[#6B7280] mb-4">
                 This action cannot be undone. This will permanently delete all your sessions and data.
               </p>
-              <Button variant="outline" className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white">
-                {t('profile.delete_data')}
-              </Button>
+                <DeleteProfileButton locale={locale} />
             </div>
           </div>
         </div>
@@ -170,5 +171,90 @@ export default function ProfileClient({ locale }: Props) {
 
       <Footer locale={locale} />
     </div>
+  );
+}
+
+function DeleteProfileButton({ locale }: { locale: string }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const t = useTranslations();
+
+  const handleConfirm = async () => {
+    setLoading(true);
+
+    try {
+      // Obtain access token from client-side supabase
+      let token: string | undefined;
+      try {
+        if (typeof (supabase as any)?.auth?.getSession === 'function') {
+          const res = await (supabase as any).auth.getSession();
+          token = res?.data?.session?.access_token ?? res?.session?.access_token;
+        } else if (typeof (supabase as any)?.auth?.session === 'function') {
+          const s = (supabase as any).auth.session();
+          token = s?.access_token;
+        }
+      } catch (e) {
+        // ignore - no session
+      }
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(`/api/profile/delete`, {
+        method: 'POST',
+        headers,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data?.error || 'Failed to delete profile');
+        setLoading(false);
+        return;
+      }
+
+      toast.success(t('profile.deleted_toast') || 'Profile removed');
+      // redirect to homepage
+      router.push(`/${locale}`);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Delete profile error', err);
+      toast.error('Failed to delete profile');
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+        onClick={() => setOpen(true)}
+      >
+        {t('profile.delete_data')}
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('profile.confirm_delete_title') || 'Are you sure?'}</DialogTitle>
+            <DialogDescription>
+              {t('profile.confirm_delete_desc') || 'This will permanently remove your profile and all sessions. This action cannot be undone.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)} className="mr-2">
+              {t('profile.cancel') || 'Cancel'}
+            </Button>
+            <Button onClick={handleConfirm} className="bg-[#EF4444] hover:bg-[#DC2626] text-white" disabled={loading}>
+              {loading ? (t('profile.deleting') || 'Deleting...') : (t('profile.delete_data') || 'Delete')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

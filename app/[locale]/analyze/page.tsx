@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Loader as Loader2 } from 'lucide-react';
+import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Repeat, Thermometer, Droplet, Clock, Search, ZoomIn } from 'lucide-react';
 import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -12,6 +12,9 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { calculateCriticalCount } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
@@ -33,6 +36,8 @@ export default function AnalyzePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [occasion, setOccasion] = useState<Occasion | undefined>();
   const [concerns, setConcerns] = useState<Concern[]>([]);
+  const [where, setWhere] = useState<'indoor'|'outdoor'|'both'>('both');
+  const [climate, setClimate] = useState<string | undefined>(undefined);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentMessage] = useState(0);
   const router = useRouter();
@@ -212,6 +217,7 @@ export default function AnalyzePage() {
             </div>
 
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-6 space-y-6">
+              {/* What's this for? - Pill buttons (2 rows) */}
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <Label className="text-base font-semibold text-[#0A0A0A]">
@@ -220,27 +226,56 @@ export default function AnalyzePage() {
                       {t('upload.occasion_optional')}
                     </span>
                   </Label>
-                  <button
-                    onClick={() => setOccasion(undefined)}
-                    className="text-sm text-[#6B7280] hover:text-[#0A0A0A]"
-                  >
-                    {t('common.skip')}
-                  </button>
                 </div>
-                <RadioGroup value={occasion} onValueChange={(v) => setOccasion(v as Occasion)}>
-                  <div className="space-y-3">
-                    {(['photoshoot', 'wedding', 'party', 'video', 'testing'] as Occasion[]).map((occ) => (
-                      <div key={occ} className="flex items-center space-x-2">
-                        <RadioGroupItem value={occ} id={occ} className="border-[#0A0A0A]" />
-                        <Label htmlFor={occ} className="text-sm text-[#374151] cursor-pointer">
-                          {t(`upload.occasions.${occ}`)}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </RadioGroup>
+
+                <ChipList
+                  items={[
+                    { key: 'photoshoot', label: t('upload.occasions.photoshoot'), icon: <Aperture size={16} className="mr-2" /> },
+                    { key: 'wedding', label: t('upload.occasions.wedding'), icon: <Gem size={16} className="mr-2" /> },
+                    { key: 'party', label: t('upload.occasions.party'), icon: <PartyPopper size={16} className="mr-2" /> },
+                    { key: 'video', label: t('upload.occasions.video'), icon: <Video size={16} className="mr-2" /> },
+                    { key: 'testing', label: t('upload.occasions.testing'), icon: <Activity size={16} className="mr-2" /> },
+                  ]}
+                  selected={occasion}
+                  onToggle={(k) => setOccasion(occasion === (k as Occasion) ? undefined : (k as Occasion))}
+                />
               </div>
 
+              {/* Where will you be? */}
+              <div className="border-t border-[#E5E7EB] pt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Label className="text-base font-semibold text-[#0A0A0A]">
+                    {t('upload.where_title')}
+                    <span className="text-sm text-[#6B7280] font-normal"> {t('upload.where_optional')}</span>
+                  </Label>
+                </div>
+                <ChipList
+                  items={[
+                    { key: 'indoor', label: t('upload.where.indoor'), icon: <Home size={16} className="mr-2" /> },
+                    { key: 'outdoor', label: t('upload.where.outdoor'), icon: <Trees size={16} className="mr-2" /> },
+                    { key: 'both', label: t('upload.where.both'), icon: <Shell size={16} className="mr-2" /> },
+                  ]}
+                  selected={where}
+                  onToggle={(k) => setWhere(where === (k as any) ? 'both' : (k as any))}
+                />
+              </div>
+
+              {/* Climate */}
+              <div className="mt-4">
+                <Label className="text-sm text-[#374151] mb-4 block">{t('upload.climate_title')}</Label>
+                <ChipList
+                  items={[
+                    { key: 'dry', label: t('upload.climate.dry'), icon: <Sun size={16} className="mr-2" /> },
+                    { key: 'normal', label: t('upload.climate.normal'), icon: <Thermometer size={16} className="mr-2" /> },
+                    { key: 'humid', label: t('upload.climate.humid'), icon: <Droplet size={16} className="mr-2" /> },
+                    { key: 'hot', label: t('upload.climate.hot'), icon: <Zap size={16} className="mr-2" /> },
+                  ]}
+                  selected={climate}
+                  onToggle={(k) => setClimate(climate === k ? undefined : k)}
+                />
+              </div>
+
+              {/* Concerns - chips */}
               <div className="border-t border-[#E5E7EB] pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <Label className="text-base font-semibold text-[#0A0A0A]">
@@ -249,28 +284,19 @@ export default function AnalyzePage() {
                       {t('upload.occasion_optional')}
                     </span>
                   </Label>
-                  <button
-                    onClick={() => setConcerns([])}
-                    className="text-sm text-[#6B7280] hover:text-[#0A0A0A]"
-                  >
-                    {t('common.skip')}
-                  </button>
                 </div>
-                <div className="space-y-3">
-                  {(['flash', 'lasting', 'closeup', 'weather', 'transfer'] as Concern[]).map((concern) => (
-                    <div key={concern} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={concern}
-                        checked={concerns.includes(concern)}
-                        onCheckedChange={() => handleConcernToggle(concern)}
-                        className="border-[#0A0A0A]"
-                      />
-                      <Label htmlFor={concern} className="text-sm text-[#374151] cursor-pointer">
-                        {t(`upload.concerns.${concern}`)}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+                <ChipList
+                  items={[
+                    { key: 'flash', label: t('upload.concerns.flash'), icon: <Camera size={16} className="mr-2" /> },
+                    { key: 'lasting', label: t('upload.concerns.lasting'), icon: <Clock size={16} className="mr-2" /> },
+                    { key: 'closeup', label: t('upload.concerns.closeup'), icon: <ZoomIn size={16} className="mr-2" /> },
+                    { key: 'weather', label: t('upload.concerns.weather'), icon: <ThermometerSun size={16} className="mr-2" /> },
+                    { key: 'transfer', label: t('upload.concerns.transfer'), icon: <Ghost size={16} className="mr-2" /> },
+                  ]}
+                  selected={concerns}
+                  multi
+                  onToggle={(k) => handleConcernToggle(k as Concern)}
+                />
               </div>
             </div>
 

@@ -93,6 +93,20 @@
       "weather": "Hot/humid weather",
       "transfer": "Transfer to clothing"
     },
+    "where_title": "Where will you be?",
+    "where_optional": "(optional)",
+    "where": {
+      "indoor": "Indoor",
+      "outdoor": "Outdoor",
+      "both": "Both"
+    },
+    "climate_title": "Climate",
+    "climate": {
+      "dry": "Dry",
+      "normal": "Normal",
+      "humid": "Humid",
+      "hot": "Hot"
+    },
     "progress": {
       "analyzing_flashback": "Analyzing flashback risk...",
       "checking_pores": "Checking pore visibility...",
@@ -157,7 +171,7 @@
       "standard": "Standard",
       "deep_set": "Deep-set"
     },
-    "complete_profile": "Complete your profile to unlock 5 more predictions",
+    "complete_profile": "Complete your profile forr personalized tips",
   "progress": "{completed}/{total} complete",
     "save_profile": "Save Profile",
     "language_preference": "Language Preference",

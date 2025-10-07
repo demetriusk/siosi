@@ -113,6 +113,20 @@
       "weather": "Hot/humid weather",
       "transfer": "Transfer to clothing"
     },
+    "where_title": "Where will you be?",
+    "where_optional": "(optional)",
+    "where": {
+      "indoor": "Indoor",
+      "outdoor": "Outdoor",
+      "both": "Both"
+    },
+    "climate_title": "Climate",
+    "climate": {
+      "dry": "Dry",
+      "normal": "Normal",
+      "humid": "Humid",
+      "hot": "Hot"
+    },
     "progress": {
       "analyzing_flashback": "Analyzing flashback risk...",
       "checking_pores": "Checking pore visibility...",

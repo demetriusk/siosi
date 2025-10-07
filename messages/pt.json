@@ -112,6 +112,20 @@
       "weather": "Tempo quente/úmido",
       "transfer": "Transferência para roupas"
     },
+    "where_title": "Onde você estará?",
+    "where_optional": "(opcional)",
+    "where": {
+      "indoor": "Interno",
+      "outdoor": "Externo",
+      "both": "Ambos"
+    },
+    "climate_title": "Clima",
+    "climate": {
+      "dry": "Seco",
+      "normal": "Normal",
+      "humid": "Úmido",
+      "hot": "Quente"
+    },
     "progress": {
       "analyzing_flashback": "Analisando risco de flashback...",
       "checking_pores": "Verificando visibilidade de poros...",

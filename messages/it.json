@@ -112,6 +112,20 @@
       "weather": "Tempo caldo/umido",
       "transfer": "Trasferimento sui vestiti"
     },
+    "where_title": "Dove sarai?",
+    "where_optional": "(opzionale)",
+    "where": {
+      "indoor": "Interno",
+      "outdoor": "Esterno",
+      "both": "Entrambi"
+    },
+    "climate_title": "Clima",
+    "climate": {
+      "dry": "Secco",
+      "normal": "Normale",
+      "humid": "Umido",
+      "hot": "Caldo"
+    },
     "progress": {
       "analyzing_flashback": "Analizzando rischio di flashback...",
       "checking_pores": "Controllando visibilità dei pori...",

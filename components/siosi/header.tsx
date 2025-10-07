@@ -73,60 +73,59 @@ export function Header({ locale }: HeaderProps) {
 
   return (
     <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] sticky top-0 z-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
-        <div className="flex gap-6">
 
-          <Link href={`/${locale}`} className="flex items-center group">
-            <div className="logo-mask w-8 h-8 mr-3 flex-none overflow-visible" aria-hidden></div>
-            <span className="text-2xl tracking-tight text-[#0A0A0A]">siOsi</span>
-          </Link>
+          <div className="flex gap-6">
 
-          <nav className="hidden md:flex items-center gap-4">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`text-sm font-medium ${isActive(item.href) ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'}`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+            <Link href={`/${locale}`} className="flex items-center group">
+              <div className="logo-mask w-8 h-8 mr-3 flex-none overflow-visible" aria-hidden></div>
+              <span className="text-2xl tracking-tight text-[#0A0A0A]">siOsi</span>
+            </Link>
 
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          {user ? (
-            <div className="flex items-center gap-3">
-              {privateNav.map((item) => (
-                <Link key={item.name} href={item.href} className="text-sm text-[#6B7280] hover:text-[#0A0A0A]">
+            <nav className="hidden md:flex items-center gap-4">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`text-sm font-medium ${isActive(item.href) ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'}`}
+                >
                   {item.name}
                 </Link>
               ))}
+            </nav>
 
-            </div>
-          ) : (
-            <Link href={`/${locale}/auth`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A]">
-              {t('login')}
-            </Link>
-          )}
-          <div className="w-40">
-            <LanguageSelect locale={locale} />
           </div>
-        </div>
 
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-[#0A0A0A]"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
-        </button>
+          <div className="hidden md:flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-3">
+                {privateNav.map((item) => (
+                  <Link key={item.name} href={item.href} className="text-sm text-[#6B7280] hover:text-[#0A0A0A]">
+                    {item.name}
+                  </Link>
+                ))}
+
+              </div>
+            ) : (
+              <Link href={`/${locale}/auth`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A]">
+                {t('login')}
+              </Link>
+            )}
+            <div className="w-40">
+              <LanguageSelect locale={locale} />
+            </div>
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-[#0A0A0A]"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
-
-        </div>
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-[#E5E7EB] bg-white">
           <nav className="px-4 py-4 space-y-2">

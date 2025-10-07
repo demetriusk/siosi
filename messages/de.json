@@ -113,6 +113,20 @@
       "weather": "Heißes/feuchtes Wetter",
       "transfer": "Übertragung auf Kleidung"
     },
+    "where_title": "Wo werden Sie sein?",
+    "where_optional": "(optional)",
+    "where": {
+      "indoor": "Drinnen",
+      "outdoor": "Draußen",
+      "both": "Beides"
+    },
+    "climate_title": "Klima",
+    "climate": {
+      "dry": "Trocken",
+      "normal": "Normal",
+      "humid": "Feucht",
+      "hot": "Heiß"
+    },
     "progress": {
       "analyzing_flashback": "Analysiere Flashback-Risiko...",
       "checking_pores": "Überprüfe Porensichtbarkeit...",

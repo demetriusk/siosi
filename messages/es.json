@@ -112,6 +112,20 @@
       "weather": "Clima caliente/húmedo",
       "transfer": "Transferencia a la ropa"
     },
+    "where_title": "¿Dónde estarás?",
+    "where_optional": "(opcional)",
+    "where": {
+      "indoor": "Interior",
+      "outdoor": "Exterior",
+      "both": "Ambos"
+    },
+    "climate_title": "Clima",
+    "climate": {
+      "dry": "Seco",
+      "normal": "Normal",
+      "humid": "Húmedo",
+      "hot": "Caluroso"
+    },
     "progress": {
       "analyzing_flashback": "Analizando riesgo de flashback...",
       "checking_pores": "Verificando visibilidad de poros...",

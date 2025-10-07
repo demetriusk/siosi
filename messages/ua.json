@@ -68,6 +68,20 @@
       "weather": "Спекотна/волога погода",
       "transfer": "Перенос на одяг"
     },
+    "where_title": "Де ви будете?",
+    "where_optional": "(необов'язково)",
+    "where": {
+      "indoor": "В приміщенні",
+      "outdoor": "На вулиці",
+      "both": "Обидва"
+    },
+    "climate_title": "Клімат",
+    "climate": {
+      "dry": "Сухо",
+      "normal": "Нормально",
+      "humid": "Вологий",
+      "hot": "Спекотно"
+    },
     "progress": {
       "analyzing_flashback": "Аналіз ризику відблиску...",
       "checking_pores": "Перевірка видимості пор...",
