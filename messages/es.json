@@ -24,6 +24,10 @@
     "login": {
       "title": "Bienvenido de nuevo",
       "description": "Inicia sesión con tu cuenta de Apple o Google",
+  "terms_html": "Al continuar, aceptas nuestros <a href=\"#\">Términos del servicio</a> y la <a href=\"#\">Política de privacidad</a>.",
+  "terms_rich": "Al continuar, aceptas nuestros <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy>.",
+      "or_continue_with": "O continúa con",
+      "email_placeholder": "you@example.com",
       "button": "Iniciar sesión",
       "sso_continue_with": "Continuar con {provider}",
       "email_label": "Correo electrónico",
@@ -45,6 +49,18 @@
       "sent": "Revisa tu correo electrónico para un enlace de restablecimiento.",
       "button": "Enviar enlace de restablecimiento",
       "back_to_signin": "Volver a iniciar sesión"
+    }
+    ,
+    "magic_link": {
+      "sent": "Enlace mágico enviado",
+      "sent_details": "Hemos enviado un enlace de inicio de sesión a {email}. Haz clic en el enlace para completar el inicio de sesión. Si no lo ves, revisa la carpeta de spam o correo no deseado.",
+      "resend": "Reenviar enlace",
+      "resend_wait": "Espera {seconds}s antes de reenviar",
+      "dismiss": "Cerrar",
+      "error": "Error al enviar enlace mágico",
+      "resend_error": "Error al reenviar",
+  "description": "Usa Google o solicita un enlace mágico. Si eliges el enlace mágico, te enviaremos un enlace seguro por correo electrónico: haz clic en él para completar el inicio de sesión. Si no lo ves, revisa tu carpeta de spam.",
+        "resent_badge": "Reenviado"
     }
   },
   "home": {

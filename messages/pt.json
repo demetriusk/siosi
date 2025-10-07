@@ -24,6 +24,10 @@
     "login": {
       "title": "Bem-vindo de volta",
       "description": "Entre com sua conta Apple ou Google",
+  "terms_html": "Ao continuar, você concorda com nossos <a href=\"#\">Termos de Serviço</a> e a <a href=\"#\">Política de Privacidade</a>.",
+  "terms_rich": "Ao continuar, você concorda com nossos <terms>Termos de Serviço</terms> e a <privacy>Política de Privacidade</privacy>.",
+      "or_continue_with": "Ou continue com",
+      "email_placeholder": "you@example.com",
       "button": "Entrar",
       "sso_continue_with": "Continuar com {provider}",
       "email_label": "E-mail",
@@ -45,6 +49,18 @@
       "sent": "Verifique seu e-mail para um link de redefinição.",
       "button": "Enviar link de redefinição",
       "back_to_signin": "Voltar para o login"
+    }
+    ,
+    "magic_link": {
+      "sent": "Link mágico enviado",
+      "sent_details": "Enviamos um link de login para {email}. Clique no link para concluir o login. Se não encontrar, verifique sua pasta de spam ou lixo eletrônico.",
+      "resend": "Reenviar link",
+      "resend_wait": "Aguarde {seconds}s antes de reenviar",
+      "dismiss": "Fechar",
+      "error": "Erro ao enviar o link mágico",
+      "resend_error": "Reenvio falhou",
+  "description": "Use Google ou solicite um link mágico. Se escolher o link mágico, enviaremos um link seguro por e-mail — clique nesse link para concluir o login. Se não encontrar, verifique a pasta de spam.",
+      "resent_badge": "Reenviado"
     }
   },
   "home": {

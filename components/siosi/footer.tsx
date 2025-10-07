@@ -27,7 +27,7 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-[#0A0A0A] mb-3">Product</h3>
+            <h3 className="text-sm font-semibold text-[#0A0A0A] mb-3">App</h3>
             <ul className="space-y-2">
               <li>
                 <Link href={`/${locale}`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
@@ -62,14 +62,14 @@ export function Footer({ locale }: FooterProps) {
             <h3 className="text-sm font-semibold text-[#0A0A0A] mb-3">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                <Link href={`/${locale}/privacy`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                <Link href={`/${locale}/terms`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

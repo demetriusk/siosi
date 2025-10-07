@@ -14,42 +14,39 @@
   "nav": {
     "home": "Home",
     "sessions": "My Sessions",
-    "login": "Log in",
+    "login": "My Profile",
     "logout": "Log out",
     "register": "Register",
-    "profile": "Profile",
+    "profile": "My Profile",
     "about": "About"
   },
   "auth": {
     "login": {
-      "title": "Welcome back",
+      "title": "Welcome",
       "description": "Login with your Apple or Google account",
+  "terms_html": "By continuing, you agree to our <a href=\"#\">Terms of Service</a> and <a href=\"#\">Privacy Policy</a>.",
+  "terms_rich": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
       "button": "Login",
+      "or_continue_with": "Or continue with",
+      "email_placeholder": "you@example.com",
       "sso_continue_with": "Continue with {provider}",
-      "email_label": "Email",
-      "password_label": "Password",
-      "forgot_password": "Forgot your password?",
-      "signup_cta": "Don't have an account? Sign up"
+      "email_label": "Email"
     },
-    "register": {
-      "title": "Create your account",
-      "description": "Create an account to save sessions and get personalized recommendations",
-      "button": "Create account",
-      "sso_continue_with": "Continue with {provider}",
-      "email_label": "Email",
-      "password_label": "Password",
-      "signin_cta": "Already have an account? Sign in"
-    },
-    "reset": {
-      "title": "Reset your password",
-      "sent": "Check your email for a reset link.",
-      "button": "Send reset link",
-      "back_to_signin": "Back to sign in"
+    "magic_link": {
+      "sent": "Magic link sent",
+      "sent_details": "We emailed a sign-in link to {email}. Please click the link to complete sign in. If you don't see it, check your spam or junk folder.",
+      "resend": "Resend link",
+      "resend_wait": "Please wait {seconds}s before resending",
+      "dismiss": "Dismiss",
+      "error": "Magic link failed",
+      "resend_error": "Resend failed",
+  "description": "Use Google or request a magic link. If you choose a magic link, we will email you a secure link — please click that link to complete sign in. If you don't see the email, check your spam or junk folder.",
+      "resent_badge": "Resent"
     }
   },
   "home": {
     "hero_title": "Know Before You Glow",
-    "hero_subtitle": "Get instant AI makeup analysis with confidence scores",
+    "hero_subtitle": "Get instant AI makeup analysis with confidence scores. Tested on 50k+ makeup photos.",
     "upload_cta": "Or take photo now",
     "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
     "what_analyzed_title": "What gets analyzed",

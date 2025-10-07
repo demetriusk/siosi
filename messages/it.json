@@ -24,6 +24,10 @@
     "login": {
       "title": "Bentornato",
       "description": "Accedi con il tuo account Apple o Google",
+  "terms_html": "Continuando, accetti i nostri <a href=\"#\">Termini di servizio</a> e la <a href=\"#\">Informativa sulla privacy</a>.",
+  "terms_rich": "Continuando, accetti i nostri <terms>Termini di servizio</terms> e la <privacy>Informativa sulla privacy</privacy>.",
+      "or_continue_with": "O continua con",
+      "email_placeholder": "you@example.com",
       "button": "Accedi",
       "sso_continue_with": "Continua con {provider}",
       "email_label": "Email",
@@ -45,6 +49,18 @@
       "sent": "Controlla la tua email per il link di ripristino.",
       "button": "Invia link di ripristino",
       "back_to_signin": "Torna al login"
+    }
+    ,
+    "magic_link": {
+      "sent": "Link magico inviato",
+      "sent_details": "Abbiamo inviato un link di accesso a {email}. Clicca il link per completare l'accesso. Se non lo vedi, controlla la cartella spam o posta indesiderata.",
+      "resend": "Reinvia link",
+      "resend_wait": "Attendi {seconds}s prima di reinviare",
+      "dismiss": "Chiudi",
+      "error": "Invio del link magico fallito",
+      "resend_error": "Reinvio fallito",
+  "description": "Usa Google o richiedi un link magico. Se scegli un link magico, ti invieremo un link sicuro via e-mail — fai clic su quel link per completare l'accesso. Se non lo vedi, controlla la cartella spam.",
+        "resent_badge": "Reinviato"
     }
   },
   "home": {

@@ -1,7 +1,7 @@
 Auth & privacy notes
 
 What I changed in-code:
-- Added client auth UI pages: `app/[locale]/login`, `register`, `forgot-password`.
+- Added client auth UI pages: `app/[locale]/login`, `register`.
 - Header now shows Login/Register when unauthenticated and Sessions/Profile + Logout when authenticated.
 - Sessions are now created via a server API `app/api/sessions/route.ts` which accepts optional `user_id` and inserts into the `sessions` table.
 - `lib/save-session.ts` and `lib/db.ts` updated to accept `user_id` when saving.

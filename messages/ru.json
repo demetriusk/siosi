@@ -1,178 +1,196 @@
 {
   "common": {
-    "upload": "Загрузить",
-    "analyze": "Анализировать",
-    "share": "Поделиться",
-    "save": "Сохранить",
-    "skip": "Пропустить",
-    "cancel": "Отмена",
-    "continue": "Продолжить",
-    "loading": "Загрузка...",
-    "error": "Ошибка",
-    "success": "Успешно"
+    "upload": "Upload",
+    "analyze": "Analyze",
+    "share": "Share",
+    "save": "Save",
+    "skip": "Skip",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
   },
   "nav": {
-    "home": "Главная",
-    "sessions": "Мои сессии",
-    "profile": "Профиль",
-    "about": "О приложении",
-    "login": "Войти",
-    "logout": "Выйти",
-    "register": "Регистрация"
-  },
-  "home": {
-    "hero_title": "Знай и блистай",
-    "hero_subtitle": "Мгновенный AI-анализ макияжа с оценками уверенности",
-    "upload_cta": "Или сделайте фото сейчас",
-    "supported_formats": "Поддерживаемые форматы: JPG, PNG, HEIC (макс. 10 МБ)",
-    "what_analyzed_title": "Что анализируется",
-    "labs": {
-      "flashback": "Флешбэк лэб",
-      "pores": "Контроль пор",
-      "texture": "Детектор текстуры",
-      "undertone": "Чек вебкамеры",
-      "transfer": "Полиция Складок",
-      "longevity": "Счётчик стойкости",
-      "oxidation": "Golden hour мэтч",
-      "creasing": "Тест яркого света",
-      "blending": "Чекап ресниц",
-      "more": "Правда подтона"
-    },
-    "how_it_works": "Как это работает",
-    "step1": "Загрузите фото макияжа",
-    "step2": "ИИ анализирует 4–9 разных аспектов",
-    "step3": "Получите оценочный отчет с рекомендациями"
-    ,
-    "step_number": "Шаг {number}"
-  },
-  "upload": {
-    "supported_formats": "Поддерживаемые форматы: JPG, PNG, HEIC (макс. 10 МБ)",
-    "drag_drop": "Перетащите фото сюда или щёлкните для выбора",
-    "take_photo": "Сделать фото",
-    "file_too_large": "Файл слишком большой. Максимальный размер 10 МБ",
-    "invalid_format": "Недопустимый формат файла. Загрузите JPG, PNG или HEIC",
-    "analyze_button": "Проанализировать мой макияж",
-    "occasion_title": "Для чего это?",
-    "occasion_optional": "(необязательно)",
-    "occasions": {
-      "photoshoot": "Фотосессия",
-      "wedding": "Свадьба",
-      "party": "Вечеринка/Событие",
-      "video": "Видео/Стрим",
-      "testing": "Просто тестирую"
-    },
-    "concerns_title": "Есть ли конкретные беспокойства?",
-    "concerns": {
-      "flash": "Фотовспышка",
-      "lasting": "Держится 6+ часов",
-      "closeup": "Крупный план",
-      "weather": "Жаркая/влажная погода",
-      "transfer": "Перенос на одежду"
-    },
-    "progress": {
-      "analyzing_flashback": "Анализ риска отражения вспышки...",
-      "checking_pores": "Проверка видимости пор...",
-      "detecting_undertone": "Определение подтона...",
-      "evaluating_texture": "Оценка текстуры...",
-      "checking_transfer": "Проверка риска переноса...",
-      "assessing_longevity": "Оценка долговечности...",
-      "almost_there": "Почти готово..."
-    }
-  },
-  "results": {
-    "overall_score": "Общий прогнозируемый балл",
-    "critical": "Критично",
-    "watch_these": "Обратите внимание на",
-    "looking_good": "Выглядит хорошо",
-    "confidence": "{percent}% уверенности",
-    "show_details": "Показать детали",
-    "hide_details": "Скрыть детали",
-    "detected": "Обнаружено",
-    "recommendations": "Рекомендации",
-    "verdict": {
-      "yay": "ДА",
-      "nay": "НЕТ",
-      "maybe": "МОЖЕТ БЫТЬ"
-    },
-    "email_report": "Отправить отчет по электронной почте",
-    "share_instagram": "Поделиться в Instagram",
-    "saved": "Сохранено в ваших сессиях",
-    "analyze_another": "Проанализировать другое фото"
+    "home": "Home",
+    "sessions": "My Sessions",
+    "login": "Log in",
+    "logout": "Log out",
+    "register": "Register",
+    "profile": "Profile",
+    "about": "About"
   },
   "auth": {
     "login": {
-      "title": "С возвращением",
-      "description": "Войдите через ваш аккаунт Apple или Google",
-      "button": "Войти",
-      "sso_continue_with": "Продолжить с {provider}",
-      "email_label": "Электронная почта",
-      "password_label": "Пароль",
-      "forgot_password": "Забыли пароль?",
-      "signup_cta": "Нет аккаунта? Регистрация"
+      "title": "Welcome back",
+      "description": "Login with your Apple or Google account",
+  "terms_html": "By continuing, you agree to our <a href=\"#\">Terms of Service</a> and <a href=\"#\">Privacy Policy</a>.",
+  "terms_rich": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+      "button": "Login",
+      "or_continue_with": "Or continue with",
+      "email_placeholder": "you@example.com",
+      "sso_continue_with": "Continue with {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "forgot_password": "Forgot your password?",
+      "signup_cta": "Don't have an account? Sign up"
     },
     "register": {
-      "title": "Создайте аккаунт",
-      "description": "Создайте аккаунт, чтобы сохранять сессии и получать персональные рекомендации",
-      "button": "Создать аккаунт",
-      "sso_continue_with": "Продолжить с {provider}",
-      "email_label": "Электронная почта",
-      "password_label": "Пароль",
-      "signin_cta": "Уже есть аккаунт? Войти"
+      "title": "Create your account",
+      "description": "Create an account to save sessions and get personalized recommendations",
+      "button": "Create account",
+      "sso_continue_with": "Continue with {provider}",
+      "email_label": "Email",
+      "password_label": "Password",
+      "signin_cta": "Already have an account? Sign in"
     },
     "reset": {
-      "title": "Сброс пароля",
-      "sent": "Проверьте вашу почту для ссылки сброса.",
-      "button": "Отправить ссылку для сброса",
-      "back_to_signin": "Вернуться к входу"
+      "title": "Reset your password",
+      "sent": "Check your email for a reset link.",
+      "button": "Send reset link",
+      "back_to_signin": "Back to sign in"
+    }
+    ,
+    "magic_link": {
+      "sent": "Magic link sent",
+      "sent_details": "We emailed a sign-in link to {email}. Please click the link to complete sign in. If you don't see it, check your spam or junk folder.",
+      "resend": "Resend link",
+      "resend_wait": "Please wait {seconds}s before resending",
+      "dismiss": "Dismiss",
+      "error": "Magic link failed",
+      "resend_error": "Resend failed",
+    "description": "Используйте Google или запросите ссылку для быстрого входа. Если вы выберете этот вариант, мы отправим вам безопасную ссылку по электронной почте — нажмите её, чтобы завершить вход. Если вы не видите письмо, проверьте папку спама.",
+      "resent_badge": "Resent"
+    }
+
+  },
+  "home": {
+    "hero_title": "Know Before You Glow",
+    "hero_subtitle": "Get instant AI makeup analysis with confidence scores",
+    "upload_cta": "Or take photo now",
+    "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
+    "what_analyzed_title": "What gets analyzed",
+    "labs": {
+      "flashback": "Flashback Lab",
+      "pores": "Pore Proof",
+      "texture": "Texture Trigger",
+      "undertone": "Zoom Face Check",
+      "transfer": "Crease Police",
+      "longevity": "Melt Meter",
+      "oxidation": "Golden Hour Match",
+      "creasing": "Harsh Light Survivor",
+      "blending": "Lash Shadow Check",
+      "more": "Vein Undertone Truth"
+    },
+    "how_it_works": "How it works",
+    "step1": "Upload makeup photo",
+    "step2": "AI analyzes 4-9 different aspects",
+    "step3": "Get scored report with recommendations"
+    ,
+    "step_number": "Step {number}"
+  },
+  "upload": {
+    "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
+    "drag_drop": "Drag photo here or click to browse",
+    "take_photo": "Take Photo",
+    "file_too_large": "File is too large. Maximum size is 10MB",
+    "invalid_format": "Invalid file format. Please upload JPG, PNG, or HEIC",
+    "analyze_button": "Analyze Makeup",
+    "occasion_title": "What's this for?",
+    "occasion_optional": "(optional)",
+    "occasions": {
+      "photoshoot": "Photoshoot",
+      "wedding": "Wedding",
+      "party": "Party/Event",
+      "video": "Video/Streaming",
+      "testing": "Just testing"
+    },
+    "concerns_title": "Any specific concerns?",
+    "concerns": {
+      "flash": "Flash photography",
+      "lasting": "Lasting 6+ hours",
+      "closeup": "Close-up photos",
+      "weather": "Hot/humid weather",
+      "transfer": "Transfer to clothing"
+    },
+    "progress": {
+      "analyzing_flashback": "Analyzing flashback risk...",
+      "checking_pores": "Checking pore visibility...",
+      "detecting_undertone": "Detecting undertone...",
+      "evaluating_texture": "Evaluating texture...",
+      "checking_transfer": "Checking transfer risk...",
+      "assessing_longevity": "Assessing longevity...",
+      "almost_there": "Almost there..."
     }
   },
-  "sessions": {
-    "title": "Мои сессии",
-    "sessions_used": "{used}/{total} сессий использовано в этом месяце",
-    "resets": "Сброс {date}",
-    "empty_title": "Пока нет сессий",
-    "empty_subtitle": "Загрузите своё первое фото, чтобы начать",
-    "view_report": "Посмотреть отчет",
-    "score_badges": {
-      "excellent": "Отлично",
-      "good": "Хорошо",
-      "needs_work": "Требуется работа",
-      "issues_found": "Обнаружены проблемы"
+  "results": {
+    "share": "Share",
+    "overall_score": "Overall Prediction Score",
+    "critical": "Critical",
+    "watch_these": "Watch These",
+    "looking_good": "Looking Good",
+  "confidence": "{percent}% confident",
+    "show_details": "Show Details",
+    "hide_details": "Hide Details",
+    "detected": "Detected",
+    "recommendations": "Recommendations",
+    "verdict": {
+      "yay": "YAY",
+      "nay": "NAY",
+      "maybe": "MAYBE"
     },
-    "upgrade_prompt": "Вы использовали все 3 бесплатные сессии",
-    "upgrade_button": "Обновить до Pro — $5/мес"
+    "email_report": "Email This Report",
+    "share_instagram": "Share on Instagram",
+    "saved": "Saved to Your Sessions",
+    "analyze_another": "Analyze Another Photo"
+  },
+  "sessions": {
+    "title": "My Sessions",
+  "sessions_used": "{used}/{total} sessions used this month",
+  "resets": "Resets {date}",
+    "empty_title": "No sessions yet",
+    "empty_subtitle": "Upload your first photo to get started",
+    "view_report": "View Report",
+    "score_badges": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "needs_work": "Needs Work",
+      "issues_found": "Issues Found"
+    },
+    "upgrade_prompt": "You've used all 3 free sessions",
+    "upgrade_button": "Upgrade to Pro - $5/mo"
   },
   "profile": {
-    "title": "Профиль",
-    "skin_type": "Тип кожи",
+    "title": "Profile",
+    "skin_type": "Skin Type",
     "skin_types": {
-      "dry": "Сухая",
-      "normal": "Нормальная",
-      "combo": "Комбинированная",
-      "oily": "Жирная",
-      "not_sure": "Не уверен(а)"
+      "dry": "Dry",
+      "normal": "Normal",
+      "combo": "Combination",
+      "oily": "Oily",
+      "not_sure": "Not sure"
     },
-    "skin_tone": "Тон кожи",
-    "lid_type": "Тип века",
+    "skin_tone": "Skin Tone",
+    "lid_type": "Lid Type",
     "lid_types": {
-      "hooded": "Опущенное",
-      "standard": "Стандартное",
-      "deep_set": "Глубоко посаженное"
+      "hooded": "Hooded",
+      "standard": "Standard",
+      "deep_set": "Deep-set"
     },
-    "complete_profile": "Заполните профиль, чтобы получить ещё 5 прогнозов",
-    "progress": "{completed}/{total} завершено",
-    "save_profile": "Сохранить профиль",
-    "language_preference": "Предпочтение языка",
-    "danger_zone": "Зона риска",
-    "delete_data": "Удалить все мои данные"
+    "complete_profile": "Complete your profile to unlock 5 more predictions",
+  "progress": "{completed}/{total} complete",
+    "save_profile": "Save Profile",
+    "language_preference": "Language Preference",
+    "danger_zone": "Danger Zone",
+    "delete_data": "Delete all my data"
   },
   "about": {
-    "title": "Что такое siosi.me?",
-    "description": "siosi.me — это платформа для анализа макияжа на основе ИИ, которая помогает понять, как ваш макияж будет вести себя в разных ситуациях. Загрузите фото и получите мгновенные прогнозы по нескольким аспектам.",
-    "confidence_title": "Понимание оценок уверенности",
-    "confidence_high": "Очень вероятно точно",
-    "confidence_medium": "Хороший прогноз, есть неопределённость",
-    "confidence_low": "Приблизительная оценка, относитесь с осторожностью",
-    "disclaimer": "Наши прогнозы основаны на ИИ и являются рекомендациями. Всегда доверяйте собственному мнению и при важных событиях обращайтесь к профессионалам."
+    "title": "What is siOsi?",
+    "description": "siOsi is an AI-powered makeup analyst that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
+    "confidence_title": "Understanding Confidence Scores",
+    "confidence_high": "Very likely accurate",
+    "confidence_medium": "Good prediction, some uncertainty",
+    "confidence_low": "Rough estimate, take with caution",
+    "disclaimer": "Our predictions are AI-based recommendations. Always trust your own judgment and seek professional advice for important events."
   }
 }

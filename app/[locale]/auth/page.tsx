@@ -1,0 +1,109 @@
+"use client"
+
+import React, { useEffect, useState } from 'react'
+import { useRouter, useParams } from 'next/navigation'
+import { AuthForm } from '@/components/auth-form'
+import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
+
+export default function AuthPage() {
+  const params = useParams()
+  const locale = (params as any)?.locale as string
+  const router = useRouter()
+
+  const [emailRequested, setEmailRequested] = useState<string | null>(null)
+  const [resendCooldown, setResendCooldown] = useState<number>(0)
+  const [resentFlash, setResentFlash] = useState<boolean>(false)
+  const t = useTranslations('auth')
+
+  async function handleEmail(email: string) {
+    if (!email) return
+    try {
+      // Try to sign up first (no-op if user exists) then send magic link
+      try {
+        await (supabase as any).auth.signUp({ email })
+      } catch {
+        // ignore signUp errors; we'll try signInWithOtp next
+      }
+
+      const { error } = await (supabase as any).auth.signInWithOtp({ email })
+      if (error) throw error
+  setEmailRequested(email)
+  setResendCooldown(60)
+  // Inform the user via toast as well as the inline banner
+  toast.success(t('magic_link.sent'))
+    } catch (err: any) {
+      toast.error(err?.message || t('magic_link.error') )
+    }
+  }
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const t = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000)
+    return () => clearInterval(t)
+  }, [resendCooldown])
+
+  async function handleResend() {
+    if (!emailRequested) return
+    if (resendCooldown > 0) {
+      toast.error(t('magic_link.resend_wait', { seconds: resendCooldown }))
+      return
+    }
+    try {
+      const { error } = await (supabase as any).auth.signInWithOtp({ email: emailRequested })
+      if (error) throw error
+      setResendCooldown(60)
+      toast.success(t('magic_link.sent'))
+      // brief visual confirmation on the banner
+      setResentFlash(true)
+      setTimeout(() => setResentFlash(false), 1400)
+    } catch (err: any) {
+      toast.error(err?.message || t('magic_link.resend_error'))
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] p-6">
+      <div className="w-full max-w-md">
+        <div className="space-y-4">
+          <AuthForm
+            onEmailSubmit={handleEmail}
+            homeHref={`/${locale}`}
+            signInText={'Continue'}
+          />
+
+          {/* Inline confirmation banner shown after requesting magic link */}
+          {emailRequested && (
+            <div className={"rounded-md border border-border bg-white p-4 text-sm shadow-sm transition-all duration-300 " + (resentFlash ? 'ring-2 ring-success/40 bg-success/5' : '')}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <strong className="block">{t('magic_link.sent')}</strong>
+                    {resentFlash && <span className="text-xs text-success font-medium animate-pulse">{t('magic_link.resent_badge') || 'Resent'}</span>}
+                  </div>
+                  <div className="text-muted-foreground">{t('magic_link.sent_details', { email: emailRequested })}</div>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <button
+                    className="text-sm text-primary underline disabled:opacity-50"
+                    onClick={handleResend}
+                    disabled={resendCooldown > 0}
+                  >
+                    {resendCooldown > 0 ? `${t('magic_link.resend')} (${resendCooldown}s)` : t('magic_link.resend')}
+                  </button>
+                  <button
+                    className="text-sm text-muted-foreground underline"
+                    onClick={() => setEmailRequested(null)}
+                  >
+                    {t('magic_link.dismiss')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

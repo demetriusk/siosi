@@ -8,7 +8,7 @@ const compat = new FlatCompat({ baseDirectory: fileURLToPath(new URL('.', import
 
 export default [
   // Avoid linting generated files
-  { ignores: ['.next/**', 'node_modules/**', 'dist/**'] },
+  { ignores: ['.next/**', 'node_modules/**', 'dist/**', 'public/**', '.vercel/**', '.turbo/**'] },
 
   // Keep Next.js recommended config
   ...compat.extends('next/core-web-vitals'),

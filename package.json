@@ -7,8 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app components lib hooks scripts",
-    "lint:fix": "eslint app components lib hooks scripts --fix",
+  "lint": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts",
+  "lint:fix": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts --fix",
     "typecheck": "tsc --noEmit",
     "validate:i18n": "node scripts/validate-messages.js",
     "check:params": "node scripts/check-params-destructure.js"

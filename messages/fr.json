@@ -24,7 +24,11 @@
     "login": {
       "title": "Content de vous revoir",
       "description": "Connectez-vous avec votre compte Apple ou Google",
+  "terms_html": "En continuant, vous acceptez nos <a href=\"#\">Conditions d'utilisation</a> et notre <a href=\"#\">Politique de confidentialité</a>.",
+  "terms_rich": "En continuant, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
       "button": "Se connecter",
+  "or_continue_with": "Ou continuer avec",
+  "email_placeholder": "you@example.com",
       "sso_continue_with": "Continuer avec {provider}",
       "email_label": "E-mail",
       "password_label": "Mot de passe",
@@ -45,6 +49,18 @@
       "sent": "Vérifiez votre e-mail pour un lien de réinitialisation.",
       "button": "Envoyer le lien de réinitialisation",
       "back_to_signin": "Retour à la connexion"
+    }
+    ,
+    "magic_link": {
+      "sent": "Lien magique envoyé",
+      "sent_details": "Nous avons envoyé un lien de connexion à {email}. Veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam ou courrier indésirable.",
+      "resend": "Renvoyer le lien",
+      "resend_wait": "Veuillez attendre {seconds}s avant de renvoyer",
+      "dismiss": "Fermer",
+      "error": "Échec de l'envoi du lien magique",
+      "resend_error": "Échec de la nouvelle tentative",
+  "description": "Utilisez Google ou demandez un lien magique. Si vous choisissez un lien magique, nous vous enverrons un lien sécurisé par e-mail — veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam.",
+      "resent_badge": "Renvoyé"
     }
   },
   "home": {
