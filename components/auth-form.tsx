@@ -31,7 +31,7 @@ export function AuthForm({
 
   async function handleSSO(provider: 'google') {
     try {
-      await (supabase as any).auth.signInWithOAuth({ provider })
+      await (supabase as any)?.auth?.signInWithOAuth?.({ provider })
     } catch {
       // noop; Supabase will perform redirect
     }
@@ -48,7 +48,7 @@ export function AuthForm({
     // default behaviour: call Supabase magic link
     if (!email) return
     try {
-      await (supabase as any).auth.signInWithOtp({ email })
+      await (supabase as any)?.auth?.signInWithOtp?.({ email })
     } catch {
       // swallow - callers can show toasts
     }

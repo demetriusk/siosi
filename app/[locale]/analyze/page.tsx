@@ -132,12 +132,12 @@ export default function AnalyzePage() {
     let userId: string | undefined = undefined;
     try {
       // v2: getUser() returns { data: { user } }
-      if (typeof (supabase as any).auth?.getUser === 'function') {
-        const res = await (supabase as any).auth.getUser();
+      if (typeof (supabase as any)?.auth?.getUser === 'function') {
+        const res = await (supabase as any)?.auth?.getUser?.();
         userId = res?.data?.user?.id;
-      } else if (typeof (supabase as any).auth?.user === 'function') {
+      } else if (typeof (supabase as any)?.auth?.user === 'function') {
         // older fallback
-        const u = (supabase as any).auth.user();
+        const u = (supabase as any)?.auth?.user?.();
         userId = u?.id;
       }
     } catch {

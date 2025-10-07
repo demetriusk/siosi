@@ -22,12 +22,12 @@ export default function AuthPage() {
     try {
       // Try to sign up first (no-op if user exists) then send magic link
       try {
-        await (supabase as any).auth.signUp({ email })
+        await (supabase as any)?.auth?.signUp?.({ email })
       } catch {
         // ignore signUp errors; we'll try signInWithOtp next
       }
 
-      const { error } = await (supabase as any).auth.signInWithOtp({ email })
+      const { error } = await (supabase as any)?.auth?.signInWithOtp?.({ email }) ?? { error: undefined }
       if (error) throw error
   setEmailRequested(email)
   setResendCooldown(60)
@@ -51,7 +51,7 @@ export default function AuthPage() {
       return
     }
     try {
-      const { error } = await (supabase as any).auth.signInWithOtp({ email: emailRequested })
+  const { error } = await (supabase as any)?.auth?.signInWithOtp?.({ email: emailRequested }) ?? { error: undefined }
       if (error) throw error
       setResendCooldown(60)
       toast.success(t('magic_link.sent'))

@@ -36,13 +36,13 @@ export function Header({ locale }: HeaderProps) {
     const fetchUser = async () => {
       try {
         // try to read the current session/user from Supabase
-        const maybeGetUser = (supabase as any).auth?.getUser ?? (supabase as any).auth?.user;
+        const maybeGetUser = (supabase as any)?.auth?.getUser ?? (supabase as any)?.auth?.user;
         if (maybeGetUser) {
           // supabase v2: getUser()
-          if (typeof (supabase as any).auth.getUser === 'function') {
+          if (typeof (supabase as any)?.auth?.getUser === 'function') {
             const { data } = await (supabase as any).auth.getUser();
             if (mounted) setUser(data?.user ?? null);
-          } else if ((supabase as any).auth.user) {
+          } else if (typeof (supabase as any)?.auth?.user === 'function') {
             if (mounted) setUser((supabase as any).auth.user());
           }
         }
@@ -54,7 +54,7 @@ export function Header({ locale }: HeaderProps) {
     fetchUser();
 
     // try to subscribe to auth changes if available
-    const listener = (supabase as any).auth?.onAuthStateChange?.((event: string, session: any) => {
+    const listener = (supabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
       if (!mounted) return;
       setUser(session?.user ?? null);
     });
@@ -62,7 +62,7 @@ export function Header({ locale }: HeaderProps) {
     return () => {
       mounted = false;
       try {
-        if (listener?.subscription?.unsubscribe) listener.subscription.unsubscribe();
+  if (listener?.subscription?.unsubscribe) listener.subscription.unsubscribe();
       } catch {
         // ignore
       }
@@ -159,10 +159,10 @@ export function Header({ locale }: HeaderProps) {
                 <button
                   onClick={async () => {
                     try {
-                      await (supabase as any).auth.signOut();
-                    } catch {
-                      // ignore
-                    }
+                          await (supabase as any)?.auth?.signOut?.();
+                        } catch {
+                          // ignore
+                        }
                     setMobileMenuOpen(false);
                     router.push(`/${locale}/auth`);
                   }}

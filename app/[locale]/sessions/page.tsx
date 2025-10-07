@@ -29,11 +29,11 @@ export default function SessionsPage() {
       try {
         // get current user id
         let uid: string | undefined;
-        if (typeof (supabase as any).auth?.getUser === 'function') {
-          const res = await (supabase as any).auth.getUser();
+        if (typeof (supabase as any)?.auth?.getUser === 'function') {
+          const res = await (supabase as any)?.auth?.getUser?.();
           uid = res?.data?.user?.id;
-        } else if (typeof (supabase as any).auth?.user === 'function') {
-          const u = (supabase as any).auth.user();
+        } else if (typeof (supabase as any)?.auth?.user === 'function') {
+          const u = (supabase as any)?.auth?.user?.();
           uid = u?.id;
         }
 
@@ -46,18 +46,22 @@ export default function SessionsPage() {
 
         setUserId(uid);
 
-        const { data, error } = await (supabase as any)
-          .from('sessions')
-          .select('*')
-          .eq('user_id', uid)
-          .order('created_at', { ascending: false })
-          .limit(50);
-
-        if (error) {
-          logger.error('Error fetching sessions:', error);
-          setSessions([]);
+        if (!supabase) {
+          logger.error('Supabase client unavailable when fetching sessions');
         } else {
-          if (mounted) setSessions(data ?? []);
+          const { data, error } = await (supabase as any)
+            .from('sessions')
+            .select('*')
+            .eq('user_id', uid)
+            .order('created_at', { ascending: false })
+            .limit(50);
+
+          if (error) {
+            logger.error('Error fetching sessions:', error);
+            setSessions([]);
+          } else {
+            if (mounted) setSessions(data ?? []);
+          }
         }
         } catch (e) {
         logger.error(e);

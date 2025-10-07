@@ -12,6 +12,12 @@ export const supabase: SupabaseClient | null =
 		? createClient(publicUrl, publicAnonKey)
 		: null;
 
+// Helpful runtime diagnostic: warn in the browser console if the public keys are not present
+if (isBrowser && !supabase) {
+  // eslint-disable-next-line no-console
+  console.warn('Supabase client not initialized on the client. Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set during build/deploy.');
+}
+
 let serverClient: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient {
