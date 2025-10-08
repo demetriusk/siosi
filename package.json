@@ -7,8 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-  "lint": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts",
-  "lint:fix": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts --fix",
+    "lint": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts",
+    "lint:fix": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts --fix",
     "typecheck": "tsc --noEmit",
     "validate:i18n": "node scripts/validate-messages.js",
     "check:params": "node scripts/check-params-destructure.js"
@@ -49,6 +49,7 @@
     "@types/react-dom": "18.3.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
+    "@vladmandic/face-api": "^1.7.15",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

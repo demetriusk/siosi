@@ -1,9 +1,12 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-import { useEffect } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { useCallback, useState, useEffect } from 'react';
+import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+
+// Dynamic import to prevent SSR
+let validateFacePhoto: any = null;
+let loadFaceDetectionModels: any = null;
 
 interface UploadZoneProps {
   onFileSelect: (file: File) => void;
@@ -23,44 +26,34 @@ export function UploadZone({
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+  const [modelsReady, setModelsReady] = useState(false);
+  
   const t = useTranslations('upload');
   const tHome = useTranslations('home');
 
-  const validateFile = useCallback((file: File): boolean => {
-    if (file.size > maxSize) {
-      setError(t('file_too_large'));
-      return false;
-    }
+  // Load face detection module client-side only
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
 
-    const acceptedTypes = accept.split(',').map((s) => s.trim());
-    if (!acceptedTypes.includes(file.type)) {
-      setError(t('invalid_format'));
-      return false;
-    }
+    import('@/lib/face-detection').then((module) => {
+      validateFacePhoto = module.validateFacePhoto;
+      loadFaceDetectionModels = module.loadFaceDetectionModels;
 
-    setError(null);
-    return true;
-  }, [maxSize, accept, t]);
-
-  const handleFile = useCallback(
-    (file: File) => {
-      if (validateFile(file)) {
-        onFileSelect(file);
-        // Revoke previous preview URL if any before creating a new one
-        setPreviewUrl(prev => {
-          if (prev) {
-            try { URL.revokeObjectURL(prev); } catch {}
-          }
-          return URL.createObjectURL(file);
+      // Load models immediately
+      module.loadFaceDetectionModels()
+        .then(() => {
+          setModelsReady(true);
+          console.log('✓ Face detection ready');
+        })
+        .catch((err) => {
+          console.error('Failed to load face detection:', err);
+          setError('Failed to initialize face detection. Please refresh.');
         });
-      }
-    },
-    [onFileSelect, validateFile]
-  );
+    });
+  }, []);
 
-  // If a selectedFile is provided from outside (for example restored from
-  // sessionStorage in the analyze page), create an object URL so the
-  // preview can be shown. Clean up the object URL on change/unmount.
+  // Clean up preview URL when selectedFile changes
   useEffect(() => {
     if (!selectedFile) {
       setPreviewUrl(null);
@@ -74,6 +67,64 @@ export function UploadZone({
       URL.revokeObjectURL(url);
     };
   }, [selectedFile]);
+
+  const validateFile = async (file: File): Promise<boolean> => {
+    // Basic file validation
+    if (file.size > maxSize) {
+      setError(t('file_too_large'));
+      return false;
+    }
+
+    const acceptedTypes = accept.split(',').map(t => t.trim());
+    if (!acceptedTypes.includes(file.type)) {
+      setError(t('invalid_format'));
+      return false;
+    }
+
+    // Face detection validation
+    if (!modelsReady || !validateFacePhoto) {
+      setError('Face detection is still loading. Please wait.');
+      return false;
+    }
+
+    setIsValidating(true);
+    setError(null);
+
+    try {
+      const result = await validateFacePhoto(file);
+
+      if (!result.valid) {
+        setError(result.error || 'Invalid photo');
+        setIsValidating(false);
+        return false;
+      }
+
+      console.log('✓ Face validation passed:', {
+        faceCount: result.faceCount,
+        confidence: result.confidence
+      });
+
+      setIsValidating(false);
+      return true;
+
+    } catch (err) {
+      console.error('Validation error:', err);
+      setError('Failed to validate photo. Please try again.');
+      setIsValidating(false);
+      return false;
+    }
+  };
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      const isValid = await validateFile(file);
+      
+      if (isValid) {
+        onFileSelect(file);
+      }
+    },
+    [onFileSelect, modelsReady]
+  );
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -118,7 +169,8 @@ export function UploadZone({
     }
   };
 
-  if (selectedFile && previewUrl) {
+  // Show preview if file selected and validated
+  if (selectedFile && previewUrl && !isValidating) {
     return (
       <div className="relative bg-white border border-[#E5E7EB] rounded-sm p-4">
         <button
@@ -129,7 +181,6 @@ export function UploadZone({
           <X className="w-4 h-4 text-[#0A0A0A]" />
         </button>
         <div className="aspect-video relative overflow-hidden rounded">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={previewUrl}
             alt="Preview"
@@ -148,7 +199,7 @@ export function UploadZone({
   }
 
   return (
-    <div>
+    <div className="space-y-3">
       <label
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
@@ -158,10 +209,8 @@ export function UploadZone({
           relative block w-full cursor-pointer
           border-2 border-dashed rounded-sm
           transition-all duration-200
-          ${isDragging
-            ? 'border-[#0A0A0A] bg-[#F9FAFB]'
-            : 'border-[#D1D5DB] hover:border-[#6B7280] bg-white'
-          }
+          ${!modelsReady || isValidating ? 'pointer-events-none opacity-60' : ''}
+          ${isDragging ? 'border-[#0A0A0A] bg-[#F9FAFB]' : 'border-[#D1D5DB] hover:border-[#6B7280] bg-white'}
           ${error ? 'border-[#EF4444]' : ''}
         `}
       >
@@ -170,19 +219,49 @@ export function UploadZone({
           className="sr-only"
           accept={accept}
           onChange={handleInputChange}
+          disabled={!modelsReady || isValidating}
         />
         <div className="py-12 px-6 text-center">
-          <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`} />
-          <p className="text-base font-medium text-[#0A0A0A] mb-2">
-            {t('drag_drop')}
-          </p>
-          <p className="text-sm text-[#6B7280]">
-            {tHome('supported_formats')}
-          </p>
+          {!modelsReady ? (
+            <>
+              <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
+              <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                Loading face detection...
+              </p>
+              <p className="text-sm text-[#6B7280]">
+                Just a moment
+              </p>
+            </>
+          ) : isValidating ? (
+            <>
+              <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
+              <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                Validating photo...
+              </p>
+              <p className="text-sm text-[#6B7280]">
+                Checking face detection
+              </p>
+            </>
+          ) : (
+            <>
+              <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`} />
+              <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                {t('drag_drop')}
+              </p>
+              <p className="text-sm text-[#6B7280]">
+                {tHome('supported_formats')}
+              </p>
+            </>
+          )}
         </div>
       </label>
+      
       {error && (
-        <p className="mt-2 text-sm text-[#EF4444]">{error}</p>
+        <div className="p-3 bg-[#FEE2E2] border border-[#FCA5A5] rounded-sm">
+          <p className="text-sm text-[#991B1B] font-medium">
+            {error}
+          </p>
+        </div>
       )}
     </div>
   );
