@@ -1,24 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Repeat, Thermometer, Droplet, Clock, Search, ZoomIn } from 'lucide-react';
+import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Repeat, Thermometer, Droplet, Clock, ZoomIn, AlertCircle } from 'lucide-react';
 import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { UploadZone } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { calculateCriticalCount } from '@/lib/mock-analysis';
 import { Occasion, Concern } from '@/lib/types';
-import { useEffect } from 'react';
 
 const progressMessages = [
   'progress.analyzing_flashback',
@@ -39,6 +34,7 @@ export default function AnalyzePage() {
   const [where, setWhere] = useState<'indoor'|'outdoor'|'both'>('both');
   const [climate, setClimate] = useState<string | undefined>(undefined);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [currentMessage] = useState(0);
   const router = useRouter();
   const t = useTranslations();
@@ -63,10 +59,12 @@ export default function AnalyzePage() {
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
+    setError(null); // Clear any previous errors
   };
 
   const handleClearFile = () => {
     setSelectedFile(null);
+    setError(null);
   };
 
   const handleConcernToggle = (concern: Concern) => {
@@ -78,100 +76,149 @@ export default function AnalyzePage() {
   };
 
   async function handleAnalyze() {
-    setIsAnalyzing(true)
-    
-    // 1. Upload photo to Supabase Storage
-    const supabase = getSupabase();
-    if (!supabase) {
-      throw new Error('Supabase client is not initialized.');
-    }
-    if (!selectedFile) {
-      throw new Error('No file selected for upload.');
-    }
-
-    const fileName = `${Date.now()}.jpg`;
-    const { data: uploadData, error: uploadError } = await supabase
-      .storage
-      .from('makeup-photos')
-      .upload(fileName, selectedFile)
-
-  // Debug logging to capture Supabase storage response for troubleshooting
-  logger.debug('Supabase upload response:', { uploadData, uploadError });
-
-    if (uploadError) {
-      // Provide extra context when re-throwing so console/network include helpful info
-      const err = new Error(`Supabase storage upload error: ${uploadError.message || uploadError}`);
-      // Attach original object for inspection in devtools
-      (err as any).supabase = { uploadData, uploadError };
-      throw err;
-    }
-
-    const photoUrl = supabase.storage
-      .from('makeup-photos')
-      .getPublicUrl(uploadData.path).data.publicUrl
-    
-    // 2. Call analysis API
-    // TODO: Replace with actual profile data retrieval logic
-    const profile = {
-      skinType: 'normal',
-      skinTone: 'medium',
-      lidType: 'monolid'
-    };
-
-    const analysisRes = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        photoUrl,
-        occasion,
-        concerns,
-        indoor_outdoor: where,
-        climate,
-        skinType: profile.skinType,
-        skinTone: profile.skinTone,
-        lidType: profile.lidType
-      })
-    })
-    
-    const analysis = await analysisRes.json()
-    
-    // 3. Save to database via server API - include user id if present
-    const analyses = analysis?.analyses ?? [];
-
-    let userId: string | undefined = undefined;
     try {
-      // v2: getUser() returns { data: { user } }
-      if (typeof (supabase as any)?.auth?.getUser === 'function') {
-        const res = await (supabase as any)?.auth?.getUser?.();
-        userId = res?.data?.user?.id;
-      } else if (typeof (supabase as any)?.auth?.user === 'function') {
-        // older fallback
-        const u = (supabase as any)?.auth?.user?.();
-        userId = u?.id;
+      setIsAnalyzing(true);
+      setError(null);
+      
+      // 1. Upload photo to Supabase Storage
+      const supabase = getSupabase();
+      if (!supabase) {
+        throw new Error('Supabase client is not initialized.');
       }
-    } catch {
-      // ignore - unauthenticated
+      if (!selectedFile) {
+        throw new Error('No file selected for upload.');
+      }
+
+      const fileName = `${Date.now()}.jpg`;
+      const { data: uploadData, error: uploadError } = await supabase
+        .storage
+        .from('makeup-photos')
+        .upload(fileName, selectedFile);
+
+      logger.debug('Supabase upload response:', { uploadData, uploadError });
+
+      if (uploadError) {
+        const err = new Error(`Supabase storage upload error: ${uploadError.message || uploadError}`);
+        (err as any).supabase = { uploadData, uploadError };
+        throw err;
+      }
+
+      const photoUrl = supabase.storage
+        .from('makeup-photos')
+        .getPublicUrl(uploadData.path).data.publicUrl;
+      
+      // 2. Fetch user profile if authenticated
+      let profile = {
+        skinType: undefined as string | undefined,
+        skinTone: undefined as string | undefined,
+        lidType: undefined as string | undefined
+      };
+
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('skin_type, skin_tone, lid_type')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (profileData && !profileError) {
+            profile = {
+              skinType: profileData.skin_type,
+              skinTone: profileData.skin_tone,
+              lidType: profileData.lid_type
+            };
+            logger.debug('User profile loaded:', profile);
+          } else {
+            logger.debug('No profile found for user');
+          }
+        } else {
+          logger.debug('User not authenticated, skipping profile fetch');
+        }
+      } catch (err) {
+        logger.warn('Could not fetch user profile:', err);
+        // Continue with undefined values
+      }
+      
+      // 3. Call analysis API
+
+      const analysisRes = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          photoUrl,
+          occasion,
+          concerns,
+          indoor_outdoor: where,
+          climate,
+          skinType: profile.skinType,
+          skinTone: profile.skinTone,
+          lidType: profile.lidType
+        })
+      });
+      
+      const analysis = await analysisRes.json();
+      
+      // Handle validation failure or API errors
+      if (!analysisRes.ok) {
+        const errorMessage = analysis.reason || analysis.error || 'Analysis failed';
+        setError(errorMessage);
+        setIsAnalyzing(false);
+        
+        // Delete the uploaded photo if analysis failed
+        if (uploadData?.path) {
+          await supabase.storage
+            .from('makeup-photos')
+            .remove([uploadData.path]);
+        }
+        return;
+      }
+      
+      // 4. Save to database via server API
+      const analyses = analysis?.analyses ?? [];
+
+      // Get userId (already fetched earlier for profile)
+      let userId: string | undefined = undefined;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        userId = user?.id;
+      } catch {
+        // ignore - unauthenticated
+      }
+
+      const createRes = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          photo_url: photoUrl,
+          occasion,
+          concerns,
+          indoor_outdoor: where,
+          climate,
+          analyses,
+          overall_score: analysis?.overall_score ?? 0,
+          confidence_avg: analysis?.confidence_avg ?? 0,
+          critical_count: analysis?.critical_count ?? calculateCriticalCount(analyses),
+          user_id: userId,
+        })
+      });
+
+      if (!createRes.ok) {
+        throw new Error('Failed to save session');
+      }
+
+      const session = await createRes.json();
+
+      // 4. Navigate to results
+      router.push(`/${locale}/session/${session.id}`);
+      
+    } catch (err: any) {
+      logger.error('Analysis error:', err);
+      setError(err.message || 'An unexpected error occurred');
+      setIsAnalyzing(false);
     }
-
-    const createRes = await fetch('/api/sessions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        photo_url: photoUrl,
-        occasion,
-        concerns,
-        analyses,
-        overall_score: analysis?.overall_score ?? 0,
-        confidence_avg: analysis?.confidence_avg ?? 0,
-        critical_count: calculateCriticalCount(analyses),
-        user_id: userId,
-      })
-    });
-
-    const session = await createRes.json();
-
-    // 4. Navigate to results
-      router.push(`/session/${session.id}`)
   }
 
   if (isAnalyzing) {
@@ -214,6 +261,29 @@ export default function AnalyzePage() {
           </div>
 
           <div className="space-y-8">
+            {/* Error Banner */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-sm p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-red-900 mb-1">
+                    Analysis Failed
+                  </h3>
+                  <p className="text-sm text-red-700">
+                    {error}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setError(null)}
+                    className="mt-3 border-red-300 text-red-700 hover:bg-red-100"
+                  >
+                    Try Again
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <div>
               <UploadZone
                 onFileSelect={handleFileSelect}
@@ -223,7 +293,7 @@ export default function AnalyzePage() {
             </div>
 
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-6 space-y-6">
-              {/* What's this for? - Pill buttons (2 rows) */}
+              {/* What's this for? */}
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <Label className="text-base font-semibold text-[#0A0A0A]">
@@ -274,14 +344,14 @@ export default function AnalyzePage() {
                     { key: 'dry', label: t('upload.climate.dry'), icon: <Sun size={16} className="mr-2" /> },
                     { key: 'normal', label: t('upload.climate.normal'), icon: <Thermometer size={16} className="mr-2" /> },
                     { key: 'humid', label: t('upload.climate.humid'), icon: <Droplet size={16} className="mr-2" /> },
-                    { key: 'hot', label: t('upload.climate.hot'), icon: <Zap size={16} className="mr-2" /> },
+                    { key: 'hot_humid', label: t('upload.climate.hot_humid'), icon: <Zap size={16} className="mr-2" /> },
                   ]}
                   selected={climate}
                   onToggle={(k) => setClimate(climate === k ? undefined : k)}
                 />
               </div>
 
-              {/* Concerns - chips */}
+              {/* Concerns */}
               <div className="border-t border-[#E5E7EB] pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <Label className="text-base font-semibold text-[#0A0A0A]">
@@ -328,5 +398,3 @@ export default function AnalyzePage() {
     </div>
   );
 }
-// removed unused helper: countCritical
-

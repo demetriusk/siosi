@@ -15,6 +15,10 @@ export type Occasion = 'photoshoot' | 'wedding' | 'party' | 'video' | 'testing';
 
 export type Concern = 'flash' | 'lasting' | 'closeup' | 'weather' | 'transfer';
 
+export type IndoorOutdoor = 'indoor' | 'outdoor' | 'both';
+
+export type Climate = 'dry' | 'normal' | 'humid' | 'hot_humid';
+
 export type SkinType = 'dry' | 'normal' | 'combo' | 'oily' | 'not_sure';
 
 export type SkinTone = 'fair' | 'light' | 'medium' | 'tan' | 'deep' | 'rich';
@@ -40,6 +44,8 @@ export interface Session {
   photo_url: string;
   occasion?: Occasion;
   concerns?: Concern[];
+  indoor_outdoor?: IndoorOutdoor;
+  climate?: Climate;
   skin_type?: SkinType;
   skin_tone?: SkinTone;
   lid_type?: LidType;
@@ -55,6 +61,8 @@ export interface SessionWithAnalyses extends Session {
 export interface UploadContext {
   occasion?: Occasion;
   concerns?: Concern[];
+  indoor_outdoor?: IndoorOutdoor;
+  climate?: Climate;
   skin_type?: SkinType;
   skin_tone?: SkinTone;
   lid_type?: LidType;
