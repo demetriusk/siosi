@@ -123,6 +123,10 @@ export default function AnalyzePage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         photoUrl,
+        occasion,
+        concerns,
+        indoor_outdoor: where,
+        climate,
         skinType: profile.skinType,
         skinTone: profile.skinTone,
         lidType: profile.lidType
@@ -154,6 +158,8 @@ export default function AnalyzePage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         photo_url: photoUrl,
+        occasion,
+        concerns,
         analyses,
         overall_score: analysis?.overall_score ?? 0,
         confidence_avg: analysis?.confidence_avg ?? 0,
