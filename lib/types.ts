@@ -15,13 +15,20 @@ export type LabName =
   | 'coverage';
 
 export interface LabAnalysis {
-  name: LabName;
+  // Primary identifiers (persisted shape from DB / mock outputs)
+  id?: string;
+  session_id?: string;
+  lab_name: LabName;
+  // Backwards-compatible alias (some code may still reference `name`)
+  name?: LabName;
+
   verdict: Verdict;
   confidence: number;
   score: number;
   detected: string[];
   recommendations: string[];
   zones_affected?: string[];
+  created_at?: string;
 }
 
 export type SkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';

@@ -33,7 +33,7 @@ export default function ProfileClient({ locale }: Props) {
   const completedFields = [skinType, skinTone, lidType].filter(Boolean).length;
   const totalFields = 3;
 
-  const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'rich'];
+  const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'dark'];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -62,7 +62,7 @@ export default function ProfileClient({ locale }: Props) {
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {(['dry', 'normal', 'combo', 'oily', 'not_sure'] as SkinType[]).map((type) => (
+                      {(['dry', 'normal', 'combination', 'oily', 'sensitive'] as SkinType[]).map((type) => (
                         <SelectItem key={type} value={type}>
                           {t(`profile.skin_types.${type}`)}
                         </SelectItem>
