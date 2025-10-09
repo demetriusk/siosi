@@ -84,6 +84,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",
-    "eslint-plugin-unused-imports": "^4.2.0"
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "shadcn": "^3.4.0"
   }
 }
