@@ -7,7 +7,9 @@ import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import LanguageSelect from './language-select';
-import { supabase } from '@/lib/supabase';
+// NOTE: we purposely avoid importing `supabase` at module scope here to prevent
+// bundling server-side vendor chunks into client-side runtime. We'll dynamically
+// load it inside the client effect where needed.
 
 interface HeaderProps {
   locale: string;
@@ -35,15 +37,19 @@ export function Header({ locale }: HeaderProps) {
     let mounted = true;
     const fetchUser = async () => {
       try {
+        // dynamically import the supabase client from our helper module.
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+
         // try to read the current session/user from Supabase
-        const maybeGetUser = (supabase as any)?.auth?.getUser ?? (supabase as any)?.auth?.user;
+        const maybeGetUser = (maybeSupabase as any)?.auth?.getUser ?? (maybeSupabase as any)?.auth?.user;
         if (maybeGetUser) {
           // supabase v2: getUser()
-          if (typeof (supabase as any)?.auth?.getUser === 'function') {
-            const { data } = await (supabase as any).auth.getUser();
+          if (typeof (maybeSupabase as any)?.auth?.getUser === 'function') {
+            const { data } = await (maybeSupabase as any).auth.getUser();
             if (mounted) setUser(data?.user ?? null);
-          } else if (typeof (supabase as any)?.auth?.user === 'function') {
-            if (mounted) setUser((supabase as any).auth.user());
+          } else if (typeof (maybeSupabase as any)?.auth?.user === 'function') {
+            if (mounted) setUser((maybeSupabase as any).auth.user());
           }
         }
       } catch {
@@ -54,15 +60,24 @@ export function Header({ locale }: HeaderProps) {
     fetchUser();
 
     // try to subscribe to auth changes if available
-    const listener = (supabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
-      if (!mounted) return;
-      setUser(session?.user ?? null);
-    });
+    let listener: any = null;
+    (async () => {
+      try {
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+        listener = (maybeSupabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
+          if (!mounted) return;
+          setUser(session?.user ?? null);
+        });
+      } catch {
+        // ignore
+      }
+    })();
 
     return () => {
       mounted = false;
       try {
-  if (listener?.subscription?.unsubscribe) listener.subscription.unsubscribe();
+        if (listener?.subscription?.unsubscribe) listener.subscription.unsubscribe();
       } catch {
         // ignore
       }
@@ -158,10 +173,12 @@ export function Header({ locale }: HeaderProps) {
                 <button
                   onClick={async () => {
                     try {
-                          await (supabase as any)?.auth?.signOut?.();
-                        } catch {
-                          // ignore
-                        }
+                      const mod = await import('@/lib/supabase');
+                      const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+                      await (maybeSupabase as any)?.auth?.signOut?.();
+                    } catch {
+                      // ignore
+                    }
                     setMobileMenuOpen(false);
                     router.push(`/${locale}/auth`);
                   }}

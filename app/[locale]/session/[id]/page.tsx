@@ -3,13 +3,17 @@ export const dynamic = 'force-dynamic';
 import { format } from 'date-fns';
 import { Share2, Mail, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
+// Client actions wrapper (renders client-only buttons)
+import SessionActionsClient from '@/components/siosi/session-actions-client';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
@@ -26,6 +30,16 @@ async function getSession(id: string): Promise<SessionWithAnalyses | null> {
 
   if (sessionError || !session) {
     return null;
+  }
+
+  // Some flows save analyses inline on the sessions row (JSON column `analyses`).
+  // Prefer the inline analyses when present; otherwise fall back to the separate
+  // `analyses` table (legacy shape).
+  if (session.analyses && Array.isArray(session.analyses)) {
+    return {
+      ...session,
+      analyses: session.analyses as LabAnalysis[],
+    };
   }
 
   const { data: analyses, error: analysesError } = await supabase
@@ -74,6 +88,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
     a => a.verdict === 'YAY' && a.confidence >= 70
   );
 
+  const categorizedCount = criticalAnalyses.length + watchAnalyses.length + goodAnalyses.length;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header locale={locale} />
@@ -86,56 +102,66 @@ export default async function SessionPage({ params }: SessionPageProps) {
                 {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
               </time>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button variant="outline" size="sm" className="border-[#E5E7EB]">
-                <Share2 className="w-4 h-4 mr-2" />
-                {safeT('results.share', 'Share')}
-              </Button>
-              <Button variant="outline" size="sm" className="border-[#E5E7EB]">
-                <Download className="w-4 h-4 mr-2" />
-                {safeT('common.save', 'Save')}
-              </Button>
-              <Link href={`/${locale}/analyze`}>
-                <Button variant="outline" size="sm" className="border-[#E5E7EB]">
-                  <Upload className="w-4 h-4 mr-2" />
-                  {safeT('results.analyze_another', 'Analyze another')}
-                </Button>
-              </Link>
-            </div>
+            {/* Server component renders a small client wrapper for actions */}
+            <SessionActionsClient locale={locale} sessionId={id} />
           </div>
 
-          <div className="bg-white border border-[#E5E7EB] rounded-sm p-8 md:p-12 text-center mb-8">
-            <div className="relative inline-block mb-6">
-              <svg className="w-32 h-32 transform -rotate-90">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="#E5E7EB"
-                  strokeWidth="8"
-                  fill="none"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="#0A0A0A"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${(overallScore / 10) * 351.86} 351.86`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-[#0A0A0A]">
-                  {overallScore.toFixed(1)}
-                </span>
+          <Card className="mb-8 p-6 md:p-8">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+              <div className="w-full md:w-1/3">
+                {session?.photo_url ? (
+                  <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm overflow-hidden">
+                    <Image
+                      src={session.photo_url}
+                      alt={safeT('common.photo', 'Photo')}
+                      width={800}
+                      height={800}
+                      className="object-cover w-full h-full"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm flex items-center justify-center text-[#D1D5DB]">
+                    <span className="text-sm">{safeT('common.no_image', 'No image')}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1 text-center md:text-left">
+                <div className="relative inline-block mb-6">
+                  <svg className="w-32 h-32 transform -rotate-90">
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="#E5E7EB"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="#0A0A0A"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${(overallScore / 10) * 351.86} 351.86`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-4xl font-bold text-[#0A0A0A]">
+                      {overallScore.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+
+                <h2 className="text-xl font-semibold text-[#6B7280]">
+                  {safeT('results.overall_score', 'Overall score')}
+                </h2>
               </div>
             </div>
-            <h2 className="text-xl font-semibold text-[#6B7280]">
-              {safeT('results.overall_score', 'Overall score')}
-            </h2>
-          </div>
+          </Card>
 
           {criticalAnalyses.length > 0 && (
             <div className="mb-8">
@@ -186,6 +212,42 @@ export default async function SessionPage({ params }: SessionPageProps) {
               <div className="space-y-4">
                 {goodAnalyses.map((analysis) => (
                   <LabResultCard key={analysis.id} analysis={analysis} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty state when no analyses present */}
+          {analyses.length === 0 && (
+            <Card className="p-6 text-center">
+              <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">
+                {safeT('results.no_analyses_title', 'No analyses yet')}
+              </h3>
+              <p className="text-sm text-[#6B7280]">
+                {safeT('results.no_analyses_body', 'We couldn\'t find any lab results for this session. Try analyzing another photo.')}
+              </p>
+              <div className="mt-4">
+                <Link href={`/${locale}/analyze`}>
+                  <Button>{safeT('results.analyze_another', 'Analyze another')}</Button>
+                </Link>
+              </div>
+            </Card>
+          )}
+
+          {/* If there are analyses but none matched thresholds, show them all */}
+          {analyses.length > 0 && categorizedCount === 0 && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-xl font-bold text-[#0A0A0A]">
+                  {safeT('results.all_results', 'All results')}
+                </h3>
+                <span className="px-2.5 py-0.5 bg-[#6B7280] text-white text-xs font-semibold rounded-full">
+                  {analyses.length}
+                </span>
+              </div>
+              <div className="space-y-4">
+                {analyses.map((analysis) => (
+                  <LabResultCard key={analysis.id ?? analysis.lab_name} analysis={analysis} />
                 ))}
               </div>
             </div>

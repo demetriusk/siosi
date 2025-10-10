@@ -12,7 +12,7 @@ import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+// Avoid top-level supabase import in client components; we'll dynamically import when needed.
 import { useRouter } from 'next/navigation';
 
 interface Props {
@@ -187,11 +187,13 @@ function DeleteProfileButton({ locale }: { locale: string }) {
       // Obtain access token from client-side supabase
       let token: string | undefined;
       try {
-        if (typeof (supabase as any)?.auth?.getSession === 'function') {
-          const res = await (supabase as any).auth.getSession();
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+        if (typeof (maybeSupabase as any)?.auth?.getSession === 'function') {
+          const res = await (maybeSupabase as any).auth.getSession();
           token = res?.data?.session?.access_token ?? res?.session?.access_token;
-        } else if (typeof (supabase as any)?.auth?.session === 'function') {
-          const s = (supabase as any).auth.session();
+        } else if (typeof (maybeSupabase as any)?.auth?.session === 'function') {
+          const s = (maybeSupabase as any).auth.session();
           token = s?.access_token;
         }
       } catch (e) {

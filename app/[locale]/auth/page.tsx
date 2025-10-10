@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { AuthForm } from '@/components/auth-form'
-import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
@@ -19,16 +18,20 @@ export default function AuthPage() {
 
   async function handleEmail(email: string) {
     if (!email) return
-    try {
-      // Try to sign up first (no-op if user exists) then send magic link
       try {
-        await (supabase as any)?.auth?.signUp?.({ email })
-      } catch {
-        // ignore signUp errors; we'll try signInWithOtp next
-      }
+        // Try to sign up first (no-op if user exists) then send magic link
+        try {
+          const mod = await import('@/lib/supabase');
+          const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+          await (maybeSupabase as any)?.auth?.signUp?.({ email })
+        } catch {
+          // ignore signUp errors; we'll try signInWithOtp next
+        }
 
-      const { error } = await (supabase as any)?.auth?.signInWithOtp?.({ email }) ?? { error: undefined }
-      if (error) throw error
+        const mod2 = await import('@/lib/supabase');
+        const maybeSupabase2 = (mod2 as any).supabase ?? (mod2 as any).default ?? null;
+        const { error } = await (maybeSupabase2 as any)?.auth?.signInWithOtp?.({ email }) ?? { error: undefined }
+        if (error) throw error
   setEmailRequested(email)
   setResendCooldown(60)
   // Inform the user via toast as well as the inline banner
@@ -51,7 +54,9 @@ export default function AuthPage() {
       return
     }
     try {
-  const { error } = await (supabase as any)?.auth?.signInWithOtp?.({ email: emailRequested }) ?? { error: undefined }
+      const mod = await import('@/lib/supabase');
+      const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+      const { error } = await (maybeSupabase as any)?.auth?.signInWithOtp?.({ email: emailRequested }) ?? { error: undefined }
       if (error) throw error
       setResendCooldown(60)
       toast.success(t('magic_link.sent'))

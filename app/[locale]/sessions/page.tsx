@@ -6,7 +6,8 @@ import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { SessionCard } from '@/components/siosi/session-card';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase';
+// Do not import `supabase` at module scope in client components. We'll dynamically
+// import it inside the effect when needed.
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Session } from '@/lib/types';
@@ -29,11 +30,13 @@ export default function SessionsPage() {
       try {
         // get current user id
         let uid: string | undefined;
-        if (typeof (supabase as any)?.auth?.getUser === 'function') {
-          const res = await (supabase as any)?.auth?.getUser?.();
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+        if (typeof (maybeSupabase as any)?.auth?.getUser === 'function') {
+          const res = await (maybeSupabase as any)?.auth?.getUser?.();
           uid = res?.data?.user?.id;
-        } else if (typeof (supabase as any)?.auth?.user === 'function') {
-          const u = (supabase as any)?.auth?.user?.();
+        } else if (typeof (maybeSupabase as any)?.auth?.user === 'function') {
+          const u = (maybeSupabase as any)?.auth?.user?.();
           uid = u?.id;
         }
 
@@ -46,10 +49,10 @@ export default function SessionsPage() {
 
         setUserId(uid);
 
-        if (!supabase) {
+        if (!maybeSupabase) {
           logger.error('Supabase client unavailable when fetching sessions');
         } else {
-          const { data, error } = await (supabase as any)
+          const { data, error } = await (maybeSupabase as any)
             .from('sessions')
             .select('*')
             .eq('user_id', uid)

@@ -10,7 +10,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { FaGoogle } from 'react-icons/fa'
-import { supabase } from '@/lib/supabase'
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
@@ -31,7 +30,9 @@ export function AuthForm({
 
   async function handleSSO(provider: 'google') {
     try {
-      await (supabase as any)?.auth?.signInWithOAuth?.({ provider })
+      const mod = await import('@/lib/supabase');
+      const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+      await (maybeSupabase as any)?.auth?.signInWithOAuth?.({ provider })
     } catch {
       // noop; Supabase will perform redirect
     }
@@ -48,7 +49,9 @@ export function AuthForm({
     // default behaviour: call Supabase magic link
     if (!email) return
     try {
-      await (supabase as any)?.auth?.signInWithOtp?.({ email })
+      const mod = await import('@/lib/supabase');
+      const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+      await (maybeSupabase as any)?.auth?.signInWithOtp?.({ email })
     } catch {
       // swallow - callers can show toasts
     }

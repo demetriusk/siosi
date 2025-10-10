@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabase';
 import ProfileClient from './ProfileClient';
 import { useTranslations } from 'next-intl';
 
@@ -24,12 +23,14 @@ export default function ProfilePage() {
 
     async function check() {
       try {
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
         let uid: string | undefined;
-        if (typeof (supabase as any)?.auth?.getUser === 'function') {
-          const res = await (supabase as any)?.auth?.getUser?.();
+        if (typeof (maybeSupabase as any)?.auth?.getUser === 'function') {
+          const res = await (maybeSupabase as any)?.auth?.getUser?.();
           uid = res?.data?.user?.id;
-        } else if (typeof (supabase as any)?.auth?.user === 'function') {
-          const u = (supabase as any)?.auth?.user?.();
+        } else if (typeof (maybeSupabase as any)?.auth?.user === 'function') {
+          const u = (maybeSupabase as any)?.auth?.user?.();
           uid = u?.id;
         }
 
@@ -46,10 +47,19 @@ export default function ProfilePage() {
     check();
 
     // Try to subscribe to auth changes so the page updates if the user logs in
-    const listener = (supabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
-      if (!mounted) return;
-      setAuthenticated(!!session?.user);
-    });
+    let listener: any = null;
+    (async () => {
+      try {
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+        listener = (maybeSupabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
+          if (!mounted) return;
+          setAuthenticated(!!session?.user);
+        });
+      } catch {
+        // ignore
+      }
+    })();
 
     return () => {
       mounted = false;
