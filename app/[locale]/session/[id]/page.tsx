@@ -217,7 +217,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
                           <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {session.lid_type}</span>
                         )}
                       </div>
-                      <p className="text-sm text-[#6B7280]">
+                      <p className="text-sm text-[#6B7280] mb-2">
                         {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
                       </p>
                       <Link href={`/${locale}/profile`} className="text-sm font-semibold text-[#0A0A0A] underline">

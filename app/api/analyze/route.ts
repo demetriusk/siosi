@@ -60,21 +60,18 @@ ${!hasProfile ? 'Note: User profile incomplete. Base undertone/texture analysis 
 
     logger.debug('Analysis context:', { occasion, indoor_outdoor, climate, concerns, hasProfile });
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      temperature: 0.1,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind."
-        },
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: `STEP 1 (LENIENT): Validate the image.
+  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content:
+          "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind."
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: `STEP 1 (LENIENT): Validate the image.
 Accept as valid in these cases:
 - At least one real human face is visible even partially (allow hats, hoods, hair, hands, microphones, phones, props).
 - Multiple people appear but there is a primary face to analyze (focus on the most prominent subject).
@@ -139,19 +136,64 @@ Context-aware scoring reminders:
 - ${occasion || 'general'} sets expectations for coverage intensity
 
 Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "flashback": {...}, "pores": {...}, ... all 12 labs }`
-            },
-            {
-              type: "image_url",
-              image_url: { url: photoUrl }
-            }
-          ]
-        }
-      ],
-      response_format: { type: "json_object" },
-      max_tokens: 4096
-    })
-    
-    const result = JSON.parse(response.choices[0].message.content!)
+          },
+          {
+            type: "image_url",
+            image_url: { url: photoUrl }
+          }
+        ]
+      }
+  ]
+
+  const maxAttempts = 3
+    let result: any | null = null
+    let lastContent: string | undefined
+    let lastParseError: unknown
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o',
+        temperature: 0.1,
+        messages,
+        response_format: { type: 'json_object' },
+        max_tokens: 4096
+      })
+
+      const content = completion.choices?.[0]?.message?.content
+      lastContent = content ?? undefined
+
+      if (!content) {
+        lastParseError = new Error('Empty completion content')
+        logger.warn('Analyze completion returned empty content', { attempt })
+        continue
+      }
+
+      try {
+        result = strictJsonParse(content)
+        break
+      } catch (parseErr) {
+        lastParseError = parseErr
+        logger.warn('Analyze completion JSON parse failed', {
+          attempt,
+          message: parseErr instanceof Error ? parseErr.message : String(parseErr),
+          preview: content.slice(0, 300)
+        })
+      }
+    }
+
+    if (!result) {
+      logger.error('Unable to parse analysis completion after retries', {
+        lastParseError,
+        preview: lastContent?.slice(0, 300)
+      })
+      return Response.json(
+        {
+          error: 'Analysis failed for this photo.',
+          suggestion: 'Try again with a different photo where the face is well lit and centered.'
+        },
+        { status: 422 }
+      )
+    }
     
     // Check if validation failed
     if (result.valid === false) {
@@ -209,4 +251,58 @@ function calculateAvgConfidence(analyses: any): number {
 
 function calculateCriticalCount(analyses: any): number {
   return Object.values(analyses).filter((lab: any) => lab.verdict === 'NAY').length;
+}
+
+function strictJsonParse(content: string) {
+  const trimmed = content.trim()
+
+  const withoutFence = trimmed.startsWith('```')
+    ? trimmed.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim()
+    : trimmed
+
+  const candidate = extractFirstJsonObject(withoutFence)
+  if (!candidate) {
+    throw new Error('No JSON object found in completion content')
+  }
+
+  return JSON.parse(candidate)
+}
+
+function extractFirstJsonObject(payload: string) {
+  const firstBrace = payload.indexOf('{')
+  if (firstBrace === -1) return null
+
+  let depth = 0
+  let inString = false
+  let escapeNext = false
+
+  for (let i = firstBrace; i < payload.length; i++) {
+    const char = payload[i]
+
+    if (escapeNext) {
+      escapeNext = false
+      continue
+    }
+
+    if (char === '\\') {
+      escapeNext = true
+      continue
+    }
+
+    if (char === '"') {
+      inString = !inString
+    }
+
+    if (inString) continue
+
+    if (char === '{') depth += 1
+    if (char === '}') {
+      depth -= 1
+      if (depth === 0) {
+        return payload.slice(firstBrace, i + 1)
+      }
+    }
+  }
+
+  return null
 }
