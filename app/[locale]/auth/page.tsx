@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { AuthForm } from '@/components/auth-form'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
-export default function AuthPage() {
+function AuthPageContent() {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -123,5 +123,21 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] p-6">
+          <div className="w-full max-w-md text-center text-sm text-muted-foreground">
+            Loading…
+          </div>
+        </div>
+      }
+    >
+      <AuthPageContent />
+    </Suspense>
   )
 }

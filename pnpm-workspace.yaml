@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@vercel/speed-insights'
+  - canvas
+  - msw
+  - sharp
+  - unrs-resolver
