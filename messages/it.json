@@ -107,6 +107,20 @@
       "normal": "Normale",
       "humid": "Umido",
       "hot_humid": "Caldo / Umido"
+    },
+    "progress": {
+      "flashback": "Niente effetto fantasma: controllo il flashback…",
+      "pores": "Saluto i pori…",
+      "texture": "Dò un'occhiata alla texture…",
+      "undertone": "Trovo il sottotono perfetto…",
+      "transfer": "Si trasferirà? Sto testando…",
+      "longevity": "Quanto durerà? Verifico la tenuta…",
+      "oxidation": "Osservo eventuali cambi di ossidazione…",
+      "creasing": "In pattuglia anti-pieghe…",
+      "blending": "Bordi ben sfumati? Ricontrollo il blending…",
+      "shimmer": "Il glow è dove dovrebbe essere?…",
+      "transitions": "A caccia di transizioni nette…",
+      "coverage": "La coprenza è quella giusta?…"
     }
   },
   "results": {

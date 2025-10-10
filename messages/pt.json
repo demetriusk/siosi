@@ -38,22 +38,10 @@
   },
   "home": {
     "hero_title": "Confia e brilha",
-      "camera": {
-        "title": "Tirar uma foto",
-        "description": "Enquadre o rosto e toque em Capturar quando estiver pronta(o).",
-        "error_prefix": "Não foi possível abrir sua câmera:",
-        "permission_denied": "Permissão da câmera negada",
-        "permission_help": "Ative o acesso à câmera nas configurações do navegador e tente novamente.",
-        "retry": "Tentar câmera novamente",
-        "capture": "Capturar foto",
-        "capturing": "Capturando…",
-        "cancel": "Cancelar"
-      },
     "hero_subtitle": "Análise instantânea de maquiagem por IA com pontuações de confiança",
     "upload_cta": "Ou tire uma foto agora",
     "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10 MB)",
     "what_analyzed_title": "O que é analisado",
-        "capture_failed": "Não foi possível processar a foto capturada. Tente novamente.",
     "labs": {
       "flashback": "Lab de flashback",
       "pores": "Prova de poros",
@@ -72,10 +60,22 @@
     "step3": "Receba um relatório com pontuação e recomendações",
     "step_number": "Passo {number}"
   },
+  "camera": {
+    "title": "Tirar uma foto",
+    "description": "Enquadre o rosto e toque em Capturar quando estiver pronta(o).",
+    "error_prefix": "Não foi possível abrir sua câmera:",
+    "permission_denied": "Permissão da câmera negada",
+    "permission_help": "Ative o acesso à câmera nas configurações do navegador e tente novamente.",
+    "retry": "Tentar câmera novamente",
+    "capture": "Capturar foto",
+    "capturing": "Capturando…",
+    "cancel": "Cancelar"
+  },
   "upload": {
     "drag_drop": "Arraste a foto aqui ou clique para procurar",
     "file_too_large": "O arquivo é muito grande. O tamanho máximo é 10 MB",
     "invalid_format": "Formato inválido. Envie JPG, PNG ou HEIC",
+    "capture_failed": "Não foi possível processar a foto capturada. Tente novamente.",
     "analyze_button": "Analisar maquiagem",
     "occasion_title": "Para que é isso?",
     "occasion_optional": "(opcional)",
