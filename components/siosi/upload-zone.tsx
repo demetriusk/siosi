@@ -204,37 +204,7 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
     }
   };
 
-  // Show preview if file selected and validated
-  if (selectedFile && previewUrl && !isValidating) {
-    return (
-      <div className="relative bg-white border border-[#E5E7EB] rounded-sm p-4">
-        <button
-          onClick={handleClear}
-          className="absolute top-2 right-2 z-10 p-1.5 bg-white border border-[#E5E7EB] rounded-full hover:bg-[#F9FAFB] transition-colors"
-          aria-label="Clear file"
-        >
-          <X className="w-4 h-4 text-[#0A0A0A]" />
-        </button>
-        <div className="aspect-video relative overflow-hidden rounded">
-          <Image
-            src={previewUrl}
-            alt="Preview"
-            fill
-            className="object-cover"
-            unoptimized
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          <ImageIcon className="w-4 h-4 text-[#6B7280]" />
-          <span className="text-sm text-[#6B7280] truncate">{selectedFile.name}</span>
-          <span className="text-xs text-[#9CA3AF]">
-            ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-          </span>
-        </div>
-      </div>
-    );
-  }
+  const showPreview = !!selectedFile && !!previewUrl && !isValidating;
 
   useImperativeHandle(ref, () => ({
     openFileDialog: () => {
@@ -259,7 +229,35 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
 
   return (
     <div className="space-y-3">
-      <label
+      {showPreview ? (
+        <div className="relative bg-white border border-[#E5E7EB] rounded-sm p-4">
+          <button
+            onClick={handleClear}
+            className="absolute top-2 right-2 z-10 p-1.5 bg-white border border-[#E5E7EB] rounded-full hover:bg-[#F9FAFB] transition-colors"
+            aria-label="Clear file"
+          >
+            <X className="w-4 h-4 text-[#0A0A0A]" />
+          </button>
+          <div className="aspect-video relative overflow-hidden rounded">
+            <Image
+              src={previewUrl}
+              alt="Preview"
+              fill
+              className="object-cover"
+              unoptimized
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+          <div className="mt-3 flex items-center gap-2">
+            <ImageIcon className="w-4 h-4 text-[#6B7280]" />
+            <span className="text-sm text-[#6B7280] truncate">{selectedFile?.name}</span>
+            <span className="text-xs text-[#9CA3AF]">
+              ({selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) : '0.00'} MB)
+            </span>
+          </div>
+        </div>
+      ) : (
+        <label
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -272,58 +270,59 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
           ${isDragging ? 'border-[#0A0A0A] bg-[#F9FAFB]' : 'border-[#D1D5DB] hover:border-[#6B7280] bg-white'}
           ${error ? 'border-[#EF4444]' : ''}
         `}
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="sr-only"
-          accept={accept}
-          onChange={handleInputChange}
-          disabled={!modelsReady || isValidating}
-        />
-        <input
-          ref={cameraInputRef}
-          type="file"
-          className="hidden"
-          accept="image/*"
-          capture="environment"
-          onChange={handleInputChange}
-          disabled={!modelsReady || isValidating}
-        />
-        <div className="py-12 px-6 text-center">
-          {!modelsReady ? (
-            <>
-              <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
-              <p className="text-base font-medium text-[#0A0A0A] mb-2">
-                Loading face detection...
-              </p>
-              <p className="text-sm text-[#6B7280]">
-                Just a moment
-              </p>
-            </>
-          ) : isValidating ? (
-            <>
-              <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
-              <p className="text-base font-medium text-[#0A0A0A] mb-2">
-                Validating photo...
-              </p>
-              <p className="text-sm text-[#6B7280]">
-                Checking face detection
-              </p>
-            </>
-          ) : (
-            <>
-              <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`} />
-              <p className="text-base font-medium text-[#0A0A0A] mb-2">
-                {t('drag_drop')}
-              </p>
-              <p className="text-sm text-[#6B7280]">
-                {tHome('supported_formats')}
-              </p>
-            </>
-          )}
-        </div>
-      </label>
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="sr-only"
+            accept={accept}
+            onChange={handleInputChange}
+            disabled={!modelsReady || isValidating}
+          />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            className="hidden"
+            accept="image/*"
+            capture="environment"
+            onChange={handleInputChange}
+            disabled={!modelsReady || isValidating}
+          />
+          <div className="py-12 px-6 text-center">
+            {!modelsReady ? (
+              <>
+                <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
+                <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                  Loading face detection...
+                </p>
+                <p className="text-sm text-[#6B7280]">
+                  Just a moment
+                </p>
+              </>
+            ) : isValidating ? (
+              <>
+                <Loader2 className="w-12 h-12 mx-auto mb-4 text-[#6B7280] animate-spin" />
+                <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                  Validating photo...
+                </p>
+                <p className="text-sm text-[#6B7280]">
+                  Checking face detection
+                </p>
+              </>
+            ) : (
+              <>
+                <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-[#0A0A0A]' : 'text-[#6B7280]'}`} />
+                <p className="text-base font-medium text-[#0A0A0A] mb-2">
+                  {t('drag_drop')}
+                </p>
+                <p className="text-sm text-[#6B7280]">
+                  {tHome('supported_formats')}
+                </p>
+              </>
+            )}
+          </div>
+        </label>
+      )}
       
       {error && (
         <div className="p-3 bg-[#FEE2E2] border border-[#FCA5A5] rounded-sm">

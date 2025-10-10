@@ -60,7 +60,7 @@ function generateId(): string {
     if (typeof globalThis !== 'undefined' && globalThis.crypto && 'randomUUID' in globalThis.crypto) {
       return globalThis.crypto.randomUUID();
     }
-  } catch (error) {
+  } catch {
     // Ignore and fall through to fallback
   }
   // Lightweight fallback guaranteed to produce a string identifier
