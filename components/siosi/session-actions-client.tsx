@@ -1,7 +1,9 @@
 "use client";
 
 import Link from 'next/link';
-import { Share2, Download, Upload, Copy, Instagram, MessageSquare } from 'lucide-react';
+import { Share2, Download, Upload, Copy, Instagram } from 'lucide-react';
+import type { SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import DeleteSessionButton from './delete-session-button';
 import {
@@ -13,6 +15,43 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
+import { cn } from '@/lib/utils';
+
+type IconProps = SVGProps<SVGSVGElement>;
+
+function WhatsAppIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+      className={cn('w-4 h-4', className)}
+    >
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.149-.67.149-.198.297-.767.967-.94 1.165-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.173.198-.297.298-.495.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.009-.372-.011-.571-.011-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.414-.074-.124-.272-.198-.57-.347zm-5.531 7.401h-.001a11.815 11.815 0 01-6.01-1.651l-.431-.256-4.463 1.165 1.189-4.351-.28-.446a11.86 11.86 0 01-1.815-6.266c.001-6.574 5.346-11.918 11.92-11.918 3.183 0 6.167 1.24 8.413 3.487a11.86 11.86 0 013.495 8.413c-.003 6.572-5.348 11.917-11.917 11.917zm0-21.633C6.405.15 1.28 5.273 1.278 11.98c0 2.353.621 4.653 1.799 6.664l.115.188-1.271 4.657 4.781-1.252.183.109a10.61 10.61 0 005.621 1.607h.005c5.89 0 10.684-4.792 10.686-10.681.002-2.847-1.108-5.523-3.124-7.541A10.61 10.61 0 0011.94.15z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function TelegramIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+      className={cn('w-4 h-4', className)}
+    >
+      <path
+        d="M11.944 0C5.355 0 0 5.355 0 11.944c0 6.59 5.355 11.944 11.944 11.944 6.59 0 11.944-5.355 11.944-11.944C23.888 5.355 18.533 0 11.944 0zm5.524 7.871l-1.444 6.805c-.109.484-.399.603-.809.375l-2.237-1.648-1.078 1.039c-.119.119-.219.219-.449.219l.16-2.188 3.987-3.597c.173-.16-.038-.25-.269-.09l-4.93 3.105-2.121-.664c-.46-.145-.47-.46.096-.684l8.29-3.189c.384-.145.718.09.594.684z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 type Props = { locale: string; sessionId: string };
 
@@ -23,6 +62,68 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
     : `/${locale}/session/${sessionId}`;
 
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    let listener: any = null;
+
+    async function resolveAuth() {
+      try {
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
+
+        if (!maybeSupabase?.auth) {
+          if (mounted) setAuthChecked(true);
+          return;
+        }
+
+        if (typeof maybeSupabase.auth.getUser === 'function') {
+          const { data } = await maybeSupabase.auth.getUser();
+          if (mounted) {
+            setIsAuthenticated(!!data?.user);
+            setAuthChecked(true);
+          }
+        } else if (typeof maybeSupabase.auth.user === 'function') {
+          const user = maybeSupabase.auth.user();
+          if (mounted) {
+            setIsAuthenticated(!!user);
+            setAuthChecked(true);
+          }
+        } else if (typeof maybeSupabase.auth.getSession === 'function') {
+          const { data } = await maybeSupabase.auth.getSession();
+          if (mounted) {
+            setIsAuthenticated(!!data?.session?.user);
+            setAuthChecked(true);
+          }
+        } else {
+          if (mounted) setAuthChecked(true);
+        }
+
+        listener = maybeSupabase.auth.onAuthStateChange?.((event: string, session: any) => {
+          if (!mounted) return;
+          setIsAuthenticated(!!session?.user);
+          setAuthChecked(true);
+        });
+      } catch (error) {
+        logger.debug('Session actions auth check failed', error);
+        if (mounted) setAuthChecked(true);
+      }
+    }
+
+    resolveAuth();
+
+    return () => {
+      mounted = false;
+      try {
+        const subscription = listener?.data?.subscription ?? listener?.subscription;
+        subscription?.unsubscribe?.();
+      } catch {
+        // ignore
+      }
+    };
+  }, []);
 
   async function onNativeShare() {
     if (!canNativeShare) {
@@ -288,11 +389,11 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
             Share to Instagram
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={onShareWhatsapp}>
-            <MessageSquare className="w-4 h-4 mr-2 rotate-45" />
+            <WhatsAppIcon className="mr-2" />
             Share to WhatsApp
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={onShareTelegram}>
-            <MessageSquare className="w-4 h-4 mr-2" />
+            <TelegramIcon className="mr-2" />
             Share to Telegram
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -310,7 +411,9 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
         </Button>
       </Link>
 
-      <DeleteSessionButton locale={locale} sessionId={sessionId} />
+      {authChecked && isAuthenticated && (
+        <DeleteSessionButton locale={locale} sessionId={sessionId} />
+      )}
     </div>
   );
 }

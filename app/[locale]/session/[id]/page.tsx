@@ -15,6 +15,7 @@ import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 // Client actions wrapper (renders client-only buttons)
 import SessionActionsClient from '@/components/siosi/session-actions-client';
+import SessionProfileCta from '@/components/siosi/session-profile-cta';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
@@ -220,20 +221,24 @@ export default async function SessionPage({ params }: SessionPageProps) {
                       <p className="text-sm text-[#6B7280] mb-2">
                         {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
                       </p>
-                      <Link href={`/${locale}/profile`} className="text-sm font-semibold text-[#0A0A0A] underline">
-                        {safeT('results.profile.edit', 'Edit profile')}
-                      </Link>
+                      <SessionProfileCta
+                        locale={locale}
+                        hasProfile
+                        editLabel={safeT('results.profile.edit', 'Edit profile')}
+                        addLabel={safeT('results.profile.add', 'Add profile for more accurate results')}
+                      />
                     </div>
                   ) : (
                     <div className="space-y-3">
                       <p className="text-sm text-[#6B7280]">
                         {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
                       </p>
-                      <Link href={`/${locale}/profile`}>
-                        <Button variant="outline" className="h-9 px-4">
-                          {safeT('results.profile.add', 'Add profile for more accurate results')}
-                        </Button>
-                      </Link>
+                      <SessionProfileCta
+                        locale={locale}
+                        hasProfile={false}
+                        editLabel={safeT('results.profile.edit', 'Edit profile')}
+                        addLabel={safeT('results.profile.add', 'Add profile for more accurate results')}
+                      />
                     </div>
                   )}
                 </div>
