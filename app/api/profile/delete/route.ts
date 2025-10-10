@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             if (path) pathsToRemove.push(path);
           }
         }
-      } catch (e) {
+      } catch {
         // ignore per-item parse errors
       }
     });

@@ -5,6 +5,7 @@
     "share": "Share",
     "save": "Save",
     "skip": "Skip",
+    "clear": "Очистить",
     "cancel": "Cancel",
     "continue": "Continue",
     "loading": "Loading...",
@@ -199,6 +200,11 @@
     "danger_zone": "Danger Zone",
     "delete_data": "Delete all my data"
   },
+    "confirm_delete_title": "Are you sure?",
+    "confirm_delete_desc": "This will permanently remove your profile and all sessions. This action cannot be undone.",
+    "cancel": "Cancel",
+    "deleting": "Deleting...",
+    "deleted_toast": "Profile removed",
   "about": {
     "title": "What is siOsi?",
     "description": "siOsi is an AI-powered makeup analyst that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",

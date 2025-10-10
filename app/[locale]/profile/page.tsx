@@ -7,13 +7,11 @@ import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
 import ProfileClient from './ProfileClient';
-import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
   const locale = (params as any)?.locale ?? 'en';
-  const t = useTranslations();
 
   const [checking, setChecking] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
@@ -37,7 +35,7 @@ export default function ProfilePage() {
         if (!mounted) return;
 
         setAuthenticated(!!uid);
-      } catch (e) {
+      } catch {
         setAuthenticated(false);
       } finally {
         if (mounted) setChecking(false);

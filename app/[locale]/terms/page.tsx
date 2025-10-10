@@ -22,8 +22,8 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">1. Acceptance of Terms</h2>
               <p>
-                Welcome to siOsi. By accessing or using our website and services ("Service"), you agree to be bound
-                by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Service.
+                Welcome to siOsi. By accessing or using our website and services (&ldquo;Service&rdquo;), you agree to be bound
+                by these Terms of Service (&ldquo;Terms&rdquo;). If you do not agree to these Terms, please do not use the Service.
               </p>
             </section>
 
@@ -47,7 +47,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">4. Prohibited Uses</h2>
               <p>
-                Do not use the Service for illegal activity, to upload material that violates others' rights, or to
+                Do not use the Service for illegal activity, to upload material that violates others&rsquo; rights, or to
                 attempt to reverse-engineer our models or platform. We reserve the right to suspend or terminate
                 accounts that violate these Terms.
               </p>
@@ -58,7 +58,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
               <p>
                 All content, code, and models provided by siOsi are the property of siOsi or its licensors and are
                 protected by copyright and other laws. You may not copy, reproduce, or create derivative works from
-                siOsi's proprietary materials without express permission.
+                siOsi&rsquo;s proprietary materials without express permission.
               </p>
             </section>
 

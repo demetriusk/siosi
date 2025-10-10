@@ -1,12 +1,13 @@
 'use client';
 
 import { useCallback, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import logger from '@/lib/logger';
 
 // Dynamic import to prevent SSR
 let validateFacePhoto: any = null;
-let loadFaceDetectionModels: any = null;
 
 interface UploadZoneProps {
   onFileSelect: (file: File) => void;
@@ -38,16 +39,15 @@ export function UploadZone({
 
     import('@/lib/face-detection').then((module) => {
       validateFacePhoto = module.validateFacePhoto;
-      loadFaceDetectionModels = module.loadFaceDetectionModels;
 
       // Load models immediately
       module.loadFaceDetectionModels()
         .then(() => {
           setModelsReady(true);
-          console.log('✓ Face detection ready');
+          logger.info('Face detection models ready');
         })
         .catch((err) => {
-          console.error('Failed to load face detection:', err);
+          logger.error('Failed to load face detection', err);
           setError('Failed to initialize face detection. Please refresh.');
         });
     });
@@ -68,7 +68,7 @@ export function UploadZone({
     };
   }, [selectedFile]);
 
-  const validateFile = async (file: File): Promise<boolean> => {
+  const validateFile = useCallback(async (file: File): Promise<boolean> => {
     // Basic file validation
     if (file.size > maxSize) {
       setError(t('file_too_large'));
@@ -99,7 +99,7 @@ export function UploadZone({
         return false;
       }
 
-      console.log('✓ Face validation passed:', {
+      logger.debug('Face validation passed', {
         faceCount: result.faceCount,
         confidence: result.confidence
       });
@@ -107,13 +107,13 @@ export function UploadZone({
       setIsValidating(false);
       return true;
 
-    } catch (err) {
-      console.error('Validation error:', err);
+    } catch (error) {
+      logger.error('Validation error', error);
       setError('Failed to validate photo. Please try again.');
       setIsValidating(false);
       return false;
     }
-  };
+  }, [accept, maxSize, modelsReady, t]);
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -123,7 +123,7 @@ export function UploadZone({
         onFileSelect(file);
       }
     },
-    [onFileSelect, modelsReady]
+    [onFileSelect, validateFile]
   );
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -181,10 +181,13 @@ export function UploadZone({
           <X className="w-4 h-4 text-[#0A0A0A]" />
         </button>
         <div className="aspect-video relative overflow-hidden rounded">
-          <img
+          <Image
             src={previewUrl}
             alt="Preview"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            unoptimized
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         </div>
         <div className="mt-3 flex items-center gap-2">

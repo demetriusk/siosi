@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import logger from '@/lib/logger';
 
 export const runtime = 'edge';
 
@@ -19,8 +21,6 @@ export async function GET(req: NextRequest, context: any) {
       // Try to load a server helper (lib/db or similar) dynamically
       // Some projects expose `getSession(id)` while others may only expose `getSessions(limit)`
       // or export a default client. We handle several shapes defensively.
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const helper = await import('@/lib/db').catch(() => null);
       if (helper) {
         const helperAny: any = helper;
@@ -36,7 +36,8 @@ export async function GET(req: NextRequest, context: any) {
           session = await helperAny.default.getSession(id);
         }
       }
-    } catch (e) {
+    } catch (error) {
+      logger.debug('Poster route dynamic DB helper load failed', error);
       session = null;
     }
 
@@ -70,8 +71,8 @@ export async function GET(req: NextRequest, context: any) {
       const r2 = await fetch(`${origin}/fonts/Inter-Bold.ttf`);
       if (r1.ok) inter400 = await r1.arrayBuffer();
       if (r2.ok) inter700 = await r2.arrayBuffer();
-    } catch (e) {
-      // ignore
+    } catch (error) {
+      logger.debug('Poster font fetch failed', error);
     }
 
     const width = 1200;
@@ -96,8 +97,8 @@ export async function GET(req: NextRequest, context: any) {
       try {
         const check = await fetch(publicUrl);
         if (check.ok) return new Response(null, { status: 302, headers: { Location: publicUrl } });
-      } catch (e) {
-        // ignore and continue to generate
+      } catch (error) {
+        logger.debug('Poster cached public URL fetch failed', error);
       }
     }
 
@@ -163,11 +164,12 @@ export async function GET(req: NextRequest, context: any) {
       }
       // If upload not configured/failed, return the generated PNG directly
       return new Response(buf, { status: 200, headers: { 'Content-Type': 'image/png' } });
-    } catch (e) {
-      // As a last-resort fallback, return the ImageResponse (may render as PNG by platform)
+    } catch (error) {
+      logger.error('Poster generation upload failed', error);
       return imageResponse;
     }
-  } catch (err) {
+  } catch (error) {
+    logger.error('Poster generation failed', error);
     return new Response('Poster generation failed', { status: 500 });
   }
 }

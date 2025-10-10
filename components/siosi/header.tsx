@@ -24,13 +24,12 @@ export function Header({ locale }: HeaderProps) {
 
   // Basic navigation items. Keep these simple and locale-aware.
   const navigation = [
-    { name: t('home'), href: `/${locale}` },
-    { name: t('about'), href: `/${locale}/about` },
+    { name: t('about'), href: `/${locale}/about` }
   ];
 
   const privateNav = [
     { name: t('sessions'), href: `/${locale}/sessions` },
-    { name: t('profile'), href: `/${locale}/profile` },
+    { name: t('profile'), href: `/${locale}/profile` }
   ];
 
   useEffect(() => {

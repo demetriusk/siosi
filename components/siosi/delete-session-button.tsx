@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Trash } from 'lucide-react';
+import logger from '@/lib/logger';
 
 export default function DeleteSessionButton({ locale, sessionId }: { locale: string; sessionId: string }) {
   const [open, setOpen] = useState(false);
@@ -36,8 +37,8 @@ export default function DeleteSessionButton({ locale, sessionId }: { locale: str
           const u = (maybeSupabase as any).auth.user();
           token = u?.access_token;
         }
-      } catch (e) {
-        // ignore - no token
+      } catch (error) {
+        logger.debug('Unable to resolve Supabase auth token on delete', error);
       }
 
       if (!token) {
@@ -62,12 +63,11 @@ export default function DeleteSessionButton({ locale, sessionId }: { locale: str
         return;
       }
 
-      toast.success(t('sessions.deleted_toast') || 'Session deleted');
+      toast(t('sessions.deleted_toast') || 'Session deleted');
       // navigate back to sessions list
       router.push(`/${locale}/sessions`);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Delete session error', err);
+    } catch (error) {
+      logger.error('Delete session flow failed', error);
       toast.error('Failed to delete session');
     } finally {
       setLoading(false);

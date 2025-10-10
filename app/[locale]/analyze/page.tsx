@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Repeat, Thermometer, Droplet, Clock, ZoomIn, AlertCircle } from 'lucide-react';
+import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Thermometer, Droplet, Clock, ZoomIn, AlertCircle } from 'lucide-react';
 import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -174,7 +174,7 @@ export default function AnalyzePage() {
         const { data: { session } } = await supabase.auth.getSession();
         const token = (session as any)?.access_token ?? (session as any)?.accessToken ?? null;
         if (token) authHeader['Authorization'] = `Bearer ${token}`;
-      } catch (e) {
+      } catch {
         // ignore - proceed without Authorization
       }
 
@@ -292,6 +292,16 @@ export default function AnalyzePage() {
                       {t('upload.occasion_optional')}
                     </span>
                   </Label>
+                  {occasion && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-[#6B7280]"
+                      onClick={() => setOccasion(undefined)}
+                    >
+                      {t('common.clear')}
+                    </Button>
+                  )}
                 </div>
 
                 <ChipList
@@ -314,6 +324,16 @@ export default function AnalyzePage() {
                     {t('upload.where_title')}
                     <span className="text-sm text-[#6B7280] font-normal"> {t('upload.where_optional')}</span>
                   </Label>
+                  {where !== 'both' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-[#6B7280]"
+                      onClick={() => setWhere('both')}
+                    >
+                      {t('common.clear')}
+                    </Button>
+                  )}
                 </div>
                 <ChipList
                   items={[
@@ -328,7 +348,19 @@ export default function AnalyzePage() {
 
               {/* Climate */}
               <div className="mt-4">
-                <Label className="text-sm text-[#374151] mb-4 block">{t('upload.climate_title')}</Label>
+                <div className="flex items-center justify-between mb-4">
+                  <Label className="text-sm text-[#374151] block">{t('upload.climate_title')}</Label>
+                  {climate && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-[#6B7280]"
+                      onClick={() => setClimate(undefined)}
+                    >
+                      {t('common.clear')}
+                    </Button>
+                  )}
+                </div>
                 <ChipList
                   items={[
                     { key: 'dry', label: t('upload.climate.dry'), icon: <Sun size={16} className="mr-2" /> },
@@ -350,6 +382,16 @@ export default function AnalyzePage() {
                       {t('upload.occasion_optional')}
                     </span>
                   </Label>
+                  {concerns.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-[#6B7280]"
+                      onClick={() => setConcerns([])}
+                    >
+                      {t('common.clear')}
+                    </Button>
+                  )}
                 </div>
                 <ChipList
                   items={[

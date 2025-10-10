@@ -37,8 +37,8 @@ async function run() {
         await download(u, tmpZip);
         downloaded = true;
         break;
-      } catch (e) {
-        console.warn('Failed to download from', u);
+      } catch (error) {
+        console.warn('Failed to download from', u, error);
       }
     }
     if (!downloaded) throw new Error('All download attempts failed');
@@ -55,8 +55,8 @@ async function run() {
       }
     });
     console.log('Fonts installed to', destDir);
-  } catch (e) {
-    console.error('Failed to fetch inter fonts', e);
+  } catch (error) {
+    console.error('Failed to fetch inter fonts', error);
     process.exit(1);
   }
 }

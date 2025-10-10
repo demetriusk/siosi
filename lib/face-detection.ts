@@ -1,4 +1,95 @@
-import * as faceapi from '@vladmandic/face-api';
+import type { Box, FaceLandmarks68 } from '@vladmandic/face-api';
+import logger from '@/lib/logger';
+
+type FaceApiModule = typeof import('@vladmandic/face-api');
+
+declare global {
+  interface Window {
+    faceapi?: FaceApiModule;
+  }
+}
+
+const FACE_API_SCRIPT_SRC =
+  process.env.NEXT_PUBLIC_FACE_API_SCRIPT_URL ??
+  'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.min.js';
+
+let faceApiModule: FaceApiModule | null = null;
+let faceApiPromise: Promise<FaceApiModule> | null = null;
+
+async function ensureFaceApiScript(): Promise<FaceApiModule> {
+  if (faceApiModule) return faceApiModule;
+
+  if (typeof window === 'undefined') {
+    throw new Error('Face detection is only available in the browser');
+  }
+
+  if (window.faceapi) {
+    faceApiModule = window.faceapi;
+    return faceApiModule;
+  }
+
+  if (faceApiPromise) return faceApiPromise;
+
+  faceApiPromise = new Promise<FaceApiModule>((resolve, reject) => {
+    const cleanup = (script: HTMLScriptElement) => {
+      script.removeEventListener('load', onLoad);
+      script.removeEventListener('error', onError);
+    };
+
+    const onLoad = () => {
+      if (!window.faceapi) {
+        faceApiPromise = null;
+        reject(new Error('face-api script loaded but window.faceapi is undefined'));
+        return;
+      }
+      faceApiModule = window.faceapi;
+      faceApiPromise = null;
+      resolve(faceApiModule);
+    };
+
+    const onError = () => {
+      faceApiPromise = null;
+      reject(new Error(`Failed to load face-api script from ${FACE_API_SCRIPT_SRC}`));
+    };
+
+    const existingScript = document.querySelector<HTMLScriptElement>('script[data-faceapi]');
+    if (existingScript) {
+      if (window.faceapi) {
+        faceApiModule = window.faceapi;
+        resolve(faceApiModule);
+        return;
+      }
+
+      existingScript.addEventListener('load', () => {
+        cleanup(existingScript);
+        onLoad();
+      });
+      existingScript.addEventListener('error', () => {
+        cleanup(existingScript);
+        onError();
+      });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = FACE_API_SCRIPT_SRC;
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.dataset.faceapi = 'true';
+    script.addEventListener('load', () => {
+      cleanup(script);
+      onLoad();
+    });
+    script.addEventListener('error', () => {
+      cleanup(script);
+      script.remove();
+      onError();
+    });
+    document.head.appendChild(script);
+  });
+
+  return faceApiPromise;
+}
 
 let modelsLoaded = false;
 
@@ -6,6 +97,7 @@ export async function loadFaceDetectionModels(): Promise<void> {
   if (modelsLoaded) return;
 
   try {
+    const faceapi = await ensureFaceApiScript();
     // Simple path - middleware now excludes /models/ from locale routing
     const MODEL_URL = '/models';
     
@@ -15,9 +107,9 @@ export async function loadFaceDetectionModels(): Promise<void> {
     ]);
 
     modelsLoaded = true;
-    console.log('✓ Face detection models loaded');
+    logger.info('Face detection models loaded successfully');
   } catch (error) {
-    console.error('Failed to load face detection models:', error);
+    logger.error('Failed to load face detection models', error);
     throw new Error('Failed to initialize face detection');
   }
 }
@@ -34,6 +126,7 @@ export interface FaceValidationResult {
 export async function validateFacePhoto(file: File): Promise<FaceValidationResult> {
   try {
     // Ensure models are loaded
+    const faceapi = await ensureFaceApiScript();
     await loadFaceDetectionModels();
 
     // Convert file to image
@@ -126,7 +219,7 @@ export async function validateFacePhoto(file: File): Promise<FaceValidationResul
     };
 
   } catch (error) {
-    console.error('Face validation error:', error);
+    logger.error('Face validation error', error);
     return {
       valid: false,
       error: 'Failed to validate photo. Please try again',
@@ -156,7 +249,7 @@ function createImageFromFile(file: File): Promise<HTMLImageElement> {
 }
 
 // Helper: Detect if face is in profile view
-function detectProfileView(landmarks: faceapi.FaceLandmarks68): boolean {
+function detectProfileView(landmarks: FaceLandmarks68): boolean {
   const points = landmarks.positions;
   
   // Get key facial points
@@ -209,7 +302,7 @@ async function calculateBrightness(img: HTMLImageElement): Promise<number> {
 }
 
 // Helper: Detect blur using Laplacian variance
-async function detectBlur(img: HTMLImageElement, faceBox: faceapi.Box): Promise<boolean> {
+async function detectBlur(img: HTMLImageElement, faceBox: Box): Promise<boolean> {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
   

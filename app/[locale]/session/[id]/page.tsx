@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 
 import { format } from 'date-fns';
-import { Share2, Mail, Download, Upload } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from '@/components/siosi/header';

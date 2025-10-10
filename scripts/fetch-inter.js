@@ -28,9 +28,8 @@ async function run() {
     console.log('Downloading Inter fonts...');
     await download(url, tmpZip);
     const zip = new AdmZip(tmpZip);
-    const entries = zip.getEntries();
-    if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-    const wanted = ['Inter (Roboto).ttf', 'Inter-Bold.ttf', 'Inter-Regular.ttf'];
+  const entries = zip.getEntries();
+  if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
     entries.forEach(e => {
       const name = e.entryName.split('/').pop();
       if (!name) return;
@@ -41,8 +40,8 @@ async function run() {
       }
     });
     console.log('Fonts installed to', destDir);
-  } catch (e) {
-    console.error('Failed to fetch inter fonts', e);
+  } catch (error) {
+    console.error('Failed to fetch inter fonts', error);
     process.exit(1);
   }
 }

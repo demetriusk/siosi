@@ -104,8 +104,8 @@ export async function DELETE(req: NextRequest, { params }: { params: any }) {
           }
         }
       }
-    } catch (e) {
-      // ignore parsing errors
+    } catch (error) {
+      logger.debug('Session delete photo path parse failed', error);
     }
 
 

@@ -11,12 +11,13 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import logger from '@/lib/logger';
 
 type Props = { locale: string; sessionId: string };
 
 export default function SessionActionsClient({ locale, sessionId }: Props) {
-  const { toast } = useToast();
+  // use sonner toast directly
   const sessionUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/${locale}/session/${sessionId}`
     : `/${locale}/session/${sessionId}`;
@@ -25,7 +26,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
 
   async function onNativeShare() {
     if (!canNativeShare) {
-      toast({ title: 'Not available', description: 'Native share is not supported in this browser' });
+  toast('Not available', { description: 'Native share is not supported in this browser' });
       return;
     }
 
@@ -35,23 +36,26 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
         text: 'Check out my siOsi makeup analysis',
         url: sessionUrl,
       });
-        toast({ title: 'Shared', description: 'Shared via device share sheet' });
-    } catch (err) {
-      // user may cancel or share may fail
-        toast({ title: 'Share cancelled', description: 'Share was not completed' });
+  toast.success('Shared', { description: 'Shared via device share sheet' });
+    } catch (error) {
+      logger.debug('Native share cancelled or failed', error);
+      toast('Share cancelled', { description: 'Share was not completed' });
     }
   }
 
   function onCopyLink() {
     if (!navigator?.clipboard) {
-      toast({ title: 'Copy failed', description: 'Clipboard not available', variant: 'destructive' });
+  toast.error('Copy failed', { description: 'Clipboard not available' });
       return;
     }
-    navigator.clipboard.writeText(sessionUrl).then(() => {
-        toast({ title: 'Link copied', description: 'Session link copied to clipboard' });
-    }, () => {
-      toast({ title: 'Copy failed', description: 'Could not copy link', variant: 'destructive' });
-    });
+    navigator.clipboard.writeText(sessionUrl)
+      .then(() => {
+        toast.success('Link copied', { description: 'Session link copied to clipboard' });
+      })
+      .catch((error) => {
+        logger.warn('Clipboard write failed', error);
+        toast.error('Copy failed', { description: 'Could not copy link' });
+      });
   }
 
   function onShareWhatsapp() {
@@ -121,7 +125,8 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
       return await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), 'image/png', 0.9)
       );
-    } catch (e) {
+    } catch (error) {
+      logger.debug('Poster image generation failed', error);
       return null;
     }
   }
@@ -132,7 +137,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
     // 2) If not supported or failed, download the image and copy a short caption to clipboard and show clear instructions via toast.
 
     if (!sessionUrl) {
-      toast({ title: 'No image', description: 'No session URL available to share', variant: 'destructive' });
+  toast.error('No image', { description: 'No session URL available to share' });
       return;
     }
 
@@ -172,8 +177,8 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
             URL.revokeObjectURL(url);
           }
         }
-      } catch (e) {
-        // ignore and fallback to client poster
+      } catch (error) {
+        logger.debug('Poster API fetch failed', error);
         blob = null;
       }
 
@@ -184,7 +189,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
         const sessionData = await sessionRes.json();
         const photoUrl: string | undefined = sessionData?.photo_url;
         if (!photoUrl) {
-          toast({ title: 'No photo', description: 'This session has no photo to share', variant: 'destructive' });
+          toast.error('No photo', { description: 'This session has no photo to share' });
           return;
         }
 
@@ -199,9 +204,10 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
       if (canShareFiles) {
         try {
           await (navigator as any).share({ files: [file], title: 'siOsi analysis', text: 'Check out my siOsi makeup analysis' });
-          toast({ title: 'Shared', description: 'Shared via device share sheet' });
+          toast.success('Shared', { description: 'Shared via device share sheet' });
           return;
-        } catch (err) {
+        } catch (error) {
+          logger.debug('Native share failed or was cancelled', error);
           // user cancelled or share failed, fall through to download fallback
         }
       }
@@ -220,16 +226,14 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
       const caption = 'My siOsi makeup analysis — see results: ' + sessionUrl;
       try {
         await navigator.clipboard.writeText(caption);
-      } catch (e) {
-        // ignore clipboard failures
+      } catch (error) {
+        logger.debug('Failed to copy caption to clipboard', error);
       }
 
-      toast({
-        title: 'Image downloaded',
-        description: 'Open Instagram (or another app) and upload the downloaded image. Caption copied to clipboard.',
-      });
-    } catch (e) {
-      toast({ title: 'Share failed', description: 'Could not create shareable image', variant: 'destructive' });
+    toast('Image downloaded', { description: 'Open Instagram (or another app) and upload the downloaded image. Caption copied to clipboard.' });
+    } catch (error) {
+      logger.error('Share poster generation failed', error);
+      toast.error('Share failed', { description: 'Could not create shareable image' });
     }
   }
 
@@ -247,9 +251,10 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      toast({ title: 'Saved', description: 'Session JSON downloaded' });
-    } catch (err) {
-      toast({ title: 'Save failed', description: 'Could not download session', variant: 'destructive' });
+  toast.success('Saved', { description: 'Session JSON downloaded' });
+    } catch (error) {
+      logger.error('Save session export failed', error);
+      toast.error('Save failed', { description: 'Could not download session' });
     }
   }
 

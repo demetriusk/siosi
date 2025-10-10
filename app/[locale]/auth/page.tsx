@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { AuthForm } from '@/components/auth-form'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
@@ -9,7 +9,6 @@ import { useTranslations } from 'next-intl'
 export default function AuthPage() {
   const params = useParams()
   const locale = (params as any)?.locale as string
-  const router = useRouter()
 
   const [emailRequested, setEmailRequested] = useState<string | null>(null)
   const [resendCooldown, setResendCooldown] = useState<number>(0)
@@ -35,9 +34,9 @@ export default function AuthPage() {
   setEmailRequested(email)
   setResendCooldown(60)
   // Inform the user via toast as well as the inline banner
-  toast.success(t('magic_link.sent'))
+  toast(t('magic_link.sent'))
     } catch (err: any) {
-      toast.error(err?.message || t('magic_link.error') )
+  toast.error(err?.message || t('magic_link.error'))
     }
   }
 
@@ -50,7 +49,7 @@ export default function AuthPage() {
   async function handleResend() {
     if (!emailRequested) return
     if (resendCooldown > 0) {
-      toast.error(t('magic_link.resend_wait', { seconds: resendCooldown }))
+  toast.error(t('magic_link.resend_wait', { seconds: resendCooldown }))
       return
     }
     try {
@@ -59,12 +58,12 @@ export default function AuthPage() {
       const { error } = await (maybeSupabase as any)?.auth?.signInWithOtp?.({ email: emailRequested }) ?? { error: undefined }
       if (error) throw error
       setResendCooldown(60)
-      toast.success(t('magic_link.sent'))
+  toast(t('magic_link.sent'))
       // brief visual confirmation on the banner
       setResentFlash(true)
       setTimeout(() => setResentFlash(false), 1400)
     } catch (err: any) {
-      toast.error(err?.message || t('magic_link.resend_error'))
+  toast.error(err?.message || t('magic_link.resend_error'))
     }
   }
 

@@ -6,6 +6,7 @@
     "share": "Share",
     "save": "Save",
     "skip": "Skip",
+    "clear": "Clear",
     "cancel": "Cancel",
     "continue": "Continue",
     "loading": "Loading...",
@@ -166,6 +167,11 @@
     "confirm_delete_desc": "This will permanently delete this session. This action cannot be undone."
   },
   "profile": {
+    "confirm_delete_title": "Are you sure?",
+    "confirm_delete_desc": "This will permanently remove your profile and all sessions. This action cannot be undone.",
+    "cancel": "Cancel",
+    "deleting": "Deleting...",
+    "deleted_toast": "Profile removed",
     "title": "Profile",
     "skin_type": "Skin Type",
     "skin_types": {

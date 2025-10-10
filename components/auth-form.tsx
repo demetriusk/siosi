@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { FaGoogle } from 'react-icons/fa'
 import React from 'react'
 import { useTranslations } from 'next-intl'
+import logger from '@/lib/logger'
 import { usePathname } from 'next/navigation'
 
 export function AuthForm({
@@ -98,23 +99,27 @@ export function AuthForm({
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
         {(() => {
-            try {
-              // Prefer rich text translation which allows embedding React elements safely
-              return t.rich('login.terms_rich', {
-                terms: (chunks: React.ReactNode) => (
-                  <a href={`/${localeFromPath}/terms`} className="underline">{chunks}</a>
-                ),
-                privacy: (chunks: React.ReactNode) => (
-                  <a href={`/${localeFromPath}/privacy`} className="underline">{chunks}</a>
-                ),
-              })
-          } catch (e) {
-            // missing translation - fall back to previous HTML or JSX
-            try {
-              const html = t('login.terms_html') as string | undefined
-              if (html) return <div dangerouslySetInnerHTML={{ __html: html }} />
-            } catch {}
+          try {
+            // Prefer rich text translation which allows embedding React elements safely
+            return t.rich('login.terms_rich', {
+              terms: (chunks: React.ReactNode) => (
+                <a href={`/${localeFromPath}/terms`} className="underline">{chunks}</a>
+              ),
+              privacy: (chunks: React.ReactNode) => (
+                <a href={`/${localeFromPath}/privacy`} className="underline">{chunks}</a>
+              ),
+            })
+          } catch (error) {
+            logger.warn('Falling back to legacy auth terms translation', error)
           }
+
+          try {
+            const html = t('login.terms_html') as string | undefined
+            if (html) return <div dangerouslySetInnerHTML={{ __html: html }} />
+          } catch (innerError) {
+            logger.debug('Auth terms legacy HTML parse failed', innerError)
+          }
+
           return (
             <>
               By continuing, you agree to our <a href={`/${localeFromPath}` + `/terms`}>Terms of Service</a> and <a href={`/${localeFromPath}` + `/privacy`}>Privacy Policy</a>.

@@ -14,20 +14,83 @@ import { SkinType, SkinTone, LidType } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 // Avoid top-level supabase import in client components; we'll dynamically import when needed.
 import { useRouter } from 'next/navigation';
+import logger from '@/lib/logger';
 
 interface Props {
   locale: string;
 }
 
 export default function ProfileClient({ locale }: Props) {
+  // use Sonner's toast directly
   const [skinType, setSkinType] = useState<SkinType | undefined>();
   const [skinTone, setSkinTone] = useState<SkinTone | undefined>();
   const [lidType, setLidType] = useState<LidType | undefined>();
   const [_language, _setLanguage] = useState<string>(locale);
   const t = useTranslations();
 
-  const handleSave = () => {
-    toast.success('Profile saved successfully!');
+  const handleSave = async () => {
+    try {
+      // dynamically import client supabase to obtain session token
+      const mod = await import('@/lib/supabase');
+      const maybeSupabase: any = (mod as any).supabase ?? (mod as any).default ?? null;
+
+      let token: string | undefined;
+      try {
+        if (maybeSupabase) {
+          // supabase-js v2: auth.getSession()
+          if (typeof maybeSupabase.auth?.getSession === 'function') {
+            const r = await maybeSupabase.auth.getSession();
+            token = r?.data?.session?.access_token ?? r?.session?.access_token;
+          // older clients: auth.session()
+          } else if (typeof maybeSupabase.auth?.session === 'function') {
+            const s = maybeSupabase.auth.session();
+            token = s?.access_token;
+          // some setups expose auth.getUser or similar; try to be defensive
+          } else if (typeof maybeSupabase.auth?.getUser === 'function') {
+            // getUser doesn't return token, but attempt to read any persisted session object
+            try {
+              const maybeAny: any = (maybeSupabase as any)?.auth || {};
+              token = maybeAny?.session?.access_token ?? maybeAny?.currentSession?.access_token;
+            } catch {
+              // ignore nested token extraction issues
+            }
+          }
+        }
+      } catch (error) {
+        logger.debug('Failed to resolve auth token from Supabase client', error);
+      }
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch('/api/profile/save', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ skin_type: skinType, skin_tone: skinTone, lid_type: lidType }),
+      });
+
+      // handle non-json responses safely
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (error) {
+        logger.debug('Unexpected response when saving profile', error);
+        data = { message: text || undefined };
+      }
+
+      if (!res.ok) {
+        const errMsg = data?.error || data?.message || 'Failed to save profile';
+        toast.error(errMsg);
+        return;
+      }
+
+      // Prefer a dedicated success translation if present, then fall back
+      toast.success(t('profile.save_success') || t('profile.save_profile') || 'Profile saved successfully!');
+    } catch (error) {
+      logger.error('Save profile error', error);
+      toast.error('Failed to save profile');
+    }
   };
 
   const completedFields = [skinType, skinTone, lidType].filter(Boolean).length;
@@ -57,7 +120,7 @@ export default function ProfileClient({ locale }: Props) {
                   <Label htmlFor="skin-type" className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.skin_type')}
                   </Label>
-                  <Select value={skinType} onValueChange={(v) => setSkinType(v as SkinType)}>
+                  <Select value={skinType} onValueChange={(v: string) => setSkinType(v as SkinType)}>
                     <SelectTrigger id="skin-type" className="border-[#E5E7EB]">
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>
@@ -96,7 +159,7 @@ export default function ProfileClient({ locale }: Props) {
                   <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.lid_type')}
                   </Label>
-                  <RadioGroup value={lidType} onValueChange={(v) => setLidType(v as LidType)}>
+                  <RadioGroup value={lidType} onValueChange={(v: string) => setLidType(v as LidType)}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {(['hooded', 'standard', 'deep_set'] as LidType[]).map((type) => (
                         <div key={type}>
@@ -178,6 +241,8 @@ function DeleteProfileButton({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  // use the direct sonner toast export
+  // (top-level `toast` import is used)
   const t = useTranslations();
 
   const handleConfirm = async () => {
@@ -196,8 +261,8 @@ function DeleteProfileButton({ locale }: { locale: string }) {
           const s = (maybeSupabase as any).auth.session();
           token = s?.access_token;
         }
-      } catch (e) {
-        // ignore - no session
+      } catch (error) {
+        logger.debug('Failed to resolve Supabase token for profile deletion', error);
       }
 
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -218,9 +283,8 @@ function DeleteProfileButton({ locale }: { locale: string }) {
       toast.success(t('profile.deleted_toast') || 'Profile removed');
       // redirect to homepage
       router.push(`/${locale}`);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Delete profile error', err);
+    } catch (error) {
+      logger.error('Delete profile error', error);
       toast.error('Failed to delete profile');
     } finally {
       setLoading(false);
