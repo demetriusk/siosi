@@ -27,19 +27,32 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
     return 'bg-[#F59E0B] text-white';
   };
 
+  const getScoreColorClass = (score: number) => {
+    if (score >= 8) return 'text-[#10B981]';
+    if (score >= 6) return 'text-[#F59E0B]';
+    if (score >= 4) return 'text-[#F97316]';
+    return 'text-[#EF4444]';
+  };
+
   const labNameKey = `home.labs.${analysis.lab_name}`;
 
   return (
     <div className={`bg-white border border-[#E5E7EB] border-l-4 ${getBorderColorClass(analysis.verdict)} rounded-sm p-6 transition-all hover:shadow-md`}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h3 className="text-lg font-semibold text-[#0A0A0A]">
               {t(labNameKey)}
             </h3>
             <span className={`px-2.5 py-0.5 text-xs font-semibold rounded ${getVerdictBadgeClass(analysis.verdict)}`}>
               {t(`results.verdict.${analysis.verdict.toLowerCase()}`)}
             </span>
+            <div className="flex items-baseline gap-1">
+              <span className={`text-2xl font-bold ${getScoreColorClass(analysis.score)}`}>
+                {analysis.score.toFixed(1)}
+              </span>
+              <span className="text-sm text-[#6B7280]">/10</span>
+            </div>
           </div>
 
           <ConfidenceScore confidence={analysis.confidence} size="sm" />
@@ -53,7 +66,7 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-[#6B7280] hover:text-[#0A0A0A] transition-colors"
+          className="text-[#6B7280] hover:text-[#0A0A0A] transition-colors flex-shrink-0"
           aria-label={isExpanded ? t('results.hide_details') : t('results.show_details')}
         >
           {isExpanded ? (
@@ -95,6 +108,24 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
                   </li>
                 ))}
               </ol>
+            </div>
+          )}
+
+          {analysis.zones_affected && analysis.zones_affected.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold text-[#0A0A0A] mb-2">
+                {t('results.zones_affected', { defaultValue: 'Zones Affected' })}
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {analysis.zones_affected.map((zone, index) => (
+                  <span
+                    key={index}
+                    className="px-2.5 py-1 bg-[#F3F4F6] text-[#374151] text-xs font-medium rounded"
+                  >
+                    {zone}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
