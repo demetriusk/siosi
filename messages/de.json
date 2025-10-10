@@ -52,6 +52,9 @@
       "oxidation": "Goldene-Stunde-Match",
       "creasing": "Hartes-Licht-Test",
       "blending": "Wimpern-Schatten-Check",
+      "shimmer": "Schimmer-Check",
+      "transitions": "Übergangs-Check",
+      "coverage": "Deckkraft-Balance",
       "more": "Unterton-Wahrheit"
     },
     "how_it_works": "Wie es funktioniert",
@@ -120,7 +123,17 @@
       "blending": "Sind die Übergänge weich? Checke das Blending…",
       "shimmer": "Glitzert alles dort, wo es soll?…",
       "transitions": "Suche nach harten Übergängen…",
-      "coverage": "Ist die Deckkraft genau richtig?…"
+      "coverage": "Ist die Deckkraft genau richtig?…",
+      "lighting": "Spotlight-Check: Licht und Winkel testen…",
+      "color": "Farbabgleich: Wärme/Kühle balancieren…",
+      "shade": "Schneller Shade-Match-Check…",
+      "prep": "Hat das Prep geholfen? Primer/Puder-Gefühl…",
+      "powder": "Schon gesetzt? Lese das Puder-Finish…",
+      "contour": "Kontur- und Bronzer-Harmonie…",
+      "blush": "Blush: Blend und Platzierung prüfen…",
+      "lashes": "Schummelt Wimpernschatten irgendwo?…",
+      "highlights": "Highlights glowen, nicht blenden?…",
+      "angles": "Analysiere Winkel und Kameradistanz…"
     }
   },
   "results": {

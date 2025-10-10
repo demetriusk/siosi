@@ -52,6 +52,9 @@
       "oxidation": "Match hora dorada",
       "creasing": "Superviviente de luz intensa",
       "blending": "Control de sombra de pestañas",
+      "shimmer": "Control de brillo",
+      "transitions": "Vigilancia de transiciones",
+      "coverage": "Equilibrio de cobertura",
       "more": "Verdad del subtono"
     },
     "how_it_works": "Cómo funciona",
@@ -120,7 +123,17 @@
       "blending": "¿Los bordes se difuminan? Revisando blending…",
       "shimmer": "¿El brillo está donde debe?…",
       "transitions": "Buscando transiciones marcadas…",
-      "coverage": "¿La cobertura está en su punto?…"
+      "coverage": "¿La cobertura está en su punto?…",
+      "lighting": "Chequeo de iluminación: probando ángulos…",
+      "color": "Pase de balance de color: templando tonos…",
+      "shade": "Comprobación rápida de match de tono…",
+      "prep": "¿Ayudó el prep? Primer/polvo vibes…",
+      "powder": "¿Sellado o no aún? Leyendo acabado de polvo…",
+      "contour": "Armonía de contorno y bronceador…",
+      "blush": "Rubor: difuminado y colocación…",
+      "lashes": "¿Sombra de pestañas haciendo travesuras?…",
+      "highlights": "¿Iluminadores glow y no cegadores?…",
+      "angles": "Analizando ángulos y distancia de cámara…"
     }
   },
   "results": {

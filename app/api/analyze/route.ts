@@ -67,7 +67,7 @@ ${!hasProfile ? 'Note: User profile incomplete. Base undertone/texture analysis 
         {
           role: "system",
           content:
-            "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON."
+            "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind."
         },
         {
           role: "user",
@@ -112,14 +112,20 @@ Labs to analyze:
 11. transitions - demarcation lines at hairline, jawline, or neck; check color mismatch
 12. coverage - foundation coverage appropriateness for ${occasion || 'general use'} in ${indoor_outdoor || 'standard'} lighting
 
-For EACH lab, return:
+For EACH lab, follow these phrasing rules for "detected" and "recommendations":
+- Audience & tone: warm, beauty-community voice; kind, encouraging, optionally a light wink of humor; no technical jargon.
+- Point of view: refer to the subject as "this makeup", "the look", or "this application". Never address the viewer (avoid "you", "your").
+- Length: 2–4 items for "detected" (each 1–2 sentences). 2–5 items for "recommendations" (each 1–2 sentences) with practical, realistic tweaks.
+- No shaming; focus on helpful, friendly tips about products, placement, or technique.
+
+Then return the following JSON shape for each lab:
 {
   "flashback": {
     "verdict": "YAY" | "NAY" | "MAYBE",
     "confidence": 0-100,
     "score": 0-10,
-    "detected": ["specific observation 1", "specific observation 2"],
-    "recommendations": ["actionable fix 1", "actionable fix 2"],
+    "detected": ["observation 1", "observation 2"],
+    "recommendations": ["tip 1", "tip 2"],
     "zones_affected": ["T-zone", "under-eyes"] // optional for placement issues
   },
   ... (repeat for all 12 labs)

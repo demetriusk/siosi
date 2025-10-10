@@ -93,11 +93,11 @@ async function ensureFaceApiScript(): Promise<FaceApiModule> {
 
 let modelsLoaded = false;
 
-export async function loadFaceDetectionModels(): Promise<void> {
+export async function loadFaceDetectionModels(providedFaceApi?: FaceApiModule): Promise<void> {
   if (modelsLoaded) return;
 
   try {
-    const faceapi = await ensureFaceApiScript();
+    const faceapi = providedFaceApi ?? (await ensureFaceApiScript());
     // Simple path - middleware now excludes /models/ from locale routing
     const MODEL_URL = '/models';
     
@@ -114,6 +114,12 @@ export async function loadFaceDetectionModels(): Promise<void> {
   }
 }
 
+export async function ensureFaceApiReady(): Promise<FaceApiModule> {
+  const faceapi = await ensureFaceApiScript();
+  await loadFaceDetectionModels(faceapi);
+  return faceapi;
+}
+
 export interface FaceValidationResult {
   valid: boolean;
   error?: string;
@@ -126,8 +132,7 @@ export interface FaceValidationResult {
 export async function validateFacePhoto(file: File): Promise<FaceValidationResult> {
   try {
     // Ensure models are loaded
-    const faceapi = await ensureFaceApiScript();
-    await loadFaceDetectionModels();
+  const faceapi = await ensureFaceApiReady();
 
     // Convert file to image
     const img = await createImageFromFile(file);

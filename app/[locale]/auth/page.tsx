@@ -1,13 +1,15 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { AuthForm } from '@/components/auth-form'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
 export default function AuthPage() {
   const params = useParams()
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const locale = (params as any)?.locale as string
 
   const [emailRequested, setEmailRequested] = useState<string | null>(null)
@@ -39,6 +41,18 @@ export default function AuthPage() {
   toast.error(err?.message || t('magic_link.error'))
     }
   }
+
+  // Show a toast when redirected from logout
+  useEffect(() => {
+    const loggedOut = searchParams?.get('loggedOut')
+    if (loggedOut) {
+      toast.success('Logged out')
+      // Clean the URL (drop the query param) to avoid repeated toasts on refresh
+      try {
+        router.replace(`/${locale}/auth`)
+      } catch {}
+    }
+  }, [locale, router, searchParams])
 
   useEffect(() => {
     if (resendCooldown <= 0) return

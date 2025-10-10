@@ -13,10 +13,11 @@ interface ChipListProps {
   selected?: string | string[];
   multi?: boolean;
   className?: string;
+  readOnly?: boolean;
   onToggle: (key: string) => void;
 }
 
-export function ChipList({ items, selected, multi = false, className, onToggle }: ChipListProps) {
+export function ChipList({ items, selected, multi = false, className, readOnly = false, onToggle }: ChipListProps) {
   const isSelected = (k: string) => {
     if (multi) return Array.isArray(selected) && selected.includes(k);
     return typeof selected === 'string' && selected === k;
@@ -28,8 +29,8 @@ export function ChipList({ items, selected, multi = false, className, onToggle }
         <Badge
           key={it.key}
           variant={isSelected(it.key) ? 'default' : 'outline'}
-          className="cursor-pointer px-4 py-2 min-h-[44px] flex items-center"
-          onClick={() => onToggle(it.key)}
+          className={(readOnly ? 'cursor-default' : 'cursor-pointer') + ' px-4 py-2 min-h-[44px] flex items-center'}
+          onClick={readOnly ? undefined : () => onToggle(it.key)}
         >
           {/* Use a slightly smaller check icon that inherits the chip text color */}
           {isSelected(it.key) ? (

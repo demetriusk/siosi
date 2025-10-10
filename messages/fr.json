@@ -52,6 +52,9 @@
       "oxidation": "Match heure dorée",
       "creasing": "Survivant lumière dure",
       "blending": "Contrôle cils",
+      "shimmer": "Contrôle du shimmer",
+      "transitions": "Surveillance des transitions",
+      "coverage": "Équilibre de couvrance",
       "more": "Vérité du sous-ton"
     },
     "how_it_works": "Comment ça marche",
@@ -120,7 +123,17 @@
       "blending": "Bords fondus ? Relecture du blending…",
       "shimmer": "Le glow est-il au bon endroit ?…",
       "transitions": "À la chasse aux transitions marquées…",
-      "coverage": "La couvrance est-elle parfaite ?…"
+      "coverage": "La couvrance est-elle parfaite ?…",
+      "lighting": "Spotlight check : angles et lumière…",
+      "color": "Balance des couleurs : on ajuste chaud/froid…",
+      "shade": "Vérif express du match de teinte…",
+      "prep": "Le prep a-t-il aidé ? Primer/poudre vibes…",
+      "powder": "Déjà fixé ? On lit le fini poudre…",
+      "contour": "Harmonie contour et bronzer…",
+      "blush": "Blush : fondu et placement…",
+      "lashes": "Une ombre de cils se faufile ?…",
+      "highlights": "Highlights qui glown sans éblouir ?…",
+      "angles": "Analyse des angles et de la distance caméra…"
     }
   },
   "results": {

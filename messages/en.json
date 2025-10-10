@@ -52,6 +52,9 @@
       "oxidation": "Golden Hour Match",
       "creasing": "Harsh Light Survivor",
       "blending": "Lash Shadow Check",
+      "shimmer": "Shimmer Check",
+      "transitions": "Transition Watch",
+      "coverage": "Coverage Balance",
       "more": "Vein Undertone Truth"
     },
     "how_it_works": "How it works",
@@ -62,7 +65,7 @@
   },
   "camera": {
     "title": "Take a photo",
-    "description": "Line up your face, then tap capture when you're ready.",
+    "description": "Line up your face in the frame and tap capture when you're ready. Quick tips for a flawless shot: no glasses (they hide those gorgeous eyes), no hats (we want to see your whole beautiful face), get nice and close (closer is better — let us see that glow!), and find some good lighting (you deserve to shine). You look amazing, now let's capture it!",
     "error_prefix": "We couldn't open your camera:",
     "permission_denied": "Camera permission denied",
     "permission_help": "Enable camera access in your browser settings and try again.",
@@ -120,7 +123,17 @@
       "blending": "Are edges seamless? Reviewing blending…",
       "shimmer": "Shimmer where it should be?…",
       "transitions": "Looking for harsh transitions…",
-      "coverage": "Is coverage just right?…"
+      "coverage": "Is coverage just right?…",
+      "lighting": "Spotlight check: testing lighting angles…",
+      "color": "Color balance pass: taming warmth & cool tones…",
+      "shade": "Shade match sanity check…",
+      "prep": "Did prep help? Primer/powder vibes…",
+      "powder": "Set or not yet? Reading powder finish…",
+      "contour": "Contour and bronzer harmony scan…",
+      "blush": "Blush blend and placement check…",
+      "lashes": "Any lash shadow sneaking in?…",
+      "highlights": "Highlights glowing, not blinding?…",
+      "angles": "Analyzing angles and camera distance…"
     }
   },
   "results": {

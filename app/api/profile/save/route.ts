@@ -17,12 +17,23 @@ export async function POST(req: NextRequest) {
 
     // Validate token with Supabase Auth endpoint to get user id
     let userId: string | undefined = undefined;
+    const supabaseAuthUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseApiKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ?? process.env.SUPABASE_ANON_KEY
+      ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      ?? '';
+
+    if (!supabaseAuthUrl) {
+      logger.error('SUPABASE_URL is not configured on the server');
+      return Response.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
     try {
-      const resp = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      const resp = await fetch(`${supabaseAuthUrl}/auth/v1/user`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
-          apiKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? ''
+          apiKey: supabaseApiKey
         }
       });
 
@@ -45,10 +56,23 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const { skin_type, skin_tone, lid_type } = body || {};
 
-    const payload: any = { user_id: userId };
-    if (skin_type) payload.skin_type = skin_type;
-    if (skin_tone) payload.skin_tone = skin_tone;
-    if (lid_type) payload.lid_type = lid_type;
+    const normalizeOptional = (value: unknown) => {
+      if (value === undefined) return undefined;
+      if (value === null) return null;
+      if (typeof value === 'string') {
+        return value.trim() === '' ? null : value;
+      }
+      return undefined;
+    };
+
+    const normalizedSkinType = normalizeOptional(skin_type);
+    const normalizedSkinTone = normalizeOptional(skin_tone);
+    const normalizedLidType = normalizeOptional(lid_type);
+
+    const payload: Record<string, unknown> = { user_id: userId };
+    if (normalizedSkinType !== undefined) payload.skin_type = normalizedSkinType;
+    if (normalizedSkinTone !== undefined) payload.skin_tone = normalizedSkinTone;
+    if (normalizedLidType !== undefined) payload.lid_type = normalizedLidType;
 
     // Upsert profile row by user_id
     const { data, error } = await supabase

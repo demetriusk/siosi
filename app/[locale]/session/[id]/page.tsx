@@ -3,11 +3,13 @@ export const dynamic = 'force-dynamic';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Aperture, Gem, PartyPopper, Video, Activity, Home, Trees, Shell, Sun, Thermometer, Droplet, Zap, Camera, Clock, ZoomIn, ThermometerSun, Ghost } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
@@ -75,6 +77,45 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const createdAt = session?.created_at ?? new Date().toISOString();
   const overallScore = session?.overall_score ?? 0;
   const analyses = session?.analyses ?? [];
+  const occasion = session?.occasion;
+  const concerns = session?.concerns ?? [];
+  const where = session?.indoor_outdoor ?? 'both';
+  const climate = session?.climate;
+  const hasProfile = Boolean(session?.skin_type || session?.skin_tone || session?.lid_type);
+
+  // Icon maps (string-keyed to gracefully handle legacy/extended values)
+  const occasionIconMap: Record<string, React.ReactNode> = {
+    photoshoot: <Aperture size={16} className="mr-2" />,
+    wedding: <Gem size={16} className="mr-2" />,
+    party: <PartyPopper size={16} className="mr-2" />,
+    video: <Video size={16} className="mr-2" />,
+    testing: <Activity size={16} className="mr-2" />,
+    work: <Activity size={16} className="mr-2" />,
+    everyday: <Activity size={16} className="mr-2" />,
+    date: <PartyPopper size={16} className="mr-2" />,
+    stage: <Activity size={16} className="mr-2" />,
+    special: <Gem size={16} className="mr-2" />,
+  };
+  const whereIconMap: Record<string, React.ReactNode> = {
+    indoor: <Home size={16} className="mr-2" />,
+    outdoor: <Trees size={16} className="mr-2" />,
+    both: <Shell size={16} className="mr-2" />,
+  };
+  const climateIconMap: Record<string, React.ReactNode> = {
+    dry: <Sun size={16} className="mr-2" />,
+    normal: <Thermometer size={16} className="mr-2" />,
+    humid: <Droplet size={16} className="mr-2" />,
+    hot_humid: <Zap size={16} className="mr-2" />,
+  };
+  const concernIconMap: Record<string, React.ReactNode> = {
+    flash: <Camera size={16} className="mr-2" />,
+    lasting: <Clock size={16} className="mr-2" />,
+    closeup: <ZoomIn size={16} className="mr-2" />,
+    weather: <ThermometerSun size={16} className="mr-2" />,
+    heat: <ThermometerSun size={16} className="mr-2" />,
+    transfer: <Ghost size={16} className="mr-2" />,
+    sensitive: <ThermometerSun size={16} className="mr-2" />,
+  };
 
   const criticalAnalyses = analyses.filter(
     a => a.verdict === 'NAY' && a.confidence >= 80
@@ -251,6 +292,133 @@ export default async function SessionPage({ params }: SessionPageProps) {
               </div>
             </div>
           )}
+
+          {/* Context summary: user's selections from Analyze page (read-only chips) */}
+          <Card className="mb-8 p-6 md:p-8">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">{safeT('results.context.title', 'What this look was checked for')}</h3>
+                {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
+                  <p className="text-sm text-[#6B7280]">
+                    {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Occasion */}
+                    <div>
+                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
+                      <ChipList
+                        items={
+                          occasion
+                            ? [{
+                                key: String(occasion),
+                                label: safeT(`upload.occasions.${occasion}`, String(occasion)),
+                                icon: occasionIconMap[String(occasion)]
+                              }]
+                            : []
+                        }
+                        selected={occasion as any}
+                        readOnly
+                        onToggle={() => {}}
+                      />
+                      {!occasion && (
+                        <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
+                      )}
+                    </div>
+
+                    {/* Where */}
+                    <div>
+                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
+                      <ChipList
+                        items={[{
+                          key: where,
+                          label: safeT(`upload.where.${where}`, where),
+                          icon: whereIconMap[where]
+                        }]}
+                        selected={where as any}
+                        readOnly
+                        onToggle={() => {}}
+                      />
+                    </div>
+
+                    {/* Climate */}
+                    <div>
+                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
+                      <ChipList
+                        items={[{
+                          key: String(climate ?? 'normal'),
+                          label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
+                          icon: climateIconMap[String(climate ?? 'normal')]
+                        }]}
+                        selected={(climate ?? 'normal') as any}
+                        readOnly
+                        onToggle={() => {}}
+                      />
+                    </div>
+
+                    {/* Concerns */}
+                    <div>
+                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
+                      {concerns.length > 0 ? (
+                        <ChipList
+                          items={concerns.map(k => ({
+                            key: String(k),
+                            label: safeT(`upload.concerns.${k as string}`, String(k)),
+                            icon: concernIconMap[String(k)]
+                          }))}
+                          selected={concerns as unknown as any}
+                          multi
+                          readOnly
+                          onToggle={() => {}}
+                        />
+                      ) : (
+                        <p className="text-sm text-[#6B7280]">
+                          {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profile summary and edit CTA */}
+              <div className="pt-4 border-t border-[#E5E7EB]">
+                <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">{safeT('results.profile.title', 'Profile details')}</h3>
+                {hasProfile ? (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {session?.skin_type && (
+                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_type', 'Skin type')}: {session.skin_type}</span>
+                      )}
+                      {session?.skin_tone && (
+                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_tone', 'Skin tone')}: {session.skin_tone}</span>
+                      )}
+                      {session?.lid_type && (
+                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {session.lid_type}</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-[#6B7280]">
+                      {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
+                    </p>
+                    <Link href={`/${locale}/profile`} className="text-sm font-semibold text-[#0A0A0A] underline">
+                      {safeT('results.profile.edit', 'Edit profile')}
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm text-[#6B7280]">
+                      {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
+                    </p>
+                    <Link href={`/${locale}/profile`}>
+                      <Button variant="outline" className="h-9 px-4">
+                        {safeT('results.profile.add', 'Add profile for more accurate results')}
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
 
           {/* Actions are rendered via the client-side SessionActionsClient component above */}
 

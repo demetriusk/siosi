@@ -28,6 +28,17 @@ const PROGRESS_MESSAGE_KEYS = [
   'upload.progress.shimmer',
   'upload.progress.transitions',
   'upload.progress.coverage',
+  // extra friendly "fake" steps for a nicer loading loop
+  'upload.progress.lighting',
+  'upload.progress.color',
+  'upload.progress.shade',
+  'upload.progress.prep',
+  'upload.progress.powder',
+  'upload.progress.contour',
+  'upload.progress.blush',
+  'upload.progress.lashes',
+  'upload.progress.highlights',
+  'upload.progress.angles',
 ] as const;
 
 export default function AnalyzePage() {

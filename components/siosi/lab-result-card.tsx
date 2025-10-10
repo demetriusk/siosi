@@ -58,7 +58,7 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
           <ConfidenceScore confidence={analysis.confidence} size="sm" />
 
           {analysis.detected.length > 0 && (
-            <p className="text-sm text-[#6B7280] line-clamp-2">
+            <p className="text-[#6B7280] line-clamp-2">
               {analysis.detected[0]}
             </p>
           )}
@@ -81,13 +81,12 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
         <div className="mt-6 space-y-6 pt-6 border-t border-[#E5E7EB]">
           {analysis.detected.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-[#0A0A0A] mb-2">
+              <h4 className="font-semibold text-[#0A0A0A] mb-2">
                 {t('results.detected')}
               </h4>
               <ul className="space-y-1.5">
                 {analysis.detected.map((item, index) => (
-                  <li key={index} className="text-sm text-[#6B7280] flex items-start gap-2">
-                    <span className="text-[#D1D5DB] mt-1.5">•</span>
+                  <li key={index} className="text-[#6B7280] flex items-start gap-2">
                     <span>{item}</span>
                   </li>
                 ))}
@@ -97,12 +96,12 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
           {analysis.recommendations.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-[#0A0A0A] mb-2">
+              <h4 className="font-semibold text-[#0A0A0A] mb-2">
                 {t('results.recommendations')}
               </h4>
               <ol className="space-y-1.5">
                 {analysis.recommendations.map((item, index) => (
-                  <li key={index} className="text-sm text-[#0A0A0A] flex items-start gap-2">
+                  <li key={index} className="text-[#0A0A0A] flex items-start gap-2">
                     <span className="text-[#6B7280] font-medium">{index + 1}.</span>
                     <span>{item}</span>
                   </li>

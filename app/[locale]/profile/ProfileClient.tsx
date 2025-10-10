@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -22,13 +22,17 @@ interface Props {
 
 export default function ProfileClient({ locale }: Props) {
   // use Sonner's toast directly
-  const [skinType, setSkinType] = useState<SkinType | undefined>();
-  const [skinTone, setSkinTone] = useState<SkinTone | undefined>();
-  const [lidType, setLidType] = useState<LidType | undefined>();
+  const [skinType, setSkinType] = useState<SkinType | ''>('');
+  const [skinTone, setSkinTone] = useState<SkinTone | ''>('');
+  const [lidType, setLidType] = useState<LidType | ''>('');
   const [_language, _setLanguage] = useState<string>(locale);
   const t = useTranslations();
+  const router = useRouter();
 
-  const handleSave = async () => {
+  // Debounced autosave machinery
+  const saveTimerRef = useRef<number | null>(null);
+
+  const saveProfile = useCallback(async () => {
     try {
       // dynamically import client supabase to obtain session token
       const mod = await import('@/lib/supabase');
@@ -60,13 +64,21 @@ export default function ProfileClient({ locale }: Props) {
         logger.debug('Failed to resolve auth token from Supabase client', error);
       }
 
+      const normalizedSkinType = skinType || null;
+      const normalizedSkinTone = skinTone || null;
+      const normalizedLidType = lidType || null;
+
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const res = await fetch('/api/profile/save', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ skin_type: skinType, skin_tone: skinTone, lid_type: lidType }),
+        body: JSON.stringify({
+          skin_type: normalizedSkinType,
+          skin_tone: normalizedSkinTone,
+          lid_type: normalizedLidType,
+        }),
       });
 
       // handle non-json responses safely
@@ -84,19 +96,84 @@ export default function ProfileClient({ locale }: Props) {
         toast.error(errMsg);
         return;
       }
-
-      // Prefer a dedicated success translation if present, then fall back
-      toast.success(t('profile.save_success') || t('profile.save_profile') || 'Profile saved successfully!');
+      // Silent success for autosave
     } catch (error) {
       logger.error('Save profile error', error);
       toast.error('Failed to save profile');
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skinType, skinTone, lidType]);
+
+  const scheduleSave = useCallback(() => {
+    if (saveTimerRef.current) {
+      window.clearTimeout(saveTimerRef.current);
+    }
+    // debounce saves to avoid spamming API on rapid changes
+    saveTimerRef.current = window.setTimeout(() => {
+      void saveProfile();
+    }, 700);
+  }, [saveProfile]);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      const mod = await import('@/lib/supabase');
+      const maybeSupabase: any = (mod as any).supabase ?? (mod as any).default ?? null;
+      if (maybeSupabase?.auth?.signOut) {
+        await maybeSupabase.auth.signOut();
+      }
+    } catch (error) {
+      logger.debug('Logout attempt error', error);
+    } finally {
+      router.push(`/${locale}/auth?loggedOut=1`);
+    }
+  }, [locale, router]);
 
   const completedFields = [skinType, skinTone, lidType].filter(Boolean).length;
   const totalFields = 3;
 
   const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'dark'];
+
+  useEffect(() => {
+    let active = true;
+
+    (async () => {
+      try {
+        const mod = await import('@/lib/supabase');
+        const maybeSupabase: any = (mod as any).supabase ?? (mod as any).default ?? null;
+        if (!maybeSupabase?.from) return;
+
+        const userRes = await maybeSupabase.auth?.getUser?.();
+        const userId: string | undefined = userRes?.data?.user?.id ?? userRes?.user?.id;
+        if (!userId) return;
+
+        const { data, error } = await maybeSupabase
+          .from('profiles')
+          .select('skin_type, skin_tone, lid_type')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (!active) return;
+
+        if (error) {
+          logger.debug('Failed to load profile defaults', error);
+          return;
+        }
+
+        if (data) {
+          setSkinType((data.skin_type as SkinType) || '');
+          setSkinTone((data.skin_tone as SkinTone) || '');
+          setLidType((data.lid_type as LidType) || '');
+        }
+      } catch (error) {
+        if (!active) return;
+        logger.debug('Profile defaults load threw', error);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -105,9 +182,24 @@ export default function ProfileClient({ locale }: Props) {
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl text-[#0A0A0A] mb-2">
-              {t('profile.title')}
-            </h1>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-3xl text-[#0A0A0A] mb-2">
+                {t('profile.title')}
+              </h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 text-[#6B7280]"
+                onClick={() => {
+                  setSkinType('');
+                  setSkinTone('');
+                  setLidType('');
+                  scheduleSave();
+                }}
+              >
+                {t('common.clear')}
+              </Button>
+            </div>
             <p className="text-[#6B7280]">
               Help us provide better analysis by completing your profile
             </p>
@@ -120,7 +212,7 @@ export default function ProfileClient({ locale }: Props) {
                   <Label htmlFor="skin-type" className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.skin_type')}
                   </Label>
-                  <Select value={skinType} onValueChange={(v: string) => setSkinType(v as SkinType)}>
+                  <Select value={skinType} onValueChange={(v: string) => { setSkinType(v as SkinType); scheduleSave(); }}>
                     <SelectTrigger id="skin-type" className="border-[#E5E7EB]">
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>
@@ -142,7 +234,7 @@ export default function ProfileClient({ locale }: Props) {
                     {skinTones.map((tone, index) => (
                       <button
                         key={tone}
-                        onClick={() => setSkinTone(tone)}
+                        onClick={() => { setSkinTone(tone); scheduleSave(); }}
                         className={`w-12 h-12 rounded-full transition-all ${
                           skinTone === tone ? 'ring-4 ring-[#0A0A0A] ring-offset-2' : ''
                         }`}
@@ -159,7 +251,7 @@ export default function ProfileClient({ locale }: Props) {
                   <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.lid_type')}
                   </Label>
-                  <RadioGroup value={lidType} onValueChange={(v: string) => setLidType(v as LidType)}>
+                  <RadioGroup value={lidType} onValueChange={(v: string) => { setLidType(v as LidType); scheduleSave(); }}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {(['hooded', 'standard', 'deep_set'] as LidType[]).map((type) => (
                         <div key={type}>
@@ -203,12 +295,19 @@ export default function ProfileClient({ locale }: Props) {
               </div>
             </div>
 
-            <Button
-              onClick={handleSave}
-              className="w-full bg-[#0A0A0A] text-white hover:bg-[#1F1F1F] h-12 text-base font-semibold"
-            >
-              {t('profile.save_profile')}
-            </Button>
+            {/* Logout button above Danger Zone */}
+            <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-[#6B7280]">{t('nav.logout')}</p>
+                <Button
+                  variant="outline"
+                  className="h-9 px-3 border-[#E5E7EB]"
+                  onClick={handleLogout}
+                >
+                  {t('nav.logout')}
+                </Button>
+              </div>
+            </div>
 
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
               <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
