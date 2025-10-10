@@ -164,11 +164,29 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
     // Remove the valid flag before returning analyses
     delete result.valid
     
+    // Fun single-word nickname request (glamorous, unique). Keep this separate so the core JSON remains stable.
+    let nickname: string | undefined = undefined;
+    try {
+      const nickRes = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        temperature: 0.9,
+        messages: [
+          { role: 'system', content: 'Return ONLY a single word. No punctuation. Glamorous runway-style nickname. Avoid vulgarity, trademarks, or real person names.' },
+          { role: 'user', content: `Create a unique single-word glamorous nickname inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` }
+        ],
+        max_tokens: 3
+      });
+      nickname = (nickRes.choices?.[0]?.message?.content || '').trim().split(/\s+/)[0]?.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'-]/g, '').slice(0, 24) || undefined;
+    } catch (e) {
+      // ignore nickname errors
+    }
+
     return Response.json({
       analyses: result,
       overall_score: calculateOverallScore(result),
       confidence_avg: calculateAvgConfidence(result),
-      critical_count: calculateCriticalCount(result)
+      critical_count: calculateCriticalCount(result),
+      nickname
     })
     
   } catch (err: any) {

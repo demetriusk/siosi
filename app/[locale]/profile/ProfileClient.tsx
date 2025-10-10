@@ -64,9 +64,9 @@ export default function ProfileClient({ locale }: Props) {
         logger.debug('Failed to resolve auth token from Supabase client', error);
       }
 
-      const normalizedSkinType = skinType || null;
-      const normalizedSkinTone = skinTone || null;
-      const normalizedLidType = lidType || null;
+      const normalizedSkinType = (skinType as string) || null;
+      const normalizedSkinTone = (skinTone as string) || null;
+      const normalizedLidType = (lidType as string) || null;
 
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -74,11 +74,7 @@ export default function ProfileClient({ locale }: Props) {
       const res = await fetch('/api/profile/save', {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          skin_type: normalizedSkinType,
-          skin_tone: normalizedSkinTone,
-          lid_type: normalizedLidType,
-        }),
+        body: JSON.stringify({ skin_type: normalizedSkinType, skin_tone: normalizedSkinTone, lid_type: normalizedLidType }),
       });
 
       // handle non-json responses safely
@@ -194,7 +190,8 @@ export default function ProfileClient({ locale }: Props) {
                   setSkinType('');
                   setSkinTone('');
                   setLidType('');
-                  scheduleSave();
+                  // Force an immediate save with cleared values to avoid debounce races
+                  void saveProfile();
                 }}
               >
                 {t('common.clear')}
@@ -212,7 +209,7 @@ export default function ProfileClient({ locale }: Props) {
                   <Label htmlFor="skin-type" className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.skin_type')}
                   </Label>
-                  <Select value={skinType} onValueChange={(v: string) => { setSkinType(v as SkinType); scheduleSave(); }}>
+                  <Select value={skinType || undefined} onValueChange={(v: string) => { setSkinType(v as SkinType); scheduleSave(); }}>
                     <SelectTrigger id="skin-type" className="border-[#E5E7EB]">
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>

@@ -50,9 +50,14 @@ export function SessionCard({ session, locale }: SessionCardProps) {
 
         <div className="p-4 space-y-3">
           <div className="flex items-start justify-between gap-2">
-            <time className="text-xs text-[#6B7280]">
-              {format(new Date(session.created_at), 'MMM d, yyyy • h:mm a')}
-            </time>
+            <div className="flex flex-col">
+              <time className="text-xs text-[#6B7280]">
+                {format(new Date(session.created_at), 'MMM d, yyyy • h:mm a')}
+              </time>
+              {session.nickname && (
+                <span className="text-sm text-[#0A0A0A] font-semibold leading-tight">{session.nickname}</span>
+              )}
+            </div>
             {session.critical_count > 0 && (
               <span className="flex items-center gap-1 px-2 py-0.5 bg-[#EF4444] text-white text-xs font-medium rounded-full">
                 <AlertCircle className="w-3 h-3" />

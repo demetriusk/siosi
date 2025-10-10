@@ -145,6 +145,7 @@
     "show_details": "Details anzeigen",
     "hide_details": "Details verbergen",
     "detected": "Erkannt",
+  "zones_affected": "Betroffene Bereiche",
     "recommendations": "Empfehlungen",
     "verdict": {
       "yay": "JA",
@@ -153,7 +154,20 @@
     },
     "analyze_another": "Ein weiteres Foto analysieren",
     "no_analyses_title": "Noch keine Analysen",
-    "no_analyses_body": "Wir konnten keine Laborergebnisse für diese Sitzung finden. Versuchen Sie, ein anderes Foto zu analysieren."
+    "no_analyses_body": "Wir konnten keine Laborergebnisse für diese Sitzung finden. Versuchen Sie, ein anderes Foto zu analysieren.",
+    "context": {
+      "title": "Wofür dieser Look geprüft wurde",
+      "empty": "Diesmal wurden keine zusätzlichen Angaben gemacht. Die Ergebnisse können etwas weniger präzise sein. Ein paar schnelle Infos helfen den Labs, gezielter zu arbeiten.",
+      "no_occasion": "Kein Anlass ausgewählt – völlig in Ordnung!",
+      "no_concerns": "Es wurden keine speziellen Sorgen ausgewählt. Wenn der Look Besonderheiten braucht (Blitz, Transfer, Close-ups), hilft das beim nächsten Mal für mehr Genauigkeit."
+    },
+    "profile": {
+      "title": "Profildetails",
+      "tip": "Diese Angaben helfen den Labs, den Look präziser zu lesen. Du kannst sie jederzeit für kommende Sessions anpassen.",
+      "edit": "Profil bearbeiten",
+      "empty": "Noch keine Profildetails. Ein paar kurze Notizen (Haut, Ton, Lider) machen die Empfehlungen persönlicher.",
+      "add": "Profil ergänzen für genauere Ergebnisse"
+    }
   },
   "sessions": {
     "title": "Meine Sitzungen",

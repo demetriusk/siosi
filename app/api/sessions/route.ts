@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
     if (body.lid_type) insertPayload.lid_type = body.lid_type
     if (body.indoor_outdoor) insertPayload.indoor_outdoor = body.indoor_outdoor
     if (body.climate) insertPayload.climate = body.climate
-    if (userId) insertPayload.user_id = userId
+  if (body.nickname) insertPayload.nickname = body.nickname
+  if (userId) insertPayload.user_id = userId
 
     const { data, error } = await supabase
       .from('sessions')

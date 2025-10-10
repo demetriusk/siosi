@@ -138,16 +138,19 @@ export default async function SessionPage({ params }: SessionPageProps) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
             <div>
-              <time className="text-sm text-[#6B7280]">
+              <time className="text-sm text-[#6B7280] block">
                 {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
               </time>
+              {session?.nickname && (
+                <div className="text-base font-semibold text-[#0A0A0A] mt-0.5">{session.nickname}</div>
+              )}
             </div>
             {/* Server component renders a small client wrapper for actions */}
             <SessionActionsClient locale={locale} sessionId={id} />
           </div>
 
           <Card className="mb-8 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <div className="flex flex-col md:flex-row items-start gap-6">
               <div className="w-full md:w-1/3">
                 {session?.photo_url ? (
                   <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm overflow-hidden">
@@ -167,38 +170,159 @@ export default async function SessionPage({ params }: SessionPageProps) {
                 )}
               </div>
 
-              <div className="flex-1 text-center md:text-left">
-                <div className="relative inline-block mb-6">
-                  <svg className="w-32 h-32 transform -rotate-90">
-                    <circle
-                      cx="64"
-                      cy="64"
-                      r="56"
-                      stroke="#E5E7EB"
-                      strokeWidth="8"
-                      fill="none"
-                    />
-                    <circle
-                      cx="64"
-                      cy="64"
-                      r="56"
-                      stroke="#0A0A0A"
-                      strokeWidth="8"
-                      fill="none"
-                      strokeDasharray={`${(overallScore / 10) * 351.86} 351.86`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-[#0A0A0A]">
-                      {overallScore.toFixed(1)}
-                    </span>
+              <div className="flex-1 flex flex-col gap-6">
+                {/* Overall score */}
+                <div className="flex items-center gap-4">
+                  <div className="relative inline-block">
+                    <svg className="w-28 h-28 transform -rotate-90">
+                      <circle cx="56" cy="56" r="48" stroke="#E5E7EB" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="56"
+                        cy="56"
+                        r="48"
+                        stroke="#0A0A0A"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray={`${(overallScore / 10) * 301.59} 301.59`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-3xl font-bold text-[#0A0A0A]">{overallScore.toFixed(1)}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-[#0A0A0A]">
+                      {safeT('results.overall_score', 'Overall score')}
+                    </h2>
+                    <p className="text-sm text-[#6B7280] mt-1">
+                      {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
+                    </p>
                   </div>
                 </div>
 
-                <h2 className="text-xl font-semibold text-[#6B7280]">
-                  {safeT('results.overall_score', 'Overall score')}
-                </h2>
+                {/* Profile summary and edit CTA (moved closer to photo) */}
+                <div className="pt-4 border-t border-[#E5E7EB]">
+                  <h3 className="text-base font-semibold text-[#0A0A0A] mb-2">{safeT('results.profile.title', 'Profile details')}</h3>
+                  {hasProfile ? (
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-2">
+                        {session?.skin_type && (
+                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_type', 'Skin type')}: {session.skin_type}</span>
+                        )}
+                        {session?.skin_tone && (
+                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_tone', 'Skin tone')}: {session.skin_tone}</span>
+                        )}
+                        {session?.lid_type && (
+                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {session.lid_type}</span>
+                        )}
+                      </div>
+                      <p className="text-sm text-[#6B7280]">
+                        {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
+                      </p>
+                      <Link href={`/${locale}/profile`} className="text-sm font-semibold text-[#0A0A0A] underline">
+                        {safeT('results.profile.edit', 'Edit profile')}
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-[#6B7280]">
+                        {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
+                      </p>
+                      <Link href={`/${locale}/profile`}>
+                        <Button variant="outline" className="h-9 px-4">
+                          {safeT('results.profile.add', 'Add profile for more accurate results')}
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Context chips (moved closer to photo) */}
+                <div className="pt-4 border-t border-[#E5E7EB]">
+                  <h3 className="text-base font-semibold text-[#0A0A0A] mb-2">{safeT('results.context.title', 'What this look was checked for')}</h3>
+                  {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
+                    <p className="text-sm text-[#6B7280]">
+                      {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Occasion */}
+                      <div>
+                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
+                        <ChipList
+                          items={
+                            occasion
+                              ? [{
+                                  key: String(occasion),
+                                  label: safeT(`upload.occasions.${occasion}`, String(occasion)),
+                                  icon: occasionIconMap[String(occasion)]
+                                }]
+                              : []
+                          }
+                          selected={occasion as any}
+                          readOnly
+                          onToggle={() => {}}
+                        />
+                        {!occasion && (
+                          <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
+                        )}
+                      </div>
+
+                      {/* Where */}
+                      <div>
+                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
+                        <ChipList
+                          items={[{
+                            key: where,
+                            label: safeT(`upload.where.${where}`, where),
+                            icon: whereIconMap[where]
+                          }]}
+                          selected={where as any}
+                          readOnly
+                          onToggle={() => {}}
+                        />
+                      </div>
+
+                      {/* Climate */}
+                      <div>
+                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
+                        <ChipList
+                          items={[{
+                            key: String(climate ?? 'normal'),
+                            label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
+                            icon: climateIconMap[String(climate ?? 'normal')]
+                          }]}
+                          selected={(climate ?? 'normal') as any}
+                          readOnly
+                          onToggle={() => {}}
+                        />
+                      </div>
+
+                      {/* Concerns */}
+                      <div>
+                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
+                        {concerns.length > 0 ? (
+                          <ChipList
+                            items={concerns.map(k => ({
+                              key: String(k),
+                              label: safeT(`upload.concerns.${k as string}`, String(k)),
+                              icon: concernIconMap[String(k)]
+                            }))}
+                            selected={concerns as unknown as any}
+                            multi
+                            readOnly
+                            onToggle={() => {}}
+                          />
+                        ) : (
+                          <p className="text-sm text-[#6B7280]">
+                            {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </Card>
@@ -293,132 +417,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
             </div>
           )}
 
-          {/* Context summary: user's selections from Analyze page (read-only chips) */}
-          <Card className="mb-8 p-6 md:p-8">
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">{safeT('results.context.title', 'What this look was checked for')}</h3>
-                {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
-                  <p className="text-sm text-[#6B7280]">
-                    {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {/* Occasion */}
-                    <div>
-                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
-                      <ChipList
-                        items={
-                          occasion
-                            ? [{
-                                key: String(occasion),
-                                label: safeT(`upload.occasions.${occasion}`, String(occasion)),
-                                icon: occasionIconMap[String(occasion)]
-                              }]
-                            : []
-                        }
-                        selected={occasion as any}
-                        readOnly
-                        onToggle={() => {}}
-                      />
-                      {!occasion && (
-                        <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
-                      )}
-                    </div>
-
-                    {/* Where */}
-                    <div>
-                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
-                      <ChipList
-                        items={[{
-                          key: where,
-                          label: safeT(`upload.where.${where}`, where),
-                          icon: whereIconMap[where]
-                        }]}
-                        selected={where as any}
-                        readOnly
-                        onToggle={() => {}}
-                      />
-                    </div>
-
-                    {/* Climate */}
-                    <div>
-                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
-                      <ChipList
-                        items={[{
-                          key: String(climate ?? 'normal'),
-                          label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
-                          icon: climateIconMap[String(climate ?? 'normal')]
-                        }]}
-                        selected={(climate ?? 'normal') as any}
-                        readOnly
-                        onToggle={() => {}}
-                      />
-                    </div>
-
-                    {/* Concerns */}
-                    <div>
-                      <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
-                      {concerns.length > 0 ? (
-                        <ChipList
-                          items={concerns.map(k => ({
-                            key: String(k),
-                            label: safeT(`upload.concerns.${k as string}`, String(k)),
-                            icon: concernIconMap[String(k)]
-                          }))}
-                          selected={concerns as unknown as any}
-                          multi
-                          readOnly
-                          onToggle={() => {}}
-                        />
-                      ) : (
-                        <p className="text-sm text-[#6B7280]">
-                          {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Profile summary and edit CTA */}
-              <div className="pt-4 border-t border-[#E5E7EB]">
-                <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">{safeT('results.profile.title', 'Profile details')}</h3>
-                {hasProfile ? (
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      {session?.skin_type && (
-                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_type', 'Skin type')}: {session.skin_type}</span>
-                      )}
-                      {session?.skin_tone && (
-                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_tone', 'Skin tone')}: {session.skin_tone}</span>
-                      )}
-                      {session?.lid_type && (
-                        <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {session.lid_type}</span>
-                      )}
-                    </div>
-                    <p className="text-sm text-[#6B7280]">
-                      {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
-                    </p>
-                    <Link href={`/${locale}/profile`} className="text-sm font-semibold text-[#0A0A0A] underline">
-                      {safeT('results.profile.edit', 'Edit profile')}
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-sm text-[#6B7280]">
-                      {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
-                    </p>
-                    <Link href={`/${locale}/profile`}>
-                      <Button variant="outline" className="h-9 px-4">
-                        {safeT('results.profile.add', 'Add profile for more accurate results')}
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </Card>
+          
 
           {/* Actions are rendered via the client-side SessionActionsClient component above */}
 

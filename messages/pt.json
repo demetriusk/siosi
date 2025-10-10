@@ -145,6 +145,7 @@
     "show_details": "Mostrar detalhes",
     "hide_details": "Ocultar detalhes",
     "detected": "Detectado",
+    "zones_affected": "Zonas afetadas",
     "recommendations": "Recomendações",
     "verdict": {
       "yay": "SIM",
@@ -153,7 +154,20 @@
     },
     "analyze_another": "Analisar outra foto",
     "no_analyses_title": "Nenhuma análise ainda",
-    "no_analyses_body": "Não encontramos resultados desta sessão. Tente analisar outra foto."
+    "no_analyses_body": "Não encontramos resultados desta sessão. Tente analisar outra foto.",
+    "context": {
+      "title": "O que avaliamos neste look",
+      "empty": "Nenhum contexto extra desta vez. O resultado pode ficar um pouco menos preciso. Compartilhar algumas infos rápidas na próxima ajuda os labs a focarem melhor.",
+      "no_occasion": "Nenhuma ocasião escolhida — tudo bem!",
+      "no_concerns": "Nenhuma preocupação específica selecionada. Se o look precisa de atenção especial (flash, transferência, close-ups), inclua isso na próxima vez para mais precisão."
+    },
+    "profile": {
+      "title": "Detalhes do perfil",
+      "tip": "Esses dados ajudam os labs a analisar o look com mais precisão. Atualize quando quiser para as próximas sessões.",
+      "edit": "Editar perfil",
+      "empty": "Ainda sem detalhes de perfil. Algumas notas rápidas (pele, tom, pálpebra) deixam as recomendações mais personalizadas.",
+      "add": "Adicionar perfil para resultados mais precisos"
+    }
   },
   "sessions": {
     "title": "Minhas sessões",

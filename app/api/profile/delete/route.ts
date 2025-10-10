@@ -1,11 +1,9 @@
 import { NextRequest } from 'next/server'
-import { getSupabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import logger from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = getSupabase();
-
     // Require Authorization header with Bearer token and validate it
     const authHeader = req.headers.get('authorization') || '';
     const match = authHeader.match(/^Bearer (.+)$/i);
@@ -17,12 +15,17 @@ export async function POST(req: NextRequest) {
 
     // Validate token with Supabase Auth endpoint to get user id
     let userId: string | undefined = undefined;
+    const supabaseAuthUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseApiKey = supabaseServiceRoleKey ?? supabaseAnonKey ?? '';
+
     try {
-      const resp = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+      const resp = await fetch(`${supabaseAuthUrl}/auth/v1/user`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
-          apiKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? ''
+          apiKey: supabaseApiKey
         }
       });
 
@@ -41,6 +44,14 @@ export async function POST(req: NextRequest) {
       logger.warn('Token validation error', e);
       return Response.json({ error: 'Token validation failed' }, { status: 401 });
     }
+
+    // Create per-request Supabase client respecting RLS
+    const supabase = createClient(supabaseAuthUrl!, supabaseApiKey, {
+      global: {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      },
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
 
     // Fetch sessions belonging to the user
     const { data: sessions, error: selectErr } = await supabase
@@ -91,6 +102,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Delete analyses for these sessions (if any)
+    const sessionIds = (sessions || []).map((s: any) => s.id).filter(Boolean);
+    if (sessionIds.length > 0) {
+      const { error: delAnalysesErr } = await supabase
+        .from('analyses')
+        .delete()
+        .in('session_id', sessionIds);
+      if (delAnalysesErr) {
+        logger.error('Error deleting analyses for sessions', delAnalysesErr);
+        return Response.json({ error: 'Failed to delete analyses' }, { status: 500 });
+      }
+    }
+
     // Delete sessions rows for the user
     const { error: delErr } = await supabase
       .from('sessions')
@@ -100,6 +124,17 @@ export async function POST(req: NextRequest) {
     if (delErr) {
       logger.error('Error deleting sessions', delErr);
       return Response.json({ error: 'Failed to delete sessions' }, { status: 500 });
+    }
+
+    // Delete profile row for the user
+    const { error: delProfileErr } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('user_id', userId);
+
+    if (delProfileErr) {
+      logger.error('Error deleting profile', delProfileErr);
+      return Response.json({ error: 'Failed to delete profile' }, { status: 500 });
     }
 
     // TODO: If you have other tables (analyses, usage_tracking) that reference user_id, delete them here similarly.

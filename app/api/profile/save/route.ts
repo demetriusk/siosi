@@ -1,11 +1,9 @@
 import { NextRequest } from 'next/server'
-import { getSupabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import logger from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = getSupabase();
-
     // Require Authorization header with Bearer token and validate it
     const authHeader = req.headers.get('authorization') || '';
     const match = authHeader.match(/^Bearer (.+)$/i);
@@ -18,10 +16,9 @@ export async function POST(req: NextRequest) {
     // Validate token with Supabase Auth endpoint to get user id
     let userId: string | undefined = undefined;
     const supabaseAuthUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseApiKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-      ?? process.env.SUPABASE_ANON_KEY
-      ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      ?? '';
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseApiKey = supabaseServiceRoleKey ?? supabaseAnonKey ?? '';
 
     if (!supabaseAuthUrl) {
       logger.error('SUPABASE_URL is not configured on the server');
@@ -75,14 +72,56 @@ export async function POST(req: NextRequest) {
     if (normalizedLidType !== undefined) payload.lid_type = normalizedLidType;
 
     // Upsert profile row by user_id
-    const { data, error } = await supabase
+    // Create a per-request Supabase client.
+    // If we have a service role key, use it (bypasses RLS). Otherwise, use anon key
+    // but include the user's JWT so RLS sees the authenticated user.
+    const supabaseUrl = supabaseAuthUrl;
+    const supabaseKey = supabaseApiKey;
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+
+    // Try update-by-user_id first to avoid requiring a unique constraint for upsert
+    let data: any = null;
+    let error: any = null;
+
+    const { data: existing } = await supabase
       .from('profiles')
-      .upsert(payload, { onConflict: 'user_id' })
-      .select()
-      .single();
+      .select('user_id')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (existing) {
+      const upd = await supabase
+        .from('profiles')
+        .update({
+          skin_type: payload.skin_type ?? null,
+          skin_tone: payload.skin_tone ?? null,
+          lid_type: payload.lid_type ?? null,
+        })
+        .eq('user_id', userId)
+        .select()
+        .maybeSingle();
+      data = upd.data;
+      error = upd.error;
+    } else {
+      const ins = await supabase
+        .from('profiles')
+        .insert(payload)
+        .select()
+        .single();
+      data = ins.data;
+      error = ins.error;
+    }
 
     if (error) {
-      logger.error('Error upserting profile', error);
+      logger.error('Error saving profile', error);
       return Response.json({ error: 'Failed to save profile' }, { status: 500 });
     }
 
