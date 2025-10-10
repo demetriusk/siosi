@@ -60,10 +60,22 @@
     "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen",
     "step_number": "Schritt {number}"
   },
+  "camera": {
+    "title": "Foto aufnehmen",
+    "description": "Richte dein Gesicht aus und tippe auf Aufnehmen, wenn du bereit bist.",
+    "error_prefix": "Wir konnten deine Kamera nicht öffnen:",
+    "permission_denied": "Kamerazugriff verweigert",
+    "permission_help": "Aktiviere den Kamerazugriff in deinen Browser-Einstellungen und versuche es erneut.",
+    "retry": "Kamera erneut versuchen",
+    "capture": "Foto aufnehmen",
+    "capturing": "Wird aufgenommen…",
+    "cancel": "Abbrechen"
+  },
   "upload": {
     "drag_drop": "Ziehen Sie das Foto hierher oder klicken Sie, um zu suchen",
     "file_too_large": "Datei ist zu groß. Maximale Größe ist 10MB",
     "invalid_format": "Ungültiges Dateiformat. Bitte laden Sie JPG, PNG oder HEIC hoch",
+    "capture_failed": "Aufgenommenes Foto konnte nicht verarbeitet werden. Bitte versuche es erneut.",
     "analyze_button": "Mein Make-up analysieren",
     "occasion_title": "Wofür ist das?",
     "occasion_optional": "(optional)",
@@ -95,6 +107,20 @@
       "normal": "Normal",
       "humid": "Feucht",
       "hot_humid": "Heiß / Feucht"
+    },
+    "progress": {
+      "flashback": "Kein Geistereffekt: prüfe Flashback…",
+      "pores": "Sage den Poren hallo…",
+      "texture": "Werfe einen Blick auf die Textur…",
+      "undertone": "Finde dein Unterton-Match…",
+      "transfer": "Verschmiert etwas? Teste Transfer…",
+      "longevity": "Wie lange hält es? Prüfe Haltbarkeit…",
+      "oxidation": "Achte auf Oxidationsveränderungen…",
+      "creasing": "Auf Falten-Patrouille…",
+      "blending": "Sind die Übergänge weich? Checke das Blending…",
+      "shimmer": "Glitzert alles dort, wo es soll?…",
+      "transitions": "Suche nach harten Übergängen…",
+      "coverage": "Ist die Deckkraft genau richtig?…"
     }
   },
   "results": {

@@ -60,10 +60,22 @@
     "step3": "Get scored report with recommendations",
     "step_number": "Step {number}"
   },
+  "camera": {
+    "title": "Take a photo",
+    "description": "Line up your face, then tap capture when you're ready.",
+    "error_prefix": "We couldn't open your camera:",
+    "permission_denied": "Camera permission denied",
+    "permission_help": "Enable camera access in your browser settings and try again.",
+    "retry": "Retry camera",
+    "capture": "Capture photo",
+    "capturing": "Capturing…",
+    "cancel": "Cancel"
+  },
   "upload": {
     "drag_drop": "Drag photo here or click to browse",
     "file_too_large": "File is too large. Maximum size is 10MB",
     "invalid_format": "Invalid file format. Please upload JPG, PNG, or HEIC",
+    "capture_failed": "Failed to process captured photo. Please try again.",
     "analyze_button": "Analyze Makeup",
     "occasion_title": "What's this for?",
     "occasion_optional": "(optional)",
@@ -95,6 +107,20 @@
       "normal": "Normal",
       "humid": "Humid",
       "hot_humid": "Hot / Humid"
+    },
+    "progress": {
+      "flashback": "No ghosting: checking flashback…",
+      "pores": "Saying hello to pores…",
+      "texture": "Giving texture a once-over…",
+      "undertone": "Finding your undertone match…",
+      "transfer": "Will it smudge? Testing transfer…",
+      "longevity": "How long will it last? Checking longevity…",
+      "oxidation": "Watching for oxidation shifts…",
+      "creasing": "On crease patrol…",
+      "blending": "Are edges seamless? Reviewing blending…",
+      "shimmer": "Shimmer where it should be?…",
+      "transitions": "Looking for harsh transitions…",
+      "coverage": "Is coverage just right?…"
     }
   },
   "results": {

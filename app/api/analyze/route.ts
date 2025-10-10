@@ -62,17 +62,36 @@ ${!hasProfile ? 'Note: User profile incomplete. Base undertone/texture analysis 
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
+      temperature: 0.1,
       messages: [
+        {
+          role: "system",
+          content:
+            "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON."
+        },
         {
           role: "user",
           content: [
             {
               type: "text",
-              text: `STEP 1: Validate this image first.
-If invalid (multiple faces, no face, illustration/cartoon, no visible makeup, covered face, or not a real photo), return:
+              text: `STEP 1 (LENIENT): Validate the image.
+Accept as valid in these cases:
+- At least one real human face is visible even partially (allow hats, hoods, hair, hands, microphones, phones, props).
+- Multiple people appear but there is a primary face to analyze (focus on the most prominent subject).
+- Runway/editorial/backstage frames, screenshots with UI chrome, heavy flash/shine, strong retouching, or filters.
+- Low resolution or slight blur where facial features are still recognizable.
+
+Only return invalid if:
+- No human face is present or the subject is clearly non-photographic (cartoon, 3D render, AI art).
+- The face is fully obscured (mask/emoji blur) or the resolution/blur is so severe that eyes, nose, and mouth cannot be located.
+- The entire face is out of frame (back-of-head or profile with no facial features).
+
+If borderline, do not reject; continue with STEP 2 but reflect uncertainty via lower confidence scores or MAYBE verdicts.
+
+If invalid, return only:
 { "valid": false, "reason": "specific explanation" }
 
-If valid, proceed to STEP 2.
+Otherwise continue.
 
 STEP 2: Analyze this makeup photo across ALL 12 labs:
 
@@ -89,8 +108,8 @@ Labs to analyze:
 7. oxidation - color shift over time (higher risk in ${climate === 'hot_humid' ? 'hot/humid' : 'normal'} climate)
 8. creasing - settling into lines, especially for ${lidType || 'standard'} eyes
 9. blending - harsh edges, uneven color transitions
-10. shimmer - highlight/shimmer placement emphasizing texture, pores, or lines
-11. transitions - visible demarcation lines at hairline, jawline, or neck
+10. shimmer - highlight/shimmer placement emphasizing texture, pores, or lines; flag textured zones
+11. transitions - demarcation lines at hairline, jawline, or neck; check color mismatch
 12. coverage - foundation coverage appropriateness for ${occasion || 'general use'} in ${indoor_outdoor || 'standard'} lighting
 
 For EACH lab, return:
@@ -101,22 +120,17 @@ For EACH lab, return:
     "score": 0-10,
     "detected": ["specific observation 1", "specific observation 2"],
     "recommendations": ["actionable fix 1", "actionable fix 2"],
-    "zones_affected": ["T-zone", "under-eyes"] // optional, for placement issues
+    "zones_affected": ["T-zone", "under-eyes"] // optional for placement issues
   },
   ... (repeat for all 12 labs)
 }
 
-Specific guidance per new lab:
-- shimmer: Check if highlighter/shimmer emphasizes skin texture, large pores, or fine lines. Flag placement on textured zones.
-- transitions: Look for visible lines where foundation meets natural skin (hairline, jaw, neck). Check for color mismatch at edges.
-- coverage: Assess if coverage level suits the occasion (e.g., too heavy for daytime indoor vs. too light for evening photos). Consider ${indoor_outdoor} context.
-
-Consider how context affects scoring:
+Context-aware scoring reminders:
 - Outdoor events + flash concerns → flashback is critical
-- Humid climate + long wear → longevity/oxidation get stricter
-- User's ${skinType || 'normal'} skin affects texture/longevity/shimmer
-- ${lidType || 'standard'} eyes affect creasing risk
-- ${occasion || 'general'} affects coverage expectations (natural vs. full glam)
+- Humid climate + long wear → longevity/oxidation stricter
+- ${skinType || 'normal'} skin influences texture, longevity, shimmer
+- ${lidType || 'standard'} eyes influence creasing risk
+- ${occasion || 'general'} sets expectations for coverage intensity
 
 Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "flashback": {...}, "pores": {...}, ... all 12 labs }`
             },

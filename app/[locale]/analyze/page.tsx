@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Thermometer, Droplet, Clock, ZoomIn, AlertCircle } from 'lucide-react';
@@ -15,15 +15,20 @@ import { getSupabase } from '@/lib/supabase';
 import { normalizeAnalysesPayload, calculateCriticalCountFromArray } from '@/lib/normalize-analyses';
 import { Occasion, Concern } from '@/lib/types';
 
-const progressMessages = [
-  'progress.analyzing_flashback',
-  'progress.checking_pores',
-  'progress.detecting_undertone',
-  'progress.evaluating_texture',
-  'progress.checking_transfer',
-  'progress.assessing_longevity',
-  'progress.almost_there',
-];
+const PROGRESS_MESSAGE_KEYS = [
+  'upload.progress.flashback',
+  'upload.progress.pores',
+  'upload.progress.texture',
+  'upload.progress.undertone',
+  'upload.progress.transfer',
+  'upload.progress.longevity',
+  'upload.progress.oxidation',
+  'upload.progress.creasing',
+  'upload.progress.blending',
+  'upload.progress.shimmer',
+  'upload.progress.transitions',
+  'upload.progress.coverage',
+] as const;
 
 export default function AnalyzePage() {
   const params = useParams();
@@ -35,9 +40,34 @@ export default function AnalyzePage() {
   const [climate, setClimate] = useState<string | undefined>(undefined);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentMessage] = useState(0);
-  const router = useRouter();
+  const [currentMessage, setCurrentMessage] = useState(0);
   const t = useTranslations();
+  const progressMessages = useMemo(
+    () => PROGRESS_MESSAGE_KEYS.map((key) => t(key)),
+    [t]
+  );
+
+  useEffect(() => {
+    setCurrentMessage(0);
+  }, [progressMessages, isAnalyzing]);
+
+  useEffect(() => {
+    if (!isAnalyzing) {
+      return;
+    }
+
+    if (progressMessages.length <= 1) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setCurrentMessage((prev) => (prev + 1) % progressMessages.length);
+    }, 1800);
+
+    return () => window.clearInterval(interval);
+  }, [isAnalyzing, progressMessages.length]);
+
+  const router = useRouter();
 
   useEffect(() => {
     const photoData = sessionStorage.getItem('siosi_upload_photo');
@@ -220,16 +250,11 @@ export default function AnalyzePage() {
             <Loader2 className="w-16 h-16 animate-spin text-[#0A0A0A] mx-auto" />
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-[#0A0A0A]">
-                Analyzing your makeup...
+                Analyzing makeup...
               </h2>
               <p className="text-[#6B7280] animate-pulse">
-                {t(`upload.${progressMessages[currentMessage]}`)}
+                {progressMessages[currentMessage] ?? ''}
               </p>
-            </div>
-            <div className="w-64 h-2 bg-[#E5E7EB] rounded-full overflow-hidden mx-auto">
-              <div className="h-full bg-[#0A0A0A] animate-progress" style={{
-                animation: 'progress 8s ease-in-out'
-              }} />
             </div>
             <p className="text-sm text-[#6B7280]">This usually takes 8-15 seconds</p>
           </div>

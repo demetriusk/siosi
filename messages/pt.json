@@ -38,10 +38,22 @@
   },
   "home": {
     "hero_title": "Confia e brilha",
+      "camera": {
+        "title": "Tirar uma foto",
+        "description": "Enquadre o rosto e toque em Capturar quando estiver pronta(o).",
+        "error_prefix": "Não foi possível abrir sua câmera:",
+        "permission_denied": "Permissão da câmera negada",
+        "permission_help": "Ative o acesso à câmera nas configurações do navegador e tente novamente.",
+        "retry": "Tentar câmera novamente",
+        "capture": "Capturar foto",
+        "capturing": "Capturando…",
+        "cancel": "Cancelar"
+      },
     "hero_subtitle": "Análise instantânea de maquiagem por IA com pontuações de confiança",
     "upload_cta": "Ou tire uma foto agora",
     "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10 MB)",
     "what_analyzed_title": "O que é analisado",
+        "capture_failed": "Não foi possível processar a foto capturada. Tente novamente.",
     "labs": {
       "flashback": "Lab de flashback",
       "pores": "Prova de poros",
@@ -95,6 +107,20 @@
       "normal": "Normal",
       "humid": "Úmido",
       "hot_humid": "Quente / Úmido"
+    },
+    "progress": {
+      "flashback": "Sem fantasma: conferindo flashback…",
+      "pores": "Dando oi para os poros…",
+      "texture": "Revisando a textura rapidinho…",
+      "undertone": "Buscando o subtom ideal…",
+      "transfer": "Vai borrar? Testando transferência…",
+      "longevity": "Quanto tempo dura? Checando durabilidade…",
+      "oxidation": "De olho em mudanças de oxidação…",
+      "creasing": "Patrulha anti-vincos…",
+      "blending": "Bordas suaves? Revisando o blending…",
+      "shimmer": "Brilho onde deve estar?…",
+      "transitions": "Procurando transições marcadas…",
+      "coverage": "A cobertura está na medida certa?…"
     }
   },
   "results": {

@@ -60,10 +60,22 @@
     "step3": "Obtenez un rapport noté avec des recommandations",
     "step_number": "Étape {number}"
   },
+  "camera": {
+    "title": "Prendre une photo",
+    "description": "Cadrez votre visage puis touchez Capturer quand vous êtes prêt(e).",
+    "error_prefix": "Impossible d'ouvrir votre appareil photo :",
+    "permission_denied": "Accès à la caméra refusé",
+    "permission_help": "Activez l'accès à la caméra dans les réglages de votre navigateur puis réessayez.",
+    "retry": "Réessayer la caméra",
+    "capture": "Capturer la photo",
+    "capturing": "Capture en cours…",
+    "cancel": "Annuler"
+  },
   "upload": {
     "drag_drop": "Glissez la photo ici ou cliquez pour parcourir",
     "file_too_large": "Le fichier est trop volumineux. La taille maximale est de 10 Mo",
     "invalid_format": "Format de fichier invalide. Veuillez télécharger JPG, PNG ou HEIC",
+    "capture_failed": "Impossible de traiter la photo capturée. Réessayez.",
     "analyze_button": "Analyser mon maquillage",
     "occasion_title": "C'est pour quoi?",
     "occasion_optional": "(optionnel)",
@@ -95,6 +107,20 @@
       "normal": "Normal",
       "humid": "Humide",
       "hot_humid": "Chaud / Humide"
+    },
+    "progress": {
+      "flashback": "Pas de fantômes : vérification du flashback…",
+      "pores": "On dit bonjour aux pores…",
+      "texture": "Petit coup d'œil à la texture…",
+      "undertone": "À la recherche de ton sous-ton idéal…",
+      "transfer": "Ça va tacher ? Test transfert…",
+      "longevity": "Combien de temps ça tient ? Vérif de la tenue…",
+      "oxidation": "À l'affût des changements d'oxydation…",
+      "creasing": "En patrouille anti-plis…",
+      "blending": "Bords fondus ? Relecture du blending…",
+      "shimmer": "Le glow est-il au bon endroit ?…",
+      "transitions": "À la chasse aux transitions marquées…",
+      "coverage": "La couvrance est-elle parfaite ?…"
     }
   },
   "results": {

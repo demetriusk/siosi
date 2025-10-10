@@ -60,10 +60,22 @@
     "step3": "Ricevi un rapporto valutato con raccomandazioni",
     "step_number": "Passo {number}"
   },
+  "camera": {
+    "title": "Scatta una foto",
+    "description": "Inquadra il tuo viso e tocca Scatta quando sei pronta/o.",
+    "error_prefix": "Impossibile aprire la fotocamera:",
+    "permission_denied": "Permesso fotocamera negato",
+    "permission_help": "Abilita l'accesso alla fotocamera nelle impostazioni del browser e riprova.",
+    "retry": "Riprova fotocamera",
+    "capture": "Scatta foto",
+    "capturing": "Scatto in corso…",
+    "cancel": "Annulla"
+  },
   "upload": {
     "drag_drop": "Trascina la foto qui o clicca per cercare",
     "file_too_large": "Il file è troppo grande. La dimensione massima è 10MB",
     "invalid_format": "Formato file non valido. Per favore carica JPG, PNG o HEIC",
+    "capture_failed": "Impossibile elaborare la foto scattata. Riprova.",
     "analyze_button": "Analizza il mio trucco",
     "occasion_title": "Per cosa è questo?",
     "occasion_optional": "(opzionale)",

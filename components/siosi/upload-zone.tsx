@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import logger from '@/lib/logger';
+import { CameraCapture } from '@/components/siosi/camera-capture';
 
 // Dynamic import to prevent SSR
 let validateFacePhoto: any = null;
@@ -36,6 +37,8 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
   const [modelsReady, setModelsReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraAvailable, setCameraAvailable] = useState<boolean | null>(null);
   
   const t = useTranslations('upload');
   const tHome = useTranslations('home');
@@ -58,6 +61,15 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
           setError('Failed to initialize face detection. Please refresh.');
         });
     });
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!window.navigator?.mediaDevices?.getUserMedia) {
+      setCameraAvailable(false);
+    } else {
+      setCameraAvailable(true);
+    }
   }, []);
 
   // Clean up preview URL when selectedFile changes
@@ -132,6 +144,19 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
     },
     [onFileSelect, validateFile]
   );
+
+  const handleCameraCapture = useCallback(async (blob: Blob) => {
+    try {
+      const fileName = `camera-capture-${Date.now()}.jpg`;
+      const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
+      await handleFile(file);
+    } catch (err) {
+      logger.error('Camera capture handling failed', err);
+      setError(t('capture_failed'));
+    } finally {
+      setIsCameraOpen(false);
+    }
+  }, [handleFile, t]);
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -218,9 +243,19 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
     },
     openCameraCapture: () => {
       if (!modelsReady || isValidating) return;
-      cameraInputRef.current?.click();
+      if (cameraAvailable === false) {
+        cameraInputRef.current?.click();
+        return;
+      }
+      if (typeof window === 'undefined' || !window.navigator?.mediaDevices?.getUserMedia) {
+        setCameraAvailable(false);
+        cameraInputRef.current?.click();
+        return;
+      }
+      setCameraAvailable(true);
+      setIsCameraOpen(true);
     },
-  }), [isValidating, modelsReady]);
+  }), [cameraAvailable, isValidating, modelsReady]);
 
   return (
     <div className="space-y-3">
@@ -297,6 +332,14 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
           </p>
         </div>
       )}
+
+      <CameraCapture
+        open={isCameraOpen}
+        onClose={() => {
+          setIsCameraOpen(false);
+        }}
+        onCapture={handleCameraCapture}
+      />
     </div>
   );
 });

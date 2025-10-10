@@ -135,7 +135,7 @@ export async function validateFacePhoto(file: File): Promise<FaceValidationResul
     // Detect faces with landmarks using SSD MobileNet
     const detections = await faceapi
       .detectAllFaces(img, new faceapi.SsdMobilenetv1Options({
-        minConfidence: 0.5
+        minConfidence: 0.3
       }))
       .withFaceLandmarks();
 
@@ -149,53 +149,52 @@ export async function validateFacePhoto(file: File): Promise<FaceValidationResul
       };
     }
 
-    // Check 2: Multiple faces (group photo)
-    if (detections.length > 1) {
-      return {
-        valid: false,
-        error: `${detections.length} faces detected. Please upload a photo with only one face`,
-        errorType: 'multiple_faces',
-        faceCount: detections.length
-      };
-    }
+    // Choose the most prominent face (largest bounding box area)
+    const primaryDetection = detections.reduce((best, current) => {
+      const bestBox = best.detection.box;
+      const currentBox = current.detection.box;
+      const bestArea = bestBox.width * bestBox.height;
+      const currentArea = currentBox.width * currentBox.height;
+      return currentArea > bestArea ? current : best;
+    });
 
-    const detection = detections[0];
-    const box = detection.detection.box;
+    const box = primaryDetection.detection.box;
+    const faceCount = detections.length;
 
     // Check 3: Face size ratio
     const faceArea = box.width * box.height;
     const imageArea = img.width * img.height;
     const faceRatio = faceArea / imageArea;
 
-    if (faceRatio < 0.08) {
+    if (faceRatio < 0.04) {
       return {
         valid: false,
         error: 'Face is too small in the photo. Please upload a closer shot',
         errorType: 'face_too_small',
-        faceCount: 1,
+        faceCount,
         faceRatio: Math.round(faceRatio * 100)
       };
     }
 
     // Check 4: Profile view detection
-    const isProfile = detectProfileView(detection.landmarks);
+    const isProfile = detectProfileView(primaryDetection.landmarks);
     if (isProfile) {
       return {
         valid: false,
         error: 'Profile view detected. Please use a front-facing photo',
         errorType: 'profile_view',
-        faceCount: 1
+        faceCount
       };
     }
 
     // Check 5: Image brightness (too dark)
     const brightness = await calculateBrightness(img);
-    if (brightness < 0.25) {
+    if (brightness < 0.18) {
       return {
         valid: false,
         error: 'Photo is too dark. Please use better lighting',
         errorType: 'too_dark',
-        faceCount: 1
+        faceCount
       };
     }
 
@@ -206,16 +205,16 @@ export async function validateFacePhoto(file: File): Promise<FaceValidationResul
         valid: false,
         error: 'Photo is too blurry. Please upload a clearer image',
         errorType: 'blurry',
-        faceCount: 1
+        faceCount
       };
     }
 
     // All checks passed
     return {
       valid: true,
-      faceCount: 1,
+      faceCount,
       faceRatio: Math.round(faceRatio * 100),
-      confidence: detection.detection.score
+      confidence: primaryDetection.detection.score
     };
 
   } catch (error) {
@@ -268,7 +267,7 @@ function detectProfileView(landmarks: FaceLandmarks68): boolean {
   // Profile indicators:
   // - Nose is significantly offset from eye center
   // - Eye distance is very small (one eye hidden)
-  const isProfile = noseOffsetRatio > 0.35 || eyeDistance < 40;
+  const isProfile = noseOffsetRatio > 0.55 || eyeDistance < 30;
 
   return isProfile;
 }
@@ -348,6 +347,6 @@ async function detectBlur(img: HTMLImageElement, faceBox: Box): Promise<boolean>
 
   const blurScore = variance / count;
   
-  // Threshold: < 100 is considered blurry
-  return blurScore < 100;
+  // Threshold: < 60 is considered blurry
+  return blurScore < 60;
 }

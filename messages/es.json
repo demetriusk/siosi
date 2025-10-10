@@ -60,10 +60,22 @@
     "step3": "Recibe un informe con puntaje y recomendaciones",
     "step_number": "Paso {number}"
   },
+  "camera": {
+    "title": "Tomar una foto",
+    "description": "Alinea tu rostro y toca capturar cuando estés listo.",
+    "error_prefix": "No pudimos abrir tu cámara:",
+    "permission_denied": "Permiso de cámara denegado",
+    "permission_help": "Activa el acceso a la cámara en la configuración del navegador e inténtalo de nuevo.",
+    "retry": "Reintentar cámara",
+    "capture": "Capturar foto",
+    "capturing": "Capturando…",
+    "cancel": "Cancelar"
+  },
   "upload": {
     "drag_drop": "Arrastra la foto aquí o haz clic para buscar",
     "file_too_large": "El archivo es demasiado grande. El tamaño máximo es 10 MB",
     "invalid_format": "Formato no válido. Sube JPG, PNG o HEIC",
+    "capture_failed": "No se pudo procesar la foto capturada. Inténtalo de nuevo.",
     "analyze_button": "Analizar maquillaje",
     "occasion_title": "¿Para qué es esto?",
     "occasion_optional": "(opcional)",
@@ -95,6 +107,20 @@
       "normal": "Normal",
       "humid": "Húmedo",
       "hot_humid": "Caluroso / Húmedo"
+    },
+    "progress": {
+      "flashback": "Sin efecto fantasma: revisando flashback…",
+      "pores": "Saludando a los poros…",
+      "texture": "Dando un repaso a la textura…",
+      "undertone": "Buscando tu subtono ideal…",
+      "transfer": "¿Se correrá? Probando transferencia…",
+      "longevity": "¿Cuánto dura? Revisando duración…",
+      "oxidation": "Vigilando cambios de oxidación…",
+      "creasing": "Patrullando los pliegues…",
+      "blending": "¿Los bordes se difuminan? Revisando blending…",
+      "shimmer": "¿El brillo está donde debe?…",
+      "transitions": "Buscando transiciones marcadas…",
+      "coverage": "¿La cobertura está en su punto?…"
     }
   },
   "results": {
