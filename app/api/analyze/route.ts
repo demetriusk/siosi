@@ -213,8 +213,14 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
         model: 'gpt-4o-mini',
         temperature: 0.9,
         messages: [
-          { role: 'system', content: 'Return ONLY a single word. No punctuation. Glamorous runway-style nickname. Avoid vulgarity and trademarks.' },
-          { role: 'user', content: `Create a unique single-word glamorous nickname inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` }
+          { 
+            role: 'system', 
+            content: 'Return ONLY a single word. No punctuation. Think drag queen energy meets fashion week—playful, bold, slightly ridiculous but still chic. Examples of the vibe: Snatched, Bejeweled, Velveteen, Fierce, Juicy, Smolder, Glitterati. Avoid boring adjectives like "radiant" or "luminous". No vulgarity or trademarks.'
+          },
+          { 
+            role: 'user', 
+            content: `Create a unique single-word glamorous nickname with personality, inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` 
+          }
         ],
         max_tokens: 3
       });
