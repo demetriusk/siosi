@@ -136,13 +136,16 @@ export default function AnalyzePage() {
       });
       
       const analysis = await analysisRes.json();
-      
+
       // Handle validation failure or API errors
       if (!analysisRes.ok) {
-        const errorMessage = analysis.reason || analysis.error || 'Analysis failed';
+        // Try to surface server-provided reason if available
+        const serverReason = analysis?.reason || analysis?.error || null;
+        const errorMessage = serverReason || `Analysis failed (status ${analysisRes.status})`;
+        logger.warn('Analysis API failed', { status: analysisRes.status, body: analysis });
         setError(errorMessage);
         setIsAnalyzing(false);
-        
+
         // Delete the uploaded photo if analysis failed
         if (uploadData?.path) {
           await supabase.storage

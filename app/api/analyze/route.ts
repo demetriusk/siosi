@@ -21,6 +21,27 @@ export async function POST(req: NextRequest) {
       indoor_outdoor,
       climate 
     } = await req.json()
+
+    // Validate photoUrl exists
+    if (!photoUrl) {
+      return Response.json({ error: 'Missing photoUrl in request' }, { status: 400 })
+    }
+
+    // Ensure the server can fetch the image and it's an image content-type
+    try {
+      const imgResp = await fetch(photoUrl);
+      if (!imgResp.ok) {
+        const statusText = imgResp.statusText || '';
+        return Response.json({ error: 'Could not fetch photoUrl', reason: `${imgResp.status} ${statusText}` }, { status: 400 })
+      }
+      const contentType = imgResp.headers.get('content-type') || '';
+      if (!contentType.startsWith('image/')) {
+        return Response.json({ error: 'photoUrl did not return an image', reason: `content-type: ${contentType}` }, { status: 400 })
+      }
+    } catch (e: any) {
+      logger.warn('Error fetching photoUrl prior to analysis:', e);
+      return Response.json({ error: 'Failed to fetch photoUrl', reason: e?.message || String(e) }, { status: 400 })
+    }
     
     // Build context information
     const hasProfile = skinType || skinTone || lidType;
