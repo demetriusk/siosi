@@ -15,31 +15,56 @@ export async function POST(req: NextRequest) {
     const token = match ? match[1] : null;
 
     let userId: string | undefined = undefined;
+    // Prefer server-side SUPABASE_URL; prefer a service role key for server validation
+    const supabaseAuthUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseApiKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    const isProd = process.env.NODE_ENV === 'production';
+
+    // In production we require a configured SUPABASE_URL and a server key.
+    if (isProd) {
+      if (!supabaseAuthUrl || !supabaseApiKey) {
+        logger.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in production environment');
+        return Response.json({ error: 'Server misconfiguration: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set' }, { status: 500 });
+      }
+      // In production we require Authorization header to create sessions
+      if (!token) {
+        return Response.json({ error: 'Authorization required' }, { status: 401 });
+      }
+    }
+
     if (token) {
-      try {
-        const resp = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
-          method: 'GET',
-          headers: {
+      if (!supabaseAuthUrl) {
+        // Non-production: allow skipping token validation for local dev if SUPABASE_URL not set
+        logger.warn('SUPABASE_URL not configured on server; skipping token validation and creating anonymous session (dev only)');
+      } else {
+        try {
+          const headers: Record<string, string> = {
             Authorization: `Bearer ${token}`,
-            apiKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? ''
+          };
+          if (supabaseApiKey) headers.apikey = supabaseApiKey;
+
+          const resp = await fetch(`${supabaseAuthUrl}/auth/v1/user`, {
+            method: 'GET',
+            headers
+          });
+
+          if (!resp.ok) {
+            const txt = await resp.text();
+            logger.warn('Supabase token validation failed', { status: resp.status, body: txt });
+            return Response.json({ error: 'Invalid token', reason: txt }, { status: 401 });
           }
-        });
 
-        if (!resp.ok) {
-          const txt = await resp.text();
-          logger.warn('Supabase token validation failed', txt);
-          return Response.json({ error: 'Invalid token' }, { status: 401 });
+          const data = await resp.json();
+          userId = data?.id ?? undefined;
+          if (!userId) {
+            logger.warn('Could not resolve user id from token');
+            return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
+          }
+        } catch (e) {
+          logger.warn('Token validation error', e);
+          return Response.json({ error: 'Token validation failed' }, { status: 401 });
         }
-
-        const data = await resp.json();
-        userId = data?.id ?? undefined;
-        if (!userId) {
-          logger.warn('Could not resolve user id from token');
-          return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
-        }
-      } catch (e) {
-        logger.warn('Token validation error', e);
-        return Response.json({ error: 'Token validation failed' }, { status: 401 });
       }
     } else {
       logger.debug('No Authorization token provided — creating anonymous session');
