@@ -83,6 +83,24 @@ export async function GET(req: NextRequest, context: any) {
 
     const titleText = `siOsi score: ${overall}`;
 
+    // Supabase storage public URL for cached posters
+    const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE;
+    const bucket = 'posters';
+    const publicPath = `${String(id)}.png`;
+    const publicUrl = SUPABASE_URL ? `${SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/${bucket}/${encodeURIComponent(publicPath)}` : null;
+
+    // If public URL exists and is reachable, redirect to it (fast path).
+    // Use a single GET request (simpler than HEAD) because posters are rare.
+    if (publicUrl) {
+      try {
+        const check = await fetch(publicUrl);
+        if (check.ok) return new Response(null, { status: 302, headers: { Location: publicUrl } });
+      } catch (e) {
+        // ignore and continue to generate
+      }
+    }
+
     const image = (
       <div
         style={{
@@ -120,7 +138,35 @@ export async function GET(req: NextRequest, context: any) {
       </div>
     );
 
-    return new ImageResponse(image as any, { width, height, fonts });
+    // Generate image via @vercel/og
+    const imageResponse = new ImageResponse(image as any, { width, height, fonts });
+
+    // Try to upload generated PNG to Supabase storage (service role required)
+    try {
+      // Convert ImageResponse to ArrayBuffer (Edge Response supports arrayBuffer)
+      const buf = await imageResponse.arrayBuffer();
+      // If we have a Supabase service role, PUT the binary directly to the storage object endpoint
+      if (SUPABASE_URL && SUPABASE_SERVICE_ROLE) {
+        const uploadUrl = `${SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/${bucket}/${encodeURIComponent(publicPath)}`;
+        // Note: Supabase storage REST accepts PUT to this endpoint with Authorization: Bearer <service_role>
+        const uploadRes = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${SUPABASE_SERVICE_ROLE}`,
+            'Content-Type': 'image/png',
+          },
+          body: buf,
+        });
+        if (uploadRes.ok && publicUrl) {
+          return new Response(null, { status: 302, headers: { Location: publicUrl } });
+        }
+      }
+      // If upload not configured/failed, return the generated PNG directly
+      return new Response(buf, { status: 200, headers: { 'Content-Type': 'image/png' } });
+    } catch (e) {
+      // As a last-resort fallback, return the ImageResponse (may render as PNG by platform)
+      return imageResponse;
+    }
   } catch (err) {
     return new Response('Poster generation failed', { status: 500 });
   }
