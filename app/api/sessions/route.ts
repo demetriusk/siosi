@@ -96,6 +96,40 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: error.message || 'Insert failed' }, { status: 500 })
     }
 
+    // If analyses were provided inline, attempt to persist them into the
+    // legacy `analyses` table as individual rows (keeps backward compatibility
+    // with older UI code that reads from the separate table).
+    try {
+      const analysesInput = body.analyses ?? [];
+      if (Array.isArray(analysesInput) && analysesInput.length > 0) {
+        // Normalize each analysis item into the DB row shape. Some analyses may
+        // already include `lab_name` vs `name` or other minor differences.
+        const rows = analysesInput.map((a: any) => ({
+          id: a.id ?? undefined,
+          session_id: (data as any).id,
+          lab_name: a.lab_name ?? a.name ?? null,
+          verdict: a.verdict ?? null,
+          confidence: a.confidence ?? null,
+          score: a.score ?? null,
+          detected: a.detected ?? [],
+          recommendations: a.recommendations ?? [],
+          zones_affected: a.zones_affected ?? null,
+          created_at: a.created_at ?? new Date().toISOString(),
+        }));
+
+        const { error: analysesError } = await supabase
+          .from('analyses')
+          .insert(rows);
+
+        if (analysesError) {
+          // Log but don't fail the main request — session creation succeeded.
+          logger.warn('Failed to insert analyses rows', analysesError);
+        }
+      }
+    } catch (e) {
+      logger.warn('Unexpected error while saving analyses rows', e);
+    }
+
     return Response.json(data)
   } catch (err) {
   logger.error('Sessions API error:', err)

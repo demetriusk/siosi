@@ -253,21 +253,9 @@ export default async function SessionPage({ params }: SessionPageProps) {
             </div>
           )}
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-12 p-6 bg-white border border-[#E5E7EB] rounded-sm">
-            <Button variant="outline" className="border-[#E5E7EB]">
-              <Mail className="w-4 h-4 mr-2" />
-              {safeT('results.email_report', 'Email report')}
-            </Button>
-            <Button variant="outline" className="border-[#E5E7EB]">
-              <Share2 className="w-4 h-4 mr-2" />
-              {safeT('results.share_instagram', 'Share to Instagram')}
-            </Button>
-          </div>
+          {/* Actions are rendered via the client-side SessionActionsClient component above */}
 
-          <p className="text-center text-sm text-[#10B981] mt-4 flex items-center justify-center gap-2">
-            <span>✓</span>
-            {safeT('results.saved', 'Saved')}
-          </p>
+          {/* Removed the saved confirmation block per request */}
         </div>
       </main>
 

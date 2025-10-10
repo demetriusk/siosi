@@ -135,3 +135,48 @@ export async function DELETE(req: NextRequest, { params }: { params: any }) {
     return Response.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export async function GET(req: NextRequest, { params }: { params: any }) {
+  try {
+    const { id } = await params;
+    if (!id) return Response.json({ error: 'Missing session id' }, { status: 400 });
+
+    const supabase = getSupabase();
+
+    const { data: session, error: sessionError } = await supabase
+      .from('sessions')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (sessionError) {
+      logger.error('Error fetching session', sessionError);
+      return Response.json({ error: 'Failed to fetch session' }, { status: 500 });
+    }
+
+    if (!session) {
+      return Response.json({ error: 'Session not found' }, { status: 404 });
+    }
+
+    // If analyses are stored inline on the session row prefer them
+    if (session.analyses && Array.isArray(session.analyses)) {
+      return Response.json({ ...session, analyses: session.analyses });
+    }
+
+    const { data: analyses, error: analysesError } = await supabase
+      .from('analyses')
+      .select('*')
+      .eq('session_id', id);
+
+    if (analysesError) {
+      logger.warn('Failed to fetch analyses for session', analysesError);
+      // Return session without analyses as a fallback
+      return Response.json({ ...session, analyses: [] });
+    }
+
+    return Response.json({ ...session, analyses });
+  } catch (err) {
+    logger.error('Session GET API error:', err);
+    return Response.json({ error: 'Server error' }, { status: 500 });
+  }
+}

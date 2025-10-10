@@ -10,6 +10,7 @@
     "lint": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts",
     "lint:fix": "node --no-warnings ./node_modules/.bin/eslint app components lib hooks scripts --fix",
     "typecheck": "tsc --noEmit",
+  "setup:poster": "node scripts/fetch-inter.cjs",
     "validate:i18n": "node scripts/validate-messages.js",
     "check:params": "node scripts/check-params-destructure.js"
   },
@@ -44,7 +45,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@supabase/supabase-js": "^2.58.0",
-    "@types/node": "22.8.7",
+  "@types/node": "22.8.7",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "@vercel/analytics": "^1.5.0",
@@ -78,6 +79,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.6.3",
     "vaul": "^0.9.9",
+    "canvas": "^2.11.2",
+  "@vercel/og": "^0.5.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -85,6 +88,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",
     "eslint-plugin-unused-imports": "^4.2.0",
-    "shadcn": "^3.4.0"
+    "shadcn": "^3.4.0",
+    "adm-zip": "^0.5.10"
   }
 }
