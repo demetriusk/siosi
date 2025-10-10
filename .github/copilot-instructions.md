@@ -73,7 +73,7 @@ Minimal input pattern: auto-fill what the image can provide; prompt the user onl
 6) Implementation pointers & examples
 - See `app/[locale]/analyze/page.tsx` for the upload → Supabase storage → POST /api/analyze flow and how the client logs `{ uploadData, uploadError }`.
 - See `app/api/analyze/route.ts` for the OpenAI prompt structure and JSON parsing expectations. Keep the assistant response strictly JSON.
-- `lib/mock-analysis.ts` contains mock results used in early stages — use it as a reference for response shape.
+- `lib/normalize-analyses.ts` converts OpenAI responses into the canonical session shape and exposes helpers like `calculateCriticalCountFromArray`.
 - `lib/save-session.ts` and `lib/db.ts` show DB insert/select patterns; follow `.insert(...).select().single()`.
 
 7) Debugging & observability
@@ -85,6 +85,6 @@ Minimal input pattern: auto-fill what the image can provide; prompt the user onl
 - `app/api/analyze/route.ts` — OpenAI analysis logic and prompt
 - `lib/supabase.ts`, `lib/db.ts`, `lib/save-session.ts` — storage & DB helpers
 - `lib/types.ts` — canonical types for sessions and lab analyses
-- `lib/mock-analysis.ts` — mock output shape for development
+- `lib/normalize-analyses.ts` — normalization helpers for analysis results
 
 If you'd like, I can add a minimal user-input form (only the human-only fields grouped by lab) or a JSON schema for each lab to validate user-provided context before calling the analyzer. Tell me which labs to prioritize and I'll generate the form + validation schema.

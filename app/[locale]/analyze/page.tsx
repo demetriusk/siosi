@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
-import { calculateCriticalCount } from '@/lib/mock-analysis';
+import { normalizeAnalysesPayload, calculateCriticalCountFromArray } from '@/lib/normalize-analyses';
 import { Occasion, Concern } from '@/lib/types';
 
 const progressMessages = [
@@ -135,7 +135,9 @@ export default function AnalyzePage() {
         })
       });
       
-      const analysis = await analysisRes.json();
+  const analysis = await analysisRes.json();
+
+  const analysesArray = normalizeAnalysesPayload(analysis?.analyses);
 
       // Handle validation failure or API errors
       if (!analysisRes.ok) {
@@ -156,8 +158,6 @@ export default function AnalyzePage() {
       }
       
       // 4. Save to database via server API
-      const analyses = analysis?.analyses ?? [];
-
       // Get userId (already fetched earlier for profile)
       let userId: string | undefined = undefined;
       try {
@@ -187,10 +187,10 @@ export default function AnalyzePage() {
           concerns,
           indoor_outdoor: where,
           climate,
-          analyses,
+          analyses: analysesArray,
           overall_score: analysis?.overall_score ?? 0,
           confidence_avg: analysis?.confidence_avg ?? 0,
-          critical_count: analysis?.critical_count ?? calculateCriticalCount(analyses),
+          critical_count: analysis?.critical_count ?? calculateCriticalCountFromArray(analysesArray),
           user_id: userId,
         })
       });

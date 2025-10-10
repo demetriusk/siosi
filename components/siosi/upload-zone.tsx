@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -8,6 +8,11 @@ import logger from '@/lib/logger';
 
 // Dynamic import to prevent SSR
 let validateFacePhoto: any = null;
+
+export interface UploadZoneHandle {
+  openFileDialog: () => void;
+  openCameraCapture: () => void;
+}
 
 interface UploadZoneProps {
   onFileSelect: (file: File) => void;
@@ -17,18 +22,20 @@ interface UploadZoneProps {
   onClearFile?: () => void;
 }
 
-export function UploadZone({
+export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function UploadZone({
   onFileSelect,
   accept = 'image/jpeg,image/png,image/heic',
   maxSize = 10 * 1024 * 1024,
   selectedFile,
   onClearFile,
-}: UploadZoneProps) {
+}, ref) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [modelsReady, setModelsReady] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
   
   const t = useTranslations('upload');
   const tHome = useTranslations('home');
@@ -159,6 +166,9 @@ export function UploadZone({
     if (files && files.length > 0) {
       handleFile(files[0]);
     }
+
+    // Allow re-selecting the same file/capture consecutively
+    e.target.value = '';
   };
 
   const handleClear = () => {
@@ -201,6 +211,17 @@ export function UploadZone({
     );
   }
 
+  useImperativeHandle(ref, () => ({
+    openFileDialog: () => {
+      if (!modelsReady || isValidating) return;
+      fileInputRef.current?.click();
+    },
+    openCameraCapture: () => {
+      if (!modelsReady || isValidating) return;
+      cameraInputRef.current?.click();
+    },
+  }), [isValidating, modelsReady]);
+
   return (
     <div className="space-y-3">
       <label
@@ -218,9 +239,19 @@ export function UploadZone({
         `}
       >
         <input
+          ref={fileInputRef}
           type="file"
           className="sr-only"
           accept={accept}
+          onChange={handleInputChange}
+          disabled={!modelsReady || isValidating}
+        />
+        <input
+          ref={cameraInputRef}
+          type="file"
+          className="hidden"
+          accept="image/*"
+          capture="environment"
           onChange={handleInputChange}
           disabled={!modelsReady || isValidating}
         />
@@ -268,4 +299,4 @@ export function UploadZone({
       )}
     </div>
   );
-}
+});

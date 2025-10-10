@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -8,13 +8,14 @@ import logger from '@/lib/logger';
 import { Camera } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
-import { UploadZone } from '@/components/siosi/upload-zone';
+import { UploadZone, UploadZoneHandle } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const params = useParams();
   const locale = (params as any)?.locale as string;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const uploadZoneRef = useRef<UploadZoneHandle | null>(null);
   const router = useRouter();
   const t = useTranslations();
 
@@ -104,6 +105,7 @@ export default function HomePage() {
 
             <div className="max-w-2xl mx-auto space-y-6">
               <UploadZone
+                ref={uploadZoneRef}
                 onFileSelect={handleFileSelect}
                 selectedFile={selectedFile}
                 onClearFile={handleClearFile}
@@ -111,8 +113,10 @@ export default function HomePage() {
 
               <div className="text-center">
                 <Button
+                  type="button"
                   variant="outline"
                   className="border-[#E5E7EB] text-[#0A0A0A] hover:bg-[#F9FAFB]"
+                  onClick={() => uploadZoneRef.current?.openCameraCapture()}
                 >
                   <Camera className="w-4 h-4 mr-2" />
                   {t('home.upload_cta')}

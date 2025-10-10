@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import logger from '@/lib/logger'
 import { getSupabase } from '@/lib/supabase'
+import { normalizeAnalysesPayload } from '@/lib/normalize-analyses'
 
 export async function POST(req: NextRequest) {
   try {
@@ -70,9 +71,11 @@ export async function POST(req: NextRequest) {
       logger.debug('No Authorization token provided — creating anonymous session');
     }
 
+  const normalizedAnalyses = normalizeAnalysesPayload(body.analyses)
+
     const insertPayload: any = {
       photo_url: body.photo_url,
-      analyses: body.analyses ?? [],
+      analyses: normalizedAnalyses,
       overall_score: body.overall_score ?? 0,
       confidence_avg: body.confidence_avg ?? 0,
       critical_count: body.critical_count ?? 0,
@@ -83,6 +86,8 @@ export async function POST(req: NextRequest) {
     if (body.skin_type) insertPayload.skin_type = body.skin_type
     if (body.skin_tone) insertPayload.skin_tone = body.skin_tone
     if (body.lid_type) insertPayload.lid_type = body.lid_type
+    if (body.indoor_outdoor) insertPayload.indoor_outdoor = body.indoor_outdoor
+    if (body.climate) insertPayload.climate = body.climate
     if (userId) insertPayload.user_id = userId
 
     const { data, error } = await supabase
@@ -100,21 +105,24 @@ export async function POST(req: NextRequest) {
     // legacy `analyses` table as individual rows (keeps backward compatibility
     // with older UI code that reads from the separate table).
     try {
-      const analysesInput = body.analyses ?? [];
-      if (Array.isArray(analysesInput) && analysesInput.length > 0) {
-        // Normalize each analysis item into the DB row shape. Some analyses may
-        // already include `lab_name` vs `name` or other minor differences.
-        const rows = analysesInput.map((a: any) => ({
-          id: a.id ?? undefined,
-          session_id: (data as any).id,
-          lab_name: a.lab_name ?? a.name ?? null,
-          verdict: a.verdict ?? null,
-          confidence: a.confidence ?? null,
-          score: a.score ?? null,
-          detected: a.detected ?? [],
-          recommendations: a.recommendations ?? [],
-          zones_affected: a.zones_affected ?? null,
-          created_at: a.created_at ?? new Date().toISOString(),
+      if (normalizedAnalyses.length > 0) {
+        const sessionId = (data as any).id;
+        const analysesForSession = normalizedAnalyses.map((analysis) => ({
+          ...analysis,
+          session_id: sessionId,
+        }));
+
+        const rows = analysesForSession.map((analysis) => ({
+          id: analysis.id,
+          session_id: analysis.session_id,
+          lab_name: analysis.lab_name,
+          verdict: analysis.verdict,
+          confidence: analysis.confidence,
+          score: analysis.score,
+          detected: analysis.detected,
+          recommendations: analysis.recommendations,
+          zones_affected: analysis.zones_affected ?? null,
+          created_at: analysis.created_at ?? new Date().toISOString(),
         }));
 
         const { error: analysesError } = await supabase
@@ -125,6 +133,9 @@ export async function POST(req: NextRequest) {
           // Log but don't fail the main request — session creation succeeded.
           logger.warn('Failed to insert analyses rows', analysesError);
         }
+
+        // Ensure the response mirrors the normalized entries including session ids
+        (data as any).analyses = analysesForSession;
       }
     } catch (e) {
       logger.warn('Unexpected error while saving analyses rows', e);
