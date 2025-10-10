@@ -11,7 +11,7 @@
   "lint:fix": "eslint app components lib hooks scripts --fix",
     "typecheck": "tsc --noEmit",
   "setup:poster": "node scripts/fetch-inter.cjs",
-    "validate:i18n": "node scripts/validate-messages.js",
+  "validate:i18n": "node scripts/validate-messages.cjs",
     "check:params": "node scripts/check-params-destructure.js"
   },
   "dependencies": {

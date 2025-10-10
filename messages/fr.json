@@ -1,57 +1,29 @@
 {
   "common": {
-    "upload": "Télécharger",
-    "analyze": "Analyser",
-    "share": "Partager",
-    "save": "Enregistrer",
-    "skip": "Passer",
+    "photo": "Photo",
     "clear": "Effacer",
-    "cancel": "Annuler",
-    "continue": "Continuer",
-    "loading": "Chargement...",
-    "error": "Erreur",
-    "success": "Succès"
+    "cancel": "Annuler"
   },
   "nav": {
     "home": "Accueil",
     "sessions": "Mes sessions",
     "login": "Se connecter",
     "logout": "Se déconnecter",
-    "register": "S'inscrire",
     "profile": "Profil",
     "about": "À propos"
   },
   "auth": {
     "login": {
       "title": "Content de vous revoir",
-      "description": "Connectez-vous avec votre compte Apple ou Google",
-  "terms_html": "En continuant, vous acceptez nos <a href=\"#\">Conditions d'utilisation</a> et notre <a href=\"#\">Politique de confidentialité</a>.",
-  "terms_rich": "En continuant, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
-      "button": "Se connecter",
-  "or_continue_with": "Ou continuer avec",
-  "email_placeholder": "you@example.com",
+      "description": "Connectez-vous avec votre compte Google",
+      "terms_html": "En continuant, vous acceptez nos <a href=\"#\">Conditions d'utilisation</a> et notre <a href=\"#\">Politique de confidentialité</a>.",
+      "terms_rich": "En continuant, vous acceptez nos <terms>Conditions d'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
+      "or_continue_with": "Ou continuer avec",
+      "email_placeholder": "you@example.com",
       "sso_continue_with": "Continuer avec {provider}",
-      "email_label": "E-mail",
-      "password_label": "Mot de passe",
-      "forgot_password": "Mot de passe oublié ?",
-      "signup_cta": "Pas de compte ? Inscrivez-vous"
+      "email_label": "E-mail"
     },
-    "register": {
-      "title": "Créez votre compte",
-      "description": "Créez un compte pour enregistrer des sessions et obtenir des recommandations personnalisées",
-      "button": "Créer un compte",
-      "sso_continue_with": "Continuer avec {provider}",
-      "email_label": "E-mail",
-      "password_label": "Mot de passe",
-      "signin_cta": "Vous avez déjà un compte ? Connectez-vous"
-    },
-    "reset": {
-      "title": "Réinitialisez votre mot de passe",
-      "sent": "Vérifiez votre e-mail pour un lien de réinitialisation.",
-      "button": "Envoyer le lien de réinitialisation",
-      "back_to_signin": "Retour à la connexion"
-    }
-    ,
+    "login_required": "Veuillez vous connecter pour continuer",
     "magic_link": {
       "sent": "Lien magique envoyé",
       "sent_details": "Nous avons envoyé un lien de connexion à {email}. Veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam ou courrier indésirable.",
@@ -60,7 +32,7 @@
       "dismiss": "Fermer",
       "error": "Échec de l'envoi du lien magique",
       "resend_error": "Échec de la nouvelle tentative",
-  "description": "Utilisez Google ou demandez un lien magique. Si vous choisissez un lien magique, nous vous enverrons un lien sécurisé par e-mail — veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam.",
+      "description": "Utilisez Google ou demandez un lien magique. Si vous choisissez un lien magique, nous vous enverrons un lien sécurisé par e-mail — veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam.",
       "resent_badge": "Renvoyé"
     }
   },
@@ -85,14 +57,11 @@
     "how_it_works": "Comment ça marche",
     "step1": "Téléversez votre photo de maquillage",
     "step2": "L'IA analyse 4 à 9 aspects différents",
-    "step3": "Obtenez un rapport noté avec des recommandations"
-    ,
+    "step3": "Obtenez un rapport noté avec des recommandations",
     "step_number": "Étape {number}"
   },
   "upload": {
-    "supported_formats": "Formats pris en charge : JPG, PNG, HEIC (max 10 Mo)",
     "drag_drop": "Glissez la photo ici ou cliquez pour parcourir",
-    "take_photo": "Prendre une photo",
     "file_too_large": "Le fichier est trop volumineux. La taille maximale est de 10 Mo",
     "invalid_format": "Format de fichier invalide. Veuillez télécharger JPG, PNG ou HEIC",
     "analyze_button": "Analyser mon maquillage",
@@ -125,17 +94,7 @@
       "dry": "Sec",
       "normal": "Normal",
       "humid": "Humide",
-      "hot": "Chaud",
       "hot_humid": "Chaud / Humide"
-    },
-    "progress": {
-      "analyzing_flashback": "Analyse du risque de flashback...",
-      "checking_pores": "Vérification de la visibilité des pores...",
-      "detecting_undertone": "Détection du sous-ton...",
-      "evaluating_texture": "Évaluation de la texture...",
-      "checking_transfer": "Vérification du risque de transfert...",
-      "assessing_longevity": "Évaluation de la longévité...",
-      "almost_there": "Presque prêt..."
     }
   },
   "results": {
@@ -153,15 +112,12 @@
       "nay": "NON",
       "maybe": "PEUT-ÊTRE"
     },
-    "email_report": "Envoyer ce rapport par e-mail",
-    "share_instagram": "Partager sur Instagram",
-    "saved": "Enregistré dans vos sessions",
-    "analyze_another": "Analyser une autre photo"
+    "analyze_another": "Analyser une autre photo",
+    "no_analyses_title": "Aucune analyse pour le moment",
+    "no_analyses_body": "Nous n'avons trouvé aucun résultat pour cette session. Essayez d'analyser une autre photo."
   },
   "sessions": {
     "title": "Mes sessions",
-    "sessions_used": "{used}/{total} sessions utilisées ce mois-ci",
-    "resets": "Réinitialise {date}",
     "empty_title": "Pas encore de sessions",
     "empty_subtitle": "Téléversez votre première photo pour commencer",
     "view_report": "Voir le rapport",
@@ -171,18 +127,26 @@
       "needs_work": "À améliorer",
       "issues_found": "Problèmes trouvés"
     },
-    "upgrade_prompt": "Vous avez utilisé vos 3 sessions gratuites",
-    "upgrade_button": "Passer à Pro - $5/mois"
+    "deleted_toast": "Session supprimée",
+    "delete": "Supprimer",
+    "deleting": "Suppression...",
+    "confirm_delete_title": "Supprimer la session ?",
+    "confirm_delete_desc": "Cela supprimera définitivement cette session. Cette action est irréversible."
   },
   "profile": {
+    "confirm_delete_title": "Êtes-vous sûr ?",
+    "confirm_delete_desc": "Cela supprimera définitivement votre profil et toutes les sessions. Cette action est irréversible.",
+    "cancel": "Annuler",
+    "deleting": "Suppression...",
+    "deleted_toast": "Profil supprimé",
     "title": "Profil",
     "skin_type": "Type de peau",
     "skin_types": {
       "dry": "Sèche",
       "normal": "Normale",
-      "combo": "Mixte",
+      "combination": "Mixte",
       "oily": "Grasse",
-      "not_sure": "Pas sûr(e)"
+      "sensitive": "Sensible"
     },
     "skin_tone": "Teint",
     "lid_type": "Type de paupière",

@@ -1,57 +1,29 @@
 {
   "common": {
-    "upload": "Carica",
-    "analyze": "Analizza",
-    "share": "Condividi",
-    "save": "Salva",
-    "skip": "Salta",
+    "photo": "Foto",
     "clear": "Pulisci",
-    "cancel": "Annulla",
-    "continue": "Continua",
-    "loading": "Caricamento...",
-    "error": "Errore",
-    "success": "Successo"
+    "cancel": "Annulla"
   },
   "nav": {
     "home": "Home",
     "sessions": "Le mie sessioni",
     "login": "Accedi",
     "logout": "Disconnetti",
-    "register": "Registrati",
     "profile": "Profilo",
     "about": "Informazioni"
   },
   "auth": {
     "login": {
       "title": "Bentornato",
-      "description": "Accedi con il tuo account Apple o Google",
-  "terms_html": "Continuando, accetti i nostri <a href=\"#\">Termini di servizio</a> e la <a href=\"#\">Informativa sulla privacy</a>.",
-  "terms_rich": "Continuando, accetti i nostri <terms>Termini di servizio</terms> e la <privacy>Informativa sulla privacy</privacy>.",
+      "description": "Accedi con il tuo account Google",
+      "terms_html": "Continuando, accetti i nostri <a href=\"#\">Termini di servizio</a> e la <a href=\"#\">Informativa sulla privacy</a>.",
+      "terms_rich": "Continuando, accetti i nostri <terms>Termini di servizio</terms> e la <privacy>Informativa sulla privacy</privacy>.",
       "or_continue_with": "O continua con",
       "email_placeholder": "you@example.com",
-      "button": "Accedi",
       "sso_continue_with": "Continua con {provider}",
-      "email_label": "Email",
-      "password_label": "Password",
-      "forgot_password": "Hai dimenticato la password?",
-      "signup_cta": "Non hai un account? Registrati"
+      "email_label": "Email"
     },
-    "register": {
-      "title": "Crea il tuo account",
-      "description": "Crea un account per salvare le sessioni e ricevere raccomandazioni personalizzate",
-      "button": "Crea account",
-      "sso_continue_with": "Continua con {provider}",
-      "email_label": "Email",
-      "password_label": "Password",
-      "signin_cta": "Hai già un account? Accedi"
-    },
-    "reset": {
-      "title": "Reimposta la tua password",
-      "sent": "Controlla la tua email per il link di ripristino.",
-      "button": "Invia link di ripristino",
-      "back_to_signin": "Torna al login"
-    }
-    ,
+    "login_required": "Accedi per continuare",
     "magic_link": {
       "sent": "Link magico inviato",
       "sent_details": "Abbiamo inviato un link di accesso a {email}. Clicca il link per completare l'accesso. Se non lo vedi, controlla la cartella spam o posta indesiderata.",
@@ -60,8 +32,8 @@
       "dismiss": "Chiudi",
       "error": "Invio del link magico fallito",
       "resend_error": "Reinvio fallito",
-  "description": "Usa Google o richiedi un link magico. Se scegli un link magico, ti invieremo un link sicuro via e-mail — fai clic su quel link per completare l'accesso. Se non lo vedi, controlla la cartella spam.",
-        "resent_badge": "Reinviato"
+      "description": "Usa Google o richiedi un link magico. Se scegli un link magico, ti invieremo un link sicuro via e-mail — fai clic su quel link per completare l'accesso. Se non lo vedi, controlla la cartella spam.",
+      "resent_badge": "Reinviato"
     }
   },
   "home": {
@@ -85,14 +57,11 @@
     "how_it_works": "Come funziona",
     "step1": "Carica la tua foto del trucco",
     "step2": "L'IA analizza 4-9 aspetti diversi",
-    "step3": "Ricevi un rapporto valutato con raccomandazioni"
-    ,
+    "step3": "Ricevi un rapporto valutato con raccomandazioni",
     "step_number": "Passo {number}"
   },
   "upload": {
-    "supported_formats": "Formati supportati: JPG, PNG, HEIC (max 10MB)",
     "drag_drop": "Trascina la foto qui o clicca per cercare",
-    "take_photo": "Scatta una foto",
     "file_too_large": "Il file è troppo grande. La dimensione massima è 10MB",
     "invalid_format": "Formato file non valido. Per favore carica JPG, PNG o HEIC",
     "analyze_button": "Analizza il mio trucco",
@@ -125,17 +94,7 @@
       "dry": "Secco",
       "normal": "Normale",
       "humid": "Umido",
-      "hot": "Caldo",
       "hot_humid": "Caldo / Umido"
-    },
-    "progress": {
-      "analyzing_flashback": "Analizzando rischio di flashback...",
-      "checking_pores": "Controllando visibilità dei pori...",
-      "detecting_undertone": "Rilevando sottotono...",
-      "evaluating_texture": "Valutando texture...",
-      "checking_transfer": "Controllando rischio di trasferimento...",
-      "assessing_longevity": "Valutando longevità...",
-      "almost_there": "Quasi pronto..."
     }
   },
   "results": {
@@ -153,15 +112,12 @@
       "nay": "NO",
       "maybe": "FORSE"
     },
-    "email_report": "Invia questo rapporto via email",
-    "share_instagram": "Condividi su Instagram",
-    "saved": "Salvato nelle tue sessioni",
-    "analyze_another": "Analizza un'altra foto"
+    "analyze_another": "Analizza un'altra foto",
+    "no_analyses_title": "Ancora nessuna analisi",
+    "no_analyses_body": "Non abbiamo trovato risultati per questa sessione. Prova ad analizzare un'altra foto."
   },
   "sessions": {
     "title": "Le mie sessioni",
-    "sessions_used": "{used}/{total} sessioni usate questo mese",
-    "resets": "Si resetta {date}",
     "empty_title": "Nessuna sessione ancora",
     "empty_subtitle": "Carica la tua prima foto per iniziare",
     "view_report": "Visualizza rapporto",
@@ -171,18 +127,26 @@
       "needs_work": "Necessita lavoro",
       "issues_found": "Problemi trovati"
     },
-    "upgrade_prompt": "Hai usato tutte e 3 le sessioni gratuite",
-    "upgrade_button": "Aggiorna a Pro - $5/mese"
+    "deleted_toast": "Sessione eliminata",
+    "delete": "Elimina",
+    "deleting": "Eliminazione...",
+    "confirm_delete_title": "Eliminare la sessione?",
+    "confirm_delete_desc": "Questo eliminerà definitivamente questa sessione. Questa azione non può essere annullata."
   },
   "profile": {
+    "confirm_delete_title": "Sei sicuro?",
+    "confirm_delete_desc": "Questo rimuoverà definitivamente il tuo profilo e tutte le sessioni. Questa azione non può essere annullata.",
+    "cancel": "Annulla",
+    "deleting": "Eliminazione...",
+    "deleted_toast": "Profilo rimosso",
     "title": "Profilo",
     "skin_type": "Tipo di pelle",
     "skin_types": {
       "dry": "Secca",
       "normal": "Normale",
-      "combo": "Mista",
+      "combination": "Mista",
       "oily": "Grassa",
-      "not_sure": "Non sicuro"
+      "sensitive": "Sensibile"
     },
     "skin_tone": "Tono della pelle",
     "lid_type": "Tipo di palpebra",

@@ -1,66 +1,38 @@
 {
   "common": {
-    "upload": "Carregar",
-    "analyze": "Analisar",
-    "share": "Compartilhar",
-    "save": "Salvar",
-    "skip": "Pular",
+    "photo": "Foto",
     "clear": "Limpar",
-    "cancel": "Cancelar",
-    "continue": "Continuar",
-    "loading": "Carregando...",
-    "error": "Erro",
-    "success": "Sucesso"
+    "cancel": "Cancelar"
   },
   "nav": {
     "home": "Início",
-    "sessions": "Minhas Sessões",
-    "login": "Entrar",
+    "sessions": "Minhas sessões",
+    "login": "Meu perfil",
     "logout": "Sair",
-    "register": "Registrar",
-    "profile": "Perfil",
+    "profile": "Meu perfil",
     "about": "Sobre"
   },
   "auth": {
     "login": {
-      "title": "Bem-vindo de volta",
-      "description": "Entre com sua conta Apple ou Google",
-  "terms_html": "Ao continuar, você concorda com nossos <a href=\"#\">Termos de Serviço</a> e a <a href=\"#\">Política de Privacidade</a>.",
-  "terms_rich": "Ao continuar, você concorda com nossos <terms>Termos de Serviço</terms> e a <privacy>Política de Privacidade</privacy>.",
+      "title": "Bem-vindo",
+      "description": "Entre com sua conta Google",
+      "terms_html": "Ao continuar, você concorda com nossos <a href=\"#\">Termos de Serviço</a> e a <a href=\"#\">Política de Privacidade</a>.",
+      "terms_rich": "Ao continuar, você concorda com nossos <terms>Termos de Serviço</terms> e a <privacy>Política de Privacidade</privacy>.",
       "or_continue_with": "Ou continue com",
       "email_placeholder": "you@example.com",
-      "button": "Entrar",
       "sso_continue_with": "Continuar com {provider}",
-      "email_label": "E-mail",
-      "password_label": "Senha",
-      "forgot_password": "Esqueceu sua senha?",
-      "signup_cta": "Ainda não tem conta? Registre-se"
+      "email_label": "E-mail"
     },
-    "register": {
-      "title": "Crie sua conta",
-      "description": "Crie uma conta para salvar sessões e obter recomendações personalizadas",
-      "button": "Criar conta",
-      "sso_continue_with": "Continuar com {provider}",
-      "email_label": "E-mail",
-      "password_label": "Senha",
-      "signin_cta": "Já tem uma conta? Entrar"
-    },
-    "reset": {
-      "title": "Redefina sua senha",
-      "sent": "Verifique seu e-mail para um link de redefinição.",
-      "button": "Enviar link de redefinição",
-      "back_to_signin": "Voltar para o login"
-    }
-    ,
+    "login_required": "Faça login para continuar",
     "magic_link": {
       "sent": "Link mágico enviado",
-      "sent_details": "Enviamos um link de login para {email}. Clique no link para concluir o login. Se não encontrar, verifique sua pasta de spam ou lixo eletrônico.",
+      "sent_details": "Enviamos um link de acesso para {email}. Clique nele para concluir o login. Se não encontrar, verifique a pasta de spam ou lixo eletrônico.",
       "resend": "Reenviar link",
       "resend_wait": "Aguarde {seconds}s antes de reenviar",
       "dismiss": "Fechar",
       "error": "Erro ao enviar o link mágico",
-      "resend_error": "Reenvio falhou",
-  "description": "Use Google ou solicite um link mágico. Se escolher o link mágico, enviaremos um link seguro por e-mail — clique nesse link para concluir o login. Se não encontrar, verifique a pasta de spam.",
+      "resend_error": "Falha ao reenviar",
+      "description": "Use Google ou solicite um link mágico. Se escolher o link mágico, enviaremos um link seguro por e-mail — clique nele para concluir o login. Se não aparecer, verifique a pasta de spam.",
       "resent_badge": "Reenviado"
     }
   },
@@ -68,34 +40,31 @@
     "hero_title": "Confia e brilha",
     "hero_subtitle": "Análise instantânea de maquiagem por IA com pontuações de confiança",
     "upload_cta": "Ou tire uma foto agora",
-    "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10MB)",
+    "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10 MB)",
     "what_analyzed_title": "O que é analisado",
     "labs": {
       "flashback": "Lab de flashback",
       "pores": "Prova de poros",
-      "texture": "Detector de textura",
-      "undertone": "Check de Zoom",
+      "texture": "Gatilho de textura",
+      "undertone": "Checagem no Zoom",
       "transfer": "Polícia de vincos",
       "longevity": "Medidor de duração",
       "oxidation": "Match hora dourada",
-      "creasing": "Sobrevivente de luz",
-      "blending": "Check de cílios",
+      "creasing": "Sobrevivente de luz forte",
+      "blending": "Checagem de sombra de cílios",
       "more": "Verdade do subtom"
     },
     "how_it_works": "Como funciona",
     "step1": "Carregue sua foto de maquiagem",
-    "step2": "IA analisa 4-9 aspectos diferentes",
-    "step3": "Receba um relatório com pontuações e recomendações"
-    ,
+    "step2": "A IA analisa de 4 a 9 aspectos",
+    "step3": "Receba um relatório com pontuação e recomendações",
     "step_number": "Passo {number}"
   },
   "upload": {
-    "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10MB)",
     "drag_drop": "Arraste a foto aqui ou clique para procurar",
-    "take_photo": "Tirar foto",
-    "file_too_large": "O arquivo é muito grande. O tamanho máximo é 10MB",
-    "invalid_format": "Formato inválido. Por favor envie JPG, PNG ou HEIC",
-    "analyze_button": "Analisar minha maquiagem",
+    "file_too_large": "O arquivo é muito grande. O tamanho máximo é 10 MB",
+    "invalid_format": "Formato inválido. Envie JPG, PNG ou HEIC",
+    "analyze_button": "Analisar maquiagem",
     "occasion_title": "Para que é isso?",
     "occasion_optional": "(opcional)",
     "occasions": {
@@ -125,25 +94,15 @@
       "dry": "Seco",
       "normal": "Normal",
       "humid": "Úmido",
-      "hot": "Quente",
       "hot_humid": "Quente / Úmido"
-    },
-    "progress": {
-      "analyzing_flashback": "Analisando risco de flashback...",
-      "checking_pores": "Verificando visibilidade de poros...",
-      "detecting_undertone": "Detectando subtom...",
-      "evaluating_texture": "Avaliando textura...",
-      "checking_transfer": "Verificando risco de transferência...",
-      "assessing_longevity": "Avaliando longevidade...",
-      "almost_there": "Quase lá..."
     }
   },
   "results": {
-    "overall_score": "Pontuação Geral Prevista",
+    "overall_score": "Pontuação geral prevista",
     "critical": "Crítico",
     "watch_these": "Fique de olho",
     "looking_good": "Parece bom",
-    "confidence": "{percent}% confiante",
+    "confidence": "{percent}% de confiança",
     "show_details": "Mostrar detalhes",
     "hide_details": "Ocultar detalhes",
     "detected": "Detectado",
@@ -153,15 +112,12 @@
       "nay": "NÃO",
       "maybe": "TALVEZ"
     },
-    "email_report": "Enviar este relatório por e-mail",
-    "share_instagram": "Compartilhar no Instagram",
-    "saved": "Salvo nas suas sessões",
-    "analyze_another": "Analisar outra foto"
+    "analyze_another": "Analisar outra foto",
+    "no_analyses_title": "Nenhuma análise ainda",
+    "no_analyses_body": "Não encontramos resultados desta sessão. Tente analisar outra foto."
   },
   "sessions": {
-    "title": "Minhas Sessões",
-    "sessions_used": "{used}/{total} sessões usadas este mês",
-    "resets": "Reinicia em {date}",
+    "title": "Minhas sessões",
     "empty_title": "Nenhuma sessão ainda",
     "empty_subtitle": "Carregue sua primeira foto para começar",
     "view_report": "Ver relatório",
@@ -171,27 +127,35 @@
       "needs_work": "Precisa melhorar",
       "issues_found": "Problemas encontrados"
     },
-    "upgrade_prompt": "Você usou todas as 3 sessões gratuitas",
-    "upgrade_button": "Atualizar para Pro - $5/mês"
+    "deleted_toast": "Sessão excluída",
+    "delete": "Excluir",
+    "deleting": "Excluindo...",
+    "confirm_delete_title": "Excluir sessão?",
+    "confirm_delete_desc": "Isso excluirá a sessão permanentemente. Essa ação não pode ser desfeita."
   },
   "profile": {
+    "confirm_delete_title": "Tem certeza?",
+    "confirm_delete_desc": "Isso removerá permanentemente seu perfil e todas as sessões. Essa ação não pode ser desfeita.",
+    "cancel": "Cancelar",
+    "deleting": "Excluindo...",
+    "deleted_toast": "Perfil removido",
     "title": "Perfil",
     "skin_type": "Tipo de pele",
     "skin_types": {
       "dry": "Seca",
       "normal": "Normal",
-      "combo": "Mista",
+      "combination": "Mista",
       "oily": "Oleosa",
-      "not_sure": "Não sei"
+      "sensitive": "Sensível"
     },
     "skin_tone": "Tom de pele",
     "lid_type": "Tipo de pálpebra",
     "lid_types": {
-      "hooded": "Caiu",
+      "hooded": "Caída",
       "standard": "Padrão",
       "deep_set": "Profunda"
     },
-    "complete_profile": "Complete seu perfil para desbloquear 5 previsões a mais",
+    "complete_profile": "Complete seu perfil para desbloquear mais 5 previsões",
     "progress": "{completed}/{total} concluído",
     "save_profile": "Salvar perfil",
     "language_preference": "Preferência de idioma",
@@ -199,12 +163,12 @@
     "delete_data": "Excluir todos os meus dados"
   },
   "about": {
-    "title": "O que é siosi.me?",
-    "description": "siosi.me é uma plataforma de análise de maquiagem com IA que ajuda você a entender como sua maquiagem se comportará em diferentes situações. Carregue uma foto e obtenha previsões instantâneas em vários aspectos.",
+    "title": "O que é siOsi?",
+    "description": "siOsi é um analista de maquiagem com IA que ajuda você a entender como sua maquiagem vai se comportar em diferentes situações. Carregue uma foto e receba previsões instantâneas em vários aspectos.",
     "confidence_title": "Entendendo as pontuações de confiança",
     "confidence_high": "Muito provavelmente preciso",
-    "confidence_medium": "Boa previsão, alguma incerteza",
-    "confidence_low": "Estimativa aproximada, leve em consideração",
-    "disclaimer": "Nossas previsões são recomendações baseadas em IA. Sempre confie no seu julgamento e procure aconselhamento profissional para eventos importantes."
+    "confidence_medium": "Boa previsão, com alguma incerteza",
+    "confidence_low": "Estimativa aproximada, use com cautela",
+    "disclaimer": "Nossas previsões são recomendações baseadas em IA. Confie sempre no seu julgamento e procure um profissional para eventos importantes."
   }
 }

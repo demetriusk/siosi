@@ -1,67 +1,38 @@
 {
   "common": {
-    "upload": "Hochladen",
-    "analyze": "Analysieren",
-    "share": "Teilen",
-    "save": "Speichern",
-    "skip": "Überspringen",
+    "photo": "Foto",
     "clear": "Zurücksetzen",
-    "cancel": "Abbrechen",
-    "continue": "Fortfahren",
-    "loading": "Lädt...",
-    "error": "Fehler",
-    "success": "Erfolg"
+    "cancel": "Abbrechen"
   },
   "nav": {
     "home": "Start",
     "sessions": "Meine Sitzungen",
     "login": "Einloggen",
     "logout": "Ausloggen",
-    "register": "Registrieren",
     "profile": "Profil",
     "about": "Über"
   },
   "auth": {
     "login": {
       "title": "Willkommen zurück",
-      "description": "Melden Sie sich mit Ihrem Apple- oder Google-Konto an",
-  "terms_html": "Indem Sie fortfahren, stimmen Sie unseren <a href=\"#\">Nutzungsbedingungen</a> und der <a href=\"#\">Datenschutzrichtlinie</a> zu.",
-  "terms_rich": "Indem Sie fortfahren, stimmen Sie unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzrichtlinie</privacy> zu.",
+      "description": "Melden Sie sich mit Ihrem Google-Konto an",
+      "terms_html": "Indem Sie fortfahren, stimmen Sie unseren <a href=\"#\">Nutzungsbedingungen</a> und der <a href=\"#\">Datenschutzrichtlinie</a> zu.",
+      "terms_rich": "Indem Sie fortfahren, stimmen Sie unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzrichtlinie</privacy> zu.",
       "or_continue_with": "Oder fortfahren mit",
       "email_placeholder": "you@example.com",
-      "button": "Einloggen",
       "sso_continue_with": "Weiter mit {provider}",
-      "email_label": "E-Mail",
-      "password_label": "Passwort",
-      "forgot_password": "Passwort vergessen?",
-      "signup_cta": "Noch kein Konto? Registrieren"
+      "email_label": "E-Mail"
     },
-    "register": {
-      "title": "Erstellen Sie Ihr Konto",
-      "description": "Erstellen Sie ein Konto, um Sitzungen zu speichern und personalisierte Empfehlungen zu erhalten",
-      "button": "Konto erstellen",
-      "sso_continue_with": "Weiter mit {provider}",
-      "email_label": "E-Mail",
-      "password_label": "Passwort",
-      "signin_cta": "Sie haben bereits ein Konto? Einloggen"
-    },
-    "reset": {
-      "title": "Setzen Sie Ihr Passwort zurück",
-      "sent": "Überprüfen Sie Ihre E-Mails auf einen Link zum Zurücksetzen.",
-      "button": "Reset-Link senden",
-      "back_to_signin": "Zurück zum Einloggen"
-    }
-    ,
+    "login_required": "Bitte melden Sie sich an, um fortzufahren",
     "magic_link": {
-      "sent": "Magic link gesendet",
+      "sent": "Magic Link gesendet",
       "sent_details": "Wir haben einen Anmeldelink an {email} gesendet. Bitte klicken Sie auf den Link, um die Anmeldung abzuschließen. Wenn Sie ihn nicht sehen, prüfen Sie Ihren Spam- oder Junk-Ordner.",
       "resend": "Link erneut senden",
       "resend_wait": "Bitte warten Sie {seconds}s, bevor Sie erneut senden",
       "dismiss": "Schließen",
-      "error": "Magic link fehlgeschlagen",
+      "error": "Magic Link fehlgeschlagen",
       "resend_error": "Erneutes Senden fehlgeschlagen",
-  "description": "Verwenden Sie Google oder fordern Sie einen Magic Link an. Wenn Sie einen Magic Link wählen, senden wir Ihnen einen sicheren Link per E-Mail — klicken Sie auf diesen Link, um die Anmeldung abzuschließen. Wenn Sie die E-Mail nicht sehen, prüfen Sie Ihren Spam-Ordner."
-      ,
+      "description": "Verwenden Sie Google oder fordern Sie einen Magic Link an. Wenn Sie einen Magic Link wählen, senden wir Ihnen einen sicheren Link per E-Mail — klicken Sie auf diesen Link, um die Anmeldung abzuschließen. Wenn Sie die E-Mail nicht sehen, prüfen Sie Ihren Spam-Ordner.",
       "resent_badge": "Erneut gesendet"
     }
   },
@@ -72,28 +43,25 @@
     "supported_formats": "Unterstützte Formate: JPG, PNG, HEIC (max. 10MB)",
     "what_analyzed_title": "Was analysiert wird",
     "labs": {
-      "flashback": "Flashback-labor",
-      "pores": "Poren-check",
-      "texture": "Textur-detektor",
-      "undertone": "Zoom-gesichtstest",
-      "transfer": "Falten-kontrolle",
-      "longevity": "Haltbarkeits-messer",
-      "oxidation": "Goldene-stunde-match",
-      "creasing": "Hartes-licht-test",
-      "blending": "Wimpern-schatten-check",
-      "more": "Unterton-wahrheit"
+      "flashback": "Flashback-Labor",
+      "pores": "Poren-Check",
+      "texture": "Textur-Detektor",
+      "undertone": "Zoom-Gesichtstest",
+      "transfer": "Falten-Kontrolle",
+      "longevity": "Haltbarkeits-Messer",
+      "oxidation": "Goldene-Stunde-Match",
+      "creasing": "Hartes-Licht-Test",
+      "blending": "Wimpern-Schatten-Check",
+      "more": "Unterton-Wahrheit"
     },
     "how_it_works": "Wie es funktioniert",
     "step1": "Laden Sie Ihr Make-up-Foto hoch",
     "step2": "Die KI analysiert 4–9 verschiedene Aspekte",
-    "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen"
-    ,
+    "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen",
     "step_number": "Schritt {number}"
   },
   "upload": {
-    "supported_formats": "Unterstützte Formate: JPG, PNG, HEIC (max. 10MB)",
     "drag_drop": "Ziehen Sie das Foto hierher oder klicken Sie, um zu suchen",
-    "take_photo": "Foto aufnehmen",
     "file_too_large": "Datei ist zu groß. Maximale Größe ist 10MB",
     "invalid_format": "Ungültiges Dateiformat. Bitte laden Sie JPG, PNG oder HEIC hoch",
     "analyze_button": "Mein Make-up analysieren",
@@ -126,17 +94,7 @@
       "dry": "Trocken",
       "normal": "Normal",
       "humid": "Feucht",
-      "hot": "Heiß",
       "hot_humid": "Heiß / Feucht"
-    },
-    "progress": {
-      "analyzing_flashback": "Analysiere Flashback-Risiko...",
-      "checking_pores": "Überprüfe Porensichtbarkeit...",
-      "detecting_undertone": "Erkenne Unterton...",
-      "evaluating_texture": "Bewerte Textur...",
-      "checking_transfer": "Überprüfe Übertragungsrisiko...",
-      "assessing_longevity": "Bewerte Haltbarkeit...",
-      "almost_there": "Fast fertig..."
     }
   },
   "results": {
@@ -154,15 +112,12 @@
       "nay": "NEIN",
       "maybe": "VIELLEICHT"
     },
-    "email_report": "Diesen Bericht per E-Mail senden",
-    "share_instagram": "Bei Instagram teilen",
-    "saved": "In Ihren Sitzungen gespeichert",
-    "analyze_another": "Ein weiteres Foto analysieren"
+    "analyze_another": "Ein weiteres Foto analysieren",
+    "no_analyses_title": "Noch keine Analysen",
+    "no_analyses_body": "Wir konnten keine Laborergebnisse für diese Sitzung finden. Versuchen Sie, ein anderes Foto zu analysieren."
   },
   "sessions": {
     "title": "Meine Sitzungen",
-    "sessions_used": "{used}/{total} Sitzungen diesen Monat verwendet",
-    "resets": "Setzt zurück {date}",
     "empty_title": "Noch keine Sitzungen",
     "empty_subtitle": "Laden Sie Ihr erstes Foto hoch, um zu beginnen",
     "view_report": "Bericht ansehen",
@@ -172,18 +127,26 @@
       "needs_work": "Verbesserungswürdig",
       "issues_found": "Probleme gefunden"
     },
-    "upgrade_prompt": "Sie haben alle 3 kostenlosen Sitzungen verwendet",
-    "upgrade_button": "Auf Pro upgraden - $5/Monat"
+    "deleted_toast": "Sitzung gelöscht",
+    "delete": "Löschen",
+    "deleting": "Wird gelöscht...",
+    "confirm_delete_title": "Sitzung löschen?",
+    "confirm_delete_desc": "Dies wird diese Sitzung dauerhaft löschen. Dieser Vorgang kann nicht rückgängig gemacht werden."
   },
   "profile": {
+    "confirm_delete_title": "Sind Sie sicher?",
+    "confirm_delete_desc": "Dadurch werden Ihr Profil und alle Sitzungen dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "deleting": "Wird gelöscht...",
+    "deleted_toast": "Profil entfernt",
     "title": "Profil",
     "skin_type": "Hauttyp",
     "skin_types": {
       "dry": "Trocken",
       "normal": "Normal",
-      "combo": "Kombiniert",
+      "combination": "Mischhaut",
       "oily": "Ölig",
-      "not_sure": "Nicht sicher"
+      "sensitive": "Empfindlich"
     },
     "skin_tone": "Hautfarbe",
     "lid_type": "Lidtyp",
