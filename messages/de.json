@@ -125,7 +125,8 @@
       "dry": "Trocken",
       "normal": "Normal",
       "humid": "Feucht",
-      "hot": "Heiß"
+      "hot": "Heiß",
+      "hot_humid": "Heiß / Feucht"
     },
     "progress": {
       "analyzing_flashback": "Analysiere Flashback-Risiko...",

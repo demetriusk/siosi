@@ -125,7 +125,8 @@
       "dry": "Dry",
       "normal": "Normal",
       "humid": "Humid",
-      "hot": "Hot"
+      "hot": "Hot",
+      "hot_humid": "Жарко / Влажно"
     },
     "progress": {
       "analyzing_flashback": "Analyzing flashback risk...",

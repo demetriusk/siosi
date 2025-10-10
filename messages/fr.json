@@ -124,7 +124,8 @@
       "dry": "Sec",
       "normal": "Normal",
       "humid": "Humide",
-      "hot": "Chaud"
+      "hot": "Chaud",
+      "hot_humid": "Chaud / Humide"
     },
     "progress": {
       "analyzing_flashback": "Analyse du risque de flashback...",

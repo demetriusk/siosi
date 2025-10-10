@@ -8,39 +8,41 @@ export async function POST(req: NextRequest) {
 
     const supabase = getSupabase();
 
-    // Require Authorization header with Bearer token and validate it
+    // Authorization header is optional. If present, validate the token and
+    // resolve a user id. If absent, proceed with anonymous session creation.
     const authHeader = req.headers.get('authorization') || '';
     const match = authHeader.match(/^Bearer (.+)$/i);
     const token = match ? match[1] : null;
 
-    if (!token) {
-      return Response.json({ error: 'Missing Authorization token' }, { status: 401 });
-    }
-
     let userId: string | undefined = undefined;
-    try {
-      const resp = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          apiKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? ''
+    if (token) {
+      try {
+        const resp = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? ''
+          }
+        });
+
+        if (!resp.ok) {
+          const txt = await resp.text();
+          logger.warn('Supabase token validation failed', txt);
+          return Response.json({ error: 'Invalid token' }, { status: 401 });
         }
-      });
 
-      if (!resp.ok) {
-        const txt = await resp.text();
-  logger.warn('Supabase token validation failed', txt);
-        return Response.json({ error: 'Invalid token' }, { status: 401 });
+        const data = await resp.json();
+        userId = data?.id ?? undefined;
+        if (!userId) {
+          logger.warn('Could not resolve user id from token');
+          return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
+        }
+      } catch (e) {
+        logger.warn('Token validation error', e);
+        return Response.json({ error: 'Token validation failed' }, { status: 401 });
       }
-
-      const data = await resp.json();
-      userId = data?.id ?? undefined;
-      if (!userId) {
-        return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
-      }
-    } catch (e) {
-  logger.warn('Token validation error', e);
-      return Response.json({ error: 'Token validation failed' }, { status: 401 });
+    } else {
+      logger.debug('No Authorization token provided — creating anonymous session');
     }
 
     const insertPayload: any = {

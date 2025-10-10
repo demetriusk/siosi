@@ -107,40 +107,16 @@ export default function AnalyzePage() {
         .from('makeup-photos')
         .getPublicUrl(uploadData.path).data.publicUrl;
       
-      // 2. Fetch user profile if authenticated
-      let profile = {
+      // 2. (Optional) We intentionally avoid fetching the `profiles` row
+      // from the client to prevent direct REST requests that may fail due
+      // to RLS/policy differences. The server will associate a session
+      // with a user when an Authorization token is provided. Continue
+      // with undefined profile fields; analysis can run without them.
+      const profile = {
         skinType: undefined as string | undefined,
         skinTone: undefined as string | undefined,
         lidType: undefined as string | undefined
       };
-
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('skin_type, skin_tone, lid_type')
-            .eq('user_id', user.id)
-            .single();
-          
-          if (profileData && !profileError) {
-            profile = {
-              skinType: profileData.skin_type,
-              skinTone: profileData.skin_tone,
-              lidType: profileData.lid_type
-            };
-            logger.debug('User profile loaded:', profile);
-          } else {
-            logger.debug('No profile found for user');
-          }
-        } else {
-          logger.debug('User not authenticated, skipping profile fetch');
-        }
-      } catch (err) {
-        logger.warn('Could not fetch user profile:', err);
-        // Continue with undefined values
-      }
       
       // 3. Call analysis API
 
@@ -188,9 +164,20 @@ export default function AnalyzePage() {
         // ignore - unauthenticated
       }
 
+      // Attach Authorization header when we have an access token so the
+      // server can associate the session with an authenticated user.
+      let authHeader: Record<string, string> = { 'Content-Type': 'application/json' };
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = (session as any)?.access_token ?? (session as any)?.accessToken ?? null;
+        if (token) authHeader['Authorization'] = `Bearer ${token}`;
+      } catch (e) {
+        // ignore - proceed without Authorization
+      }
+
       const createRes = await fetch('/api/sessions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeader,
         body: JSON.stringify({
           photo_url: photoUrl,
           occasion,

@@ -124,7 +124,8 @@
       "dry": "Seco",
       "normal": "Normal",
       "humid": "Úmido",
-      "hot": "Quente"
+      "hot": "Quente",
+      "hot_humid": "Quente / Úmido"
     },
     "progress": {
       "analyzing_flashback": "Analisando risco de flashback...",
