@@ -230,7 +230,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-sm text-[#6B7280]">
+                      <p className="text-sm text-[#6B7280] mb-2">
                         {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
                       </p>
                       <SessionProfileCta
