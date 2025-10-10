@@ -31,8 +31,26 @@ export default function ProfileClient({ locale }: Props) {
 
   // Debounced autosave machinery
   const saveTimerRef = useRef<number | null>(null);
+  const latestValuesRef = useRef<{ skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }>({
+    skinType: '',
+    skinTone: '',
+    lidType: '',
+  });
 
-  const saveProfile = useCallback(async () => {
+  useEffect(() => {
+    latestValuesRef.current = { skinType, skinTone, lidType };
+  }, [skinType, skinTone, lidType]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        window.clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const saveProfile = useCallback(async (values: { skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }) => {
     try {
       // dynamically import client supabase to obtain session token
       const mod = await import('@/lib/supabase');
@@ -64,9 +82,9 @@ export default function ProfileClient({ locale }: Props) {
         logger.debug('Failed to resolve auth token from Supabase client', error);
       }
 
-      const normalizedSkinType = (skinType as string) || null;
-      const normalizedSkinTone = (skinTone as string) || null;
-      const normalizedLidType = (lidType as string) || null;
+      const normalizedSkinType = (values.skinType as string) || null;
+      const normalizedSkinTone = (values.skinTone as string) || null;
+      const normalizedLidType = (values.lidType as string) || null;
 
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -98,15 +116,19 @@ export default function ProfileClient({ locale }: Props) {
       toast.error('Failed to save profile');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skinType, skinTone, lidType]);
+  }, []);
 
-  const scheduleSave = useCallback(() => {
+  const scheduleSave = useCallback((nextValues?: Partial<{ skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }>) => {
     if (saveTimerRef.current) {
       window.clearTimeout(saveTimerRef.current);
     }
+    if (nextValues && Object.keys(nextValues).length > 0) {
+      latestValuesRef.current = { ...latestValuesRef.current, ...nextValues };
+    }
+    const payload = { ...latestValuesRef.current };
     // debounce saves to avoid spamming API on rapid changes
     saveTimerRef.current = window.setTimeout(() => {
-      void saveProfile();
+      void saveProfile(payload);
     }, 700);
   }, [saveProfile]);
 
@@ -159,6 +181,11 @@ export default function ProfileClient({ locale }: Props) {
           setSkinType((data.skin_type as SkinType) || '');
           setSkinTone((data.skin_tone as SkinTone) || '');
           setLidType((data.lid_type as LidType) || '');
+          latestValuesRef.current = {
+            skinType: (data.skin_type as SkinType) || '',
+            skinTone: (data.skin_tone as SkinTone) || '',
+            lidType: (data.lid_type as LidType) || '',
+          };
         }
       } catch (error) {
         if (!active) return;
@@ -190,8 +217,13 @@ export default function ProfileClient({ locale }: Props) {
                   setSkinType('');
                   setSkinTone('');
                   setLidType('');
-                  // Force an immediate save with cleared values to avoid debounce races
-                  void saveProfile();
+                  if (saveTimerRef.current) {
+                    window.clearTimeout(saveTimerRef.current);
+                    saveTimerRef.current = null;
+                  }
+                  const cleared = { skinType: '' as SkinType | '', skinTone: '' as SkinTone | '', lidType: '' as LidType | '' };
+                  latestValuesRef.current = cleared;
+                  void saveProfile(cleared);
                 }}
               >
                 {t('common.clear')}
@@ -209,7 +241,13 @@ export default function ProfileClient({ locale }: Props) {
                   <Label htmlFor="skin-type" className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.skin_type')}
                   </Label>
-                  <Select value={skinType || undefined} onValueChange={(v: string) => { setSkinType(v as SkinType); scheduleSave(); }}>
+                  <Select
+                    value={skinType || undefined}
+                    onValueChange={(v: string) => {
+                      setSkinType(v as SkinType);
+                      scheduleSave({ skinType: v as SkinType });
+                    }}
+                  >
                     <SelectTrigger id="skin-type" className="border-[#E5E7EB]">
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>
@@ -231,7 +269,10 @@ export default function ProfileClient({ locale }: Props) {
                     {skinTones.map((tone, index) => (
                       <button
                         key={tone}
-                        onClick={() => { setSkinTone(tone); scheduleSave(); }}
+                        onClick={() => {
+                          setSkinTone(tone);
+                          scheduleSave({ skinTone: tone });
+                        }}
                         className={`w-12 h-12 rounded-full transition-all ${
                           skinTone === tone ? 'ring-4 ring-[#0A0A0A] ring-offset-2' : ''
                         }`}
@@ -248,7 +289,13 @@ export default function ProfileClient({ locale }: Props) {
                   <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.lid_type')}
                   </Label>
-                  <RadioGroup value={lidType} onValueChange={(v: string) => { setLidType(v as LidType); scheduleSave(); }}>
+                  <RadioGroup
+                    value={lidType}
+                    onValueChange={(v: string) => {
+                      setLidType(v as LidType);
+                      scheduleSave({ lidType: v as LidType });
+                    }}
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {(['hooded', 'standard', 'deep_set'] as LidType[]).map((type) => (
                         <div key={type}>
