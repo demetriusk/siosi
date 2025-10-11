@@ -215,11 +215,11 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
         messages: [
           { 
             role: 'system', 
-            content: 'Return ONLY a single word. No punctuation. Think drag queen energy meets fashion week—playful, bold, slightly ridiculous but still chic. Examples of the vibe: Snatched, Bejeweled, Velveteen, Fierce, Juicy, Smolder, Glitterati. Avoid boring adjectives like "radiant" or "luminous". No vulgarity or trademarks.'
+            content: 'Return ONLY a single word. No punctuation. Think rare vintage names or glamorous words with personality—playful but chic. Examples of the vibe: Estelle, Delphine, Sable, Aurelia, Marceline, Cosette, Valora, Ondine, Clemency, Seraphine, Magnolia, Isolde, Lysandra, Celestine, Ophira. Avoid generic adjectives like "radiant" or "luminous". No vulgarity or trademarks.' 
           },
           { 
             role: 'user', 
-            content: `Create a unique single-word glamorous nickname with personality, inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` 
+            content: `Create a unique single-word glamorous name with character, inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` 
           }
         ],
         max_tokens: 3
