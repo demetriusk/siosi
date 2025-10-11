@@ -67,7 +67,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
               <span className="sr-only">Close dialog</span>
             </button>
           </DialogClose>
-          <div className="relative flex h-[90vh] max-h-[720px] w-full items-center justify-center bg-[#0A0A0A]">
+          <div className="relative flex h-[75vh] max-h-[720px] w-full items-center justify-center bg-[#0A0A0A]">
             <DialogClose asChild>
               <button
                 type="button"
