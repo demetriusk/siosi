@@ -43,6 +43,19 @@ const legacyToCanonicalLidTypeMap: Record<string, string> = {
   wide_set: 'wide-set-eyes',
 };
 
+const canonicalToLegacyLidTypeMap: Record<string, string> = {
+  'almond-eyes': 'almond',
+  'round-eyes': 'round',
+  'hooded-eyes': 'hooded',
+  'monolid-eyes': 'monolid',
+  'upturned-eyes': 'upturned',
+  'downturned-eyes': 'downturned',
+  'close-set-eyes': 'close_set',
+  'wide-set-eyes': 'wide_set',
+  'deep-set-eyes': 'deep_set',
+  'protruding-eyes': 'protruding',
+};
+
 function sanitizeOptionalEnum(
   value: unknown,
   allowed: Set<string>,
@@ -67,6 +80,10 @@ function sanitizeOptionalEnum(
 }
 
 export async function POST(req: NextRequest) {
+  const requestId = typeof globalThis.crypto?.randomUUID === 'function'
+    ? globalThis.crypto.randomUUID()
+    : `profile-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
   try {
     // Require Authorization header with Bearer token and validate it
     const authHeader = req.headers.get('authorization') || '';
@@ -74,7 +91,8 @@ export async function POST(req: NextRequest) {
     const token = match ? match[1] : null;
 
     if (!token) {
-      return Response.json({ error: 'Missing Authorization token' }, { status: 401 });
+      logger.warn('Profile save missing auth token', { requestId });
+      return Response.json({ error: 'Missing Authorization token', request_id: requestId }, { status: 401 });
     }
 
     // Validate token with Supabase Auth endpoint to get user id
@@ -85,8 +103,8 @@ export async function POST(req: NextRequest) {
     const supabaseApiKey = supabaseServiceRoleKey ?? supabaseAnonKey ?? '';
 
     if (!supabaseAuthUrl) {
-      logger.error('SUPABASE_URL is not configured on the server');
-      return Response.json({ error: 'Server misconfiguration' }, { status: 500 });
+      logger.error('SUPABASE_URL is not configured on the server', { requestId });
+      return Response.json({ error: 'Server misconfiguration', request_id: requestId }, { status: 500 });
     }
 
     try {
@@ -100,34 +118,38 @@ export async function POST(req: NextRequest) {
 
       if (!resp.ok) {
         const txt = await resp.text();
-        logger.warn('Supabase token validation failed', txt);
-        return Response.json({ error: 'Invalid token' }, { status: 401 });
+        logger.warn('Supabase token validation failed', { requestId, response: txt });
+        return Response.json({ error: 'Invalid token', request_id: requestId }, { status: 401 });
       }
 
       const data = await resp.json();
       userId = data?.id ?? undefined;
       if (!userId) {
-        return Response.json({ error: 'Could not resolve user id from token' }, { status: 401 });
+        logger.warn('Profile save missing user id after token validation', { requestId });
+        return Response.json({ error: 'Could not resolve user id from token', request_id: requestId }, { status: 401 });
       }
     } catch (e) {
-      logger.warn('Token validation error', e);
-      return Response.json({ error: 'Token validation failed' }, { status: 401 });
+      logger.warn('Token validation error', { requestId, error: e });
+      return Response.json({ error: 'Token validation failed', request_id: requestId }, { status: 401 });
     }
 
     const body = await req.json().catch(() => ({}));
     const { value: normalizedSkinType, error: skinTypeError } = sanitizeOptionalEnum(body?.skin_type, allowedSkinTypes, 'skin_type');
     if (skinTypeError) {
-      return Response.json({ error: skinTypeError }, { status: 400 });
+      logger.warn('Profile save rejected skin_type', { requestId, raw: body?.skin_type, normalizedSkinType, skinTypeError });
+      return Response.json({ error: skinTypeError, request_id: requestId }, { status: 400 });
     }
 
     const { value: normalizedSkinTone, error: skinToneError } = sanitizeOptionalEnum(body?.skin_tone, allowedSkinTones, 'skin_tone');
     if (skinToneError) {
-      return Response.json({ error: skinToneError }, { status: 400 });
+      logger.warn('Profile save rejected skin_tone', { requestId, raw: body?.skin_tone, normalizedSkinTone, skinToneError });
+      return Response.json({ error: skinToneError, request_id: requestId }, { status: 400 });
     }
 
     const { value: normalizedLidType, error: lidTypeError } = sanitizeOptionalEnum(body?.lid_type, allowedLidTypes, 'lid_type');
     if (lidTypeError) {
-      return Response.json({ error: lidTypeError }, { status: 400 });
+      logger.warn('Profile save rejected lid_type', { requestId, raw: body?.lid_type, normalizedLidType, lidTypeError });
+      return Response.json({ error: lidTypeError, request_id: requestId }, { status: 400 });
     }
 
     const payload: Record<string, unknown> = { user_id: userId };
@@ -137,9 +159,23 @@ export async function POST(req: NextRequest) {
       if (normalizedLidType === null) {
         payload.lid_type = null;
       } else {
-        payload.lid_type = legacyToCanonicalLidTypeMap[normalizedLidType] ?? normalizedLidType;
+        if (legacyToCanonicalLidTypeMap[normalizedLidType]) {
+          // already a legacy slug, leave as-is for storage
+          payload.lid_type = normalizedLidType;
+        } else {
+          payload.lid_type = canonicalToLegacyLidTypeMap[normalizedLidType] ?? normalizedLidType;
+        }
       }
     }
+
+    const normalizedSnapshot = {
+      requestId,
+      normalizedSkinType,
+      normalizedSkinTone,
+      normalizedLidType,
+      payloadKeys: Object.keys(payload),
+    };
+    logger.debug('Profile save normalized inputs', normalizedSnapshot);
 
     // Upsert profile row by user_id
     // Create a per-request Supabase client.
@@ -168,8 +204,8 @@ export async function POST(req: NextRequest) {
       .maybeSingle();
 
     if (existingErr) {
-      logger.error('Error checking existing profile', existingErr);
-      return Response.json({ error: 'Failed to save profile' }, { status: 500 });
+      logger.error('Error checking existing profile', { requestId, userId, error: existingErr });
+      return Response.json({ error: 'Failed to save profile', request_id: requestId }, { status: 500 });
     }
 
     if (existing) {
@@ -189,6 +225,7 @@ export async function POST(req: NextRequest) {
         data = currentRow;
         error = selectErr;
       } else {
+        logger.debug('Profile save update patch', { requestId, userId, updatePatch });
         const upd = await supabase
           .from('profiles')
           .update(updatePatch)
@@ -206,6 +243,7 @@ export async function POST(req: NextRequest) {
         }
       });
 
+      logger.debug('Profile save insert payload', { requestId, userId, insertPayload });
       const ins = await supabase
         .from('profiles')
         .insert(insertPayload)
@@ -216,13 +254,13 @@ export async function POST(req: NextRequest) {
     }
 
     if (error) {
-      logger.error('Error saving profile', error);
-      return Response.json({ error: 'Failed to save profile' }, { status: 500 });
+      logger.error('Error saving profile', { requestId, userId, error, payload });
+      return Response.json({ error: 'Failed to save profile', request_id: requestId }, { status: 500 });
     }
 
     return Response.json({ ok: true, profile: data });
   } catch (err) {
-    logger.error('Profile save API error:', err);
-    return Response.json({ error: 'Server error' }, { status: 500 });
+    logger.error('Profile save API error', { requestId, error: err });
+    return Response.json({ error: 'Server error', request_id: requestId }, { status: 500 });
   }
 }
