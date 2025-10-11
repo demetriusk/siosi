@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
-import { cn } from '@/lib/utils';
 import { SiWhatsapp, SiTelegram } from '@icons-pack/react-simple-icons';
 
 type Props = { locale: string; sessionId: string };

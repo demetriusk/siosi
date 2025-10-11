@@ -9,6 +9,7 @@ import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
@@ -245,88 +246,96 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
                 {/* Context chips (moved closer to photo) */}
                 <div className="pt-4 border-t border-[#E5E7EB]">
-                  <h3 className="text-base font-semibold text-[#0A0A0A] mb-2">{safeT('results.context.title', 'What this look was checked for')}</h3>
-                  {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
-                    <p className="text-sm text-[#6B7280]">
-                      {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
-                    </p>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Occasion */}
-                      <div>
-                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
-                        <ChipList
-                          items={
-                            occasion
-                              ? [{
-                                  key: String(occasion),
-                                  label: safeT(`upload.occasions.${occasion}`, String(occasion)),
-                                  icon: occasionIconMap[String(occasion)]
-                                }]
-                              : []
-                          }
-                          selected={occasion as any}
-                          readOnly
-                          onToggle={() => {}}
-                        />
-                        {!occasion && (
-                          <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
-                        )}
-                      </div>
-
-                      {/* Where */}
-                      <div>
-                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
-                        <ChipList
-                          items={[{
-                            key: where,
-                            label: safeT(`upload.where.${where}`, where),
-                            icon: whereIconMap[where]
-                          }]}
-                          selected={where as any}
-                          readOnly
-                          onToggle={() => {}}
-                        />
-                      </div>
-
-                      {/* Climate */}
-                      <div>
-                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
-                        <ChipList
-                          items={[{
-                            key: String(climate ?? 'normal'),
-                            label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
-                            icon: climateIconMap[String(climate ?? 'normal')]
-                          }]}
-                          selected={(climate ?? 'normal') as any}
-                          readOnly
-                          onToggle={() => {}}
-                        />
-                      </div>
-
-                      {/* Concerns */}
-                      <div>
-                        <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
-                        {concerns.length > 0 ? (
-                          <ChipList
-                            items={concerns.map(k => ({
-                              key: String(k),
-                              label: safeT(`upload.concerns.${k as string}`, String(k)),
-                              icon: concernIconMap[String(k)]
-                            }))}
-                            selected={concerns as unknown as any}
-                            multi
-                            readOnly
-                            onToggle={() => {}}
-                          />
-                        ) : (
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="session-context">
+                      <AccordionTrigger className="text-base font-semibold text-[#0A0A0A] py-0 hover:no-underline">
+                        {safeT('results.context.title', 'What this look was checked for')}
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-3">
+                        {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
                           <p className="text-sm text-[#6B7280]">
-                            {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
+                            {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
                           </p>
+                        ) : (
+                          <div className="space-y-4">
+                            {/* Occasion */}
+                            <div>
+                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
+                              <ChipList
+                                items={
+                                  occasion
+                                    ? [{
+                                        key: String(occasion),
+                                        label: safeT(`upload.occasions.${occasion}`, String(occasion)),
+                                        icon: occasionIconMap[String(occasion)]
+                                      }]
+                                    : []
+                                }
+                                selected={occasion as any}
+                                readOnly
+                                onToggle={() => {}}
+                              />
+                              {!occasion && (
+                                <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
+                              )}
+                            </div>
+
+                            {/* Where */}
+                            <div>
+                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
+                              <ChipList
+                                items={[{
+                                  key: where,
+                                  label: safeT(`upload.where.${where}`, where),
+                                  icon: whereIconMap[where]
+                                }]}
+                                selected={where as any}
+                                readOnly
+                                onToggle={() => {}}
+                              />
+                            </div>
+
+                            {/* Climate */}
+                            <div>
+                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
+                              <ChipList
+                                items={[{
+                                  key: String(climate ?? 'normal'),
+                                  label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
+                                  icon: climateIconMap[String(climate ?? 'normal')]
+                                }]}
+                                selected={(climate ?? 'normal') as any}
+                                readOnly
+                                onToggle={() => {}}
+                              />
+                            </div>
+
+                            {/* Concerns */}
+                            <div>
+                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
+                              {concerns.length > 0 ? (
+                                <ChipList
+                                  items={concerns.map(k => ({
+                                    key: String(k),
+                                    label: safeT(`upload.concerns.${k as string}`, String(k)),
+                                    icon: concernIconMap[String(k)]
+                                  }))}
+                                  selected={concerns as unknown as any}
+                                  multi
+                                  readOnly
+                                  onToggle={() => {}}
+                                />
+                              ) : (
+                                <p className="text-sm text-[#6B7280]">
+                                  {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         )}
-                      </div>
-                    </div>
-                  )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
             </div>

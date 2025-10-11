@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, KeyboardEvent } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { LabAnalysis, Verdict } from '@/lib/types';
 import { ConfidenceScore } from './confidence-score';
@@ -14,6 +14,7 @@ interface LabResultCardProps {
 export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const t = useTranslations();
+  const detailsId = `lab-details-${analysis.id ?? analysis.lab_name}`;
 
   const getBorderColorClass = (verdict: Verdict) => {
     if (verdict === 'YAY') return 'border-l-[#10B981]';
@@ -36,8 +37,27 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
   const labNameKey = `home.labs.${analysis.lab_name}`;
 
+  const toggleExpanded = () => {
+    setIsExpanded(prev => !prev);
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleExpanded();
+    }
+  };
+
   return (
-    <div className={`bg-white border border-[#E5E7EB] border-l-4 ${getBorderColorClass(analysis.verdict)} rounded-sm p-6 transition-all hover:shadow-md`}>
+    <div
+      role="button"
+      tabIndex={0}
+      aria-expanded={isExpanded}
+      aria-controls={detailsId}
+      onClick={toggleExpanded}
+      onKeyDown={handleKeyDown}
+      className={`bg-white border border-[#E5E7EB] border-l-4 ${getBorderColorClass(analysis.verdict)} rounded-sm p-6 transition-all hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/20 cursor-pointer`}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
@@ -63,22 +83,17 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
             </p>
           )}
         </div>
-
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-[#6B7280] hover:text-[#0A0A0A] transition-colors flex-shrink-0"
-          aria-label={isExpanded ? t('results.hide_details') : t('results.show_details')}
-        >
+        <span className="text-[#6B7280] transition-transform flex-shrink-0" aria-hidden="true">
           {isExpanded ? (
             <ChevronUp className="w-5 h-5" />
           ) : (
             <ChevronDown className="w-5 h-5" />
           )}
-        </button>
+        </span>
       </div>
 
       {isExpanded && (
-        <div className="mt-6 space-y-6 pt-6 border-t border-[#E5E7EB]">
+        <div id={detailsId} className="mt-6 space-y-6 pt-6 border-t border-[#E5E7EB]">
           {analysis.detected.length > 0 && (
             <div>
               <h4 className="font-semibold text-[#0A0A0A] mb-2">

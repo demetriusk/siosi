@@ -225,8 +225,8 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
         max_tokens: 3
       });
       nickname = (nickRes.choices?.[0]?.message?.content || '').trim().split(/\s+/)[0]?.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'-]/g, '').slice(0, 24) || undefined;
-    } catch (e) {
-      // ignore nickname errors
+    } catch (error) {
+      logger.debug('Nickname generation failed', error)
     }
 
     return Response.json({

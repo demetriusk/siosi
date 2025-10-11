@@ -115,7 +115,6 @@ export default function ProfileClient({ locale }: Props) {
       logger.error('Save profile error', error);
       toast.error('Failed to save profile');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const scheduleSave = useCallback((nextValues?: Partial<{ skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }>) => {
