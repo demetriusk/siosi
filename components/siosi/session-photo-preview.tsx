@@ -57,10 +57,10 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
             <button
               type="button"
               onClick={handleClose}
-              className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="fixed right-4 top-4 z-[60] inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-11 sm:w-11"
               style={{
-                top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
-                right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
+                top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
+                right: "calc(env(safe-area-inset-right, 0px) + 0.75rem)",
               }}
             >
               <X size={18} />
