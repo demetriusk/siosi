@@ -43,7 +43,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         </button>
       </DialogTrigger>
       <DialogContent
-        className="relative w-[min(92vw,960px)] max-w-5xl overflow-hidden border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
+        className="relative w-[92vw] max-w-[960px] overflow-hidden border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
         aria-label={alt}
       >
         <DialogTitle>
@@ -68,7 +68,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
             <span className="sr-only">Close dialog</span>
           </button>
         </DialogClose>
-        <div className="relative flex h-[min(90vh,720px)] w-full items-center justify-center bg-[#0A0A0A]">
+  <div className="relative flex h-[90vh] max-h-[720px] w-full items-center justify-center bg-[#0A0A0A]">
           <DialogClose asChild>
             <button
               type="button"
