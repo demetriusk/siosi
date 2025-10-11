@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ZoomIn, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -44,14 +44,22 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         className="max-w-5xl w-[min(92vw,960px)] border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
         aria-label={alt}
       >
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#0A0A0A] shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        <DialogClose
+          asChild
         >
-          <X size={18} />
-          <span className="sr-only">Close</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{
+              top: "calc(env(safe-area-inset-top) + 1rem)",
+              right: "calc(env(safe-area-inset-right) + 1rem)",
+            }}
+          >
+            <X size={18} />
+            <span className="sr-only">Close dialog</span>
+          </button>
+        </DialogClose>
         <div className="relative flex h-[min(90vh,720px)] w-full items-center justify-center bg-[#0A0A0A]">
           <div className="relative h-full w-full">
             <Image
@@ -62,6 +70,18 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
               className="object-contain"
               unoptimized
             />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent sm:hidden" aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:hidden">
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="inline-flex w-full max-w-xs items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#0A0A0A] shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                onClick={() => setOpen(false)}
+              >
+                Close
+              </button>
+            </DialogClose>
           </div>
         </div>
       </DialogContent>
