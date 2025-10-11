@@ -5,7 +5,7 @@ import { ZoomIn, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 type SessionPhotoPreviewProps = {
   src: string;
@@ -15,6 +15,7 @@ type SessionPhotoPreviewProps = {
 
 export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreviewProps) {
   const [open, setOpen] = useState(false);
+  const handleClose = useCallback(() => setOpen(false), []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -42,7 +43,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         </button>
       </DialogTrigger>
       <DialogContent
-        className="max-w-5xl w-[min(92vw,960px)] border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
+        className="relative w-[min(92vw,960px)] max-w-5xl overflow-hidden border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
         aria-label={alt}
       >
         <DialogTitle>
@@ -53,7 +54,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         >
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={handleClose}
             className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             style={{
               top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
@@ -65,28 +66,26 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
           </button>
         </DialogClose>
         <div className="relative flex h-[min(90vh,720px)] w-full items-center justify-center bg-[#0A0A0A]">
-          <div className="relative h-full w-full">
-            <Image
-              src={src}
-              alt={alt}
-              fill
-              sizes="(max-width: 768px) 90vw, 960px"
-              className="object-contain"
-              unoptimized
-            />
-          </div>
+          <DialogClose asChild>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="relative h-full w-full cursor-zoom-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <Image
+                src={src}
+                alt={alt}
+                fill
+                sizes="(max-width: 768px) 90vw, 960px"
+                className="pointer-events-none object-contain"
+                unoptimized
+              />
+              <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 rounded-full bg-[#0A0A0A]/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white sm:hidden">
+                Tap to close
+              </span>
+            </button>
+          </DialogClose>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent" aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 flex justify-center p-4">
-            <DialogClose asChild>
-              <button
-                type="button"
-                className="inline-flex w-full max-w-xs items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#0A0A0A] shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
-                onClick={() => setOpen(false)}
-              >
-                Close
-              </button>
-            </DialogClose>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
