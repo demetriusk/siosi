@@ -29,17 +29,18 @@ const allowedLidTypes = new Set([
   'wide_set',
 ]);
 
-const canonicalToLegacyLidTypeMap: Record<string, string> = {
-  'almond-eyes': 'almond',
-  'round-eyes': 'round',
-  'hooded-eyes': 'hooded',
-  'monolid-eyes': 'monolid',
-  'upturned-eyes': 'upturned',
-  'downturned-eyes': 'downturned',
-  'close-set-eyes': 'close_set',
-  'wide-set-eyes': 'wide_set',
-  'deep-set-eyes': 'deep_set',
-  'protruding-eyes': 'protruding',
+const legacyToCanonicalLidTypeMap: Record<string, string> = {
+  monolid: 'monolid-eyes',
+  hooded: 'hooded-eyes',
+  'deep_set': 'deep-set-eyes',
+  protruding: 'protruding-eyes',
+  downturned: 'downturned-eyes',
+  upturned: 'upturned-eyes',
+  almond: 'almond-eyes',
+  standard: 'almond-eyes',
+  round: 'round-eyes',
+  close_set: 'close-set-eyes',
+  wide_set: 'wide-set-eyes',
 };
 
 function sanitizeOptionalEnum(
@@ -135,10 +136,8 @@ export async function POST(req: NextRequest) {
     if (normalizedLidType !== undefined) {
       if (normalizedLidType === null) {
         payload.lid_type = null;
-      } else if (canonicalToLegacyLidTypeMap[normalizedLidType]) {
-        payload.lid_type = canonicalToLegacyLidTypeMap[normalizedLidType];
       } else {
-        payload.lid_type = normalizedLidType;
+        payload.lid_type = legacyToCanonicalLidTypeMap[normalizedLidType] ?? normalizedLidType;
       }
     }
 
