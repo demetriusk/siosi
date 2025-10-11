@@ -33,7 +33,7 @@ export interface LabAnalysis {
 
 export type SkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';
 export type SkinTone = 'fair' | 'light' | 'medium' | 'tan' | 'deep' | 'dark';
-export type LidType = 'monolid' | 'hooded' | 'deep_set' | 'protruding' | 'downturned' | 'upturned' | 'almond';
+export type LidType = 'monolid' | 'hooded' | 'deep_set' | 'protruding' | 'downturned' | 'upturned' | 'almond' | 'standard';
 
 export type Occasion = 
   | 'everyday'

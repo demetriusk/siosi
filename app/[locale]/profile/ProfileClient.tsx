@@ -148,7 +148,18 @@ export default function ProfileClient({ locale }: Props) {
   const completedFields = [skinType, skinTone, lidType].filter(Boolean).length;
   const totalFields = 3;
 
+  const skinTypeOptions: SkinType[] = ['oily', 'dry', 'combination', 'normal', 'sensitive'];
   const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'dark'];
+  const lidTypeOptions: LidType[] = ['monolid', 'hooded', 'deep_set', 'protruding', 'downturned', 'upturned', 'almond', 'standard'];
+  const displayedLidTypes: LidType[] = ['hooded', 'standard', 'deep_set'];
+
+  const normalizeIncomingValue = <T extends string>(value: unknown, allowed: readonly T[]): T | '' => {
+    if (typeof value !== 'string') return '';
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) return '';
+    const match = allowed.find((option) => option === normalized);
+    return match ?? '';
+  };
 
   useEffect(() => {
     let active = true;
@@ -177,13 +188,17 @@ export default function ProfileClient({ locale }: Props) {
         }
 
         if (data) {
-          setSkinType((data.skin_type as SkinType) || '');
-          setSkinTone((data.skin_tone as SkinTone) || '');
-          setLidType((data.lid_type as LidType) || '');
+          const normalizedSkinType = normalizeIncomingValue<SkinType>(data.skin_type, skinTypeOptions);
+          const normalizedSkinTone = normalizeIncomingValue<SkinTone>(data.skin_tone, skinTones);
+          const normalizedLidType = normalizeIncomingValue<LidType>(data.lid_type, lidTypeOptions);
+
+          setSkinType(normalizedSkinType);
+          setSkinTone(normalizedSkinTone);
+          setLidType(normalizedLidType);
           latestValuesRef.current = {
-            skinType: (data.skin_type as SkinType) || '',
-            skinTone: (data.skin_tone as SkinTone) || '',
-            lidType: (data.lid_type as LidType) || '',
+            skinType: normalizedSkinType,
+            skinTone: normalizedSkinTone,
+            lidType: normalizedLidType,
           };
         }
       } catch (error) {
@@ -251,7 +266,7 @@ export default function ProfileClient({ locale }: Props) {
                       <SelectValue placeholder="Select your skin type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {(['dry', 'normal', 'combination', 'oily', 'sensitive'] as SkinType[]).map((type) => (
+                      {skinTypeOptions.map((type) => (
                         <SelectItem key={type} value={type}>
                           {t(`profile.skin_types.${type}`)}
                         </SelectItem>
@@ -296,7 +311,7 @@ export default function ProfileClient({ locale }: Props) {
                     }}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {(['hooded', 'standard', 'deep_set'] as LidType[]).map((type) => (
+                      {displayedLidTypes.map((type) => (
                         <div key={type}>
                           <div
                             className={`border-2 rounded-sm p-4 cursor-pointer transition-all ${

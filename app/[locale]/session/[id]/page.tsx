@@ -203,7 +203,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
                   </div>
                 </div>
 
-                {/* Profile summary and edit CTA (moved closer to photo) */}
                 <div className="pt-4 border-t border-[#E5E7EB]">
                   <h3 className="text-base font-semibold text-[#0A0A0A] mb-2">{safeT('results.profile.title', 'Profile details')}</h3>
                   {hasProfile ? (
@@ -245,7 +244,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
                 </div>
 
                 {/* Context chips (moved closer to photo) */}
-                <div className="pt-4 border-t border-[#E5E7EB]">
+                <div>
                   <Accordion type="single" collapsible>
                     <AccordionItem value="session-context">
                       <AccordionTrigger className="text-base font-semibold text-[#0A0A0A] py-0 hover:no-underline">

@@ -2,6 +2,33 @@ import { NextRequest } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import logger from '@/lib/logger'
 
+const allowedSkinTypes = new Set(['oily', 'dry', 'combination', 'normal', 'sensitive']);
+const allowedSkinTones = new Set(['fair', 'light', 'medium', 'tan', 'deep', 'dark']);
+const allowedLidTypes = new Set(['monolid', 'hooded', 'deep_set', 'protruding', 'downturned', 'upturned', 'almond', 'standard']);
+
+function sanitizeOptionalEnum(
+  value: unknown,
+  allowed: Set<string>,
+  fieldName: 'skin_type' | 'skin_tone' | 'lid_type'
+): { value: string | null | undefined; error: string | null } {
+  if (value === undefined) return { value: undefined, error: null };
+  if (value === null) return { value: null, error: null };
+  if (typeof value !== 'string') {
+    return { value: undefined, error: `Invalid ${fieldName} value` };
+  }
+
+  const normalized = value.trim().toLowerCase();
+  if (normalized.length === 0) {
+    return { value: null, error: null };
+  }
+
+  if (!allowed.has(normalized)) {
+    return { value: undefined, error: `Unsupported ${fieldName} value` };
+  }
+
+  return { value: normalized, error: null };
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Require Authorization header with Bearer token and validate it
@@ -51,20 +78,20 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { skin_type, skin_tone, lid_type } = body || {};
+    const { value: normalizedSkinType, error: skinTypeError } = sanitizeOptionalEnum(body?.skin_type, allowedSkinTypes, 'skin_type');
+    if (skinTypeError) {
+      return Response.json({ error: skinTypeError }, { status: 400 });
+    }
 
-    const normalizeOptional = (value: unknown) => {
-      if (value === undefined) return undefined;
-      if (value === null) return null;
-      if (typeof value === 'string') {
-        return value.trim() === '' ? null : value;
-      }
-      return undefined;
-    };
+    const { value: normalizedSkinTone, error: skinToneError } = sanitizeOptionalEnum(body?.skin_tone, allowedSkinTones, 'skin_tone');
+    if (skinToneError) {
+      return Response.json({ error: skinToneError }, { status: 400 });
+    }
 
-    const normalizedSkinType = normalizeOptional(skin_type);
-    const normalizedSkinTone = normalizeOptional(skin_tone);
-    const normalizedLidType = normalizeOptional(lid_type);
+    const { value: normalizedLidType, error: lidTypeError } = sanitizeOptionalEnum(body?.lid_type, allowedLidTypes, 'lid_type');
+    if (lidTypeError) {
+      return Response.json({ error: lidTypeError }, { status: 400 });
+    }
 
     const payload: Record<string, unknown> = { user_id: userId };
     if (normalizedSkinType !== undefined) payload.skin_type = normalizedSkinType;
