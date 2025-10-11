@@ -24,17 +24,22 @@ const allowedLidTypes = new Set([
   'upturned',
   'almond',
   'standard',
+  'round',
+  'close_set',
+  'wide_set',
 ]);
 
-const legacyLidTypeMap: Record<string, string> = {
-  monolid: 'monolid-eyes',
-  hooded: 'hooded-eyes',
-  'deep_set': 'deep-set-eyes',
-  protruding: 'protruding-eyes',
-  downturned: 'downturned-eyes',
-  upturned: 'upturned-eyes',
-  almond: 'almond-eyes',
-  standard: 'almond-eyes',
+const canonicalToLegacyLidTypeMap: Record<string, string> = {
+  'almond-eyes': 'almond',
+  'round-eyes': 'round',
+  'hooded-eyes': 'hooded',
+  'monolid-eyes': 'monolid',
+  'upturned-eyes': 'upturned',
+  'downturned-eyes': 'downturned',
+  'close-set-eyes': 'close_set',
+  'wide-set-eyes': 'wide_set',
+  'deep-set-eyes': 'deep_set',
+  'protruding-eyes': 'protruding',
 };
 
 function sanitizeOptionalEnum(
@@ -128,8 +133,13 @@ export async function POST(req: NextRequest) {
     if (normalizedSkinType !== undefined) payload.skin_type = normalizedSkinType;
     if (normalizedSkinTone !== undefined) payload.skin_tone = normalizedSkinTone;
     if (normalizedLidType !== undefined) {
-      const coerced = normalizedLidType ? legacyLidTypeMap[normalizedLidType] ?? normalizedLidType : normalizedLidType;
-      payload.lid_type = coerced;
+      if (normalizedLidType === null) {
+        payload.lid_type = null;
+      } else if (canonicalToLegacyLidTypeMap[normalizedLidType]) {
+        payload.lid_type = canonicalToLegacyLidTypeMap[normalizedLidType];
+      } else {
+        payload.lid_type = normalizedLidType;
+      }
     }
 
     // Upsert profile row by user_id
@@ -152,29 +162,54 @@ export async function POST(req: NextRequest) {
     let data: any = null;
     let error: any = null;
 
-    const { data: existing } = await supabase
+    const { data: existing, error: existingErr } = await supabase
       .from('profiles')
       .select('user_id')
       .eq('user_id', userId)
       .maybeSingle();
 
+    if (existingErr) {
+      logger.error('Error checking existing profile', existingErr);
+      return Response.json({ error: 'Failed to save profile' }, { status: 500 });
+    }
+
     if (existing) {
-      const upd = await supabase
-        .from('profiles')
-        .update({
-          skin_type: payload.skin_type ?? null,
-          skin_tone: payload.skin_tone ?? null,
-          lid_type: payload.lid_type ?? null,
-        })
-        .eq('user_id', userId)
-        .select()
-        .maybeSingle();
-      data = upd.data;
-      error = upd.error;
+      const updatePatch: Record<string, unknown> = {};
+      (['skin_type', 'skin_tone', 'lid_type'] as const).forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          updatePatch[key] = payload[key];
+        }
+      });
+
+      if (Object.keys(updatePatch).length === 0) {
+        const { data: currentRow, error: selectErr } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle();
+        data = currentRow;
+        error = selectErr;
+      } else {
+        const upd = await supabase
+          .from('profiles')
+          .update(updatePatch)
+          .eq('user_id', userId)
+          .select()
+          .maybeSingle();
+        data = upd.data;
+        error = upd.error;
+      }
     } else {
+      const insertPayload: Record<string, unknown> = { user_id: userId };
+      (['skin_type', 'skin_tone', 'lid_type'] as const).forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          insertPayload[key] = payload[key];
+        }
+      });
+
       const ins = await supabase
         .from('profiles')
-        .insert(payload)
+        .insert(insertPayload)
         .select()
         .single();
       data = ins.data;

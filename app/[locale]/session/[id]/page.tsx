@@ -128,6 +128,9 @@ export default async function SessionPage({ params }: SessionPageProps) {
     upturned: 'upturned-eyes',
     almond: 'almond-eyes',
     standard: 'almond-eyes',
+    round: 'round-eyes',
+    close_set: 'close-set-eyes',
+    wide_set: 'wide-set-eyes',
   };
 
   const formatLidType = (value?: string | null) => {
