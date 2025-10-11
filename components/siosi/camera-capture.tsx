@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
-import { RotateCcw, CameraOff, Sparkles } from 'lucide-react';
+import { RotateCcw, CameraOff, Sparkles, RefreshCw } from 'lucide-react';
 import logger from '@/lib/logger';
 import { ensureFaceApiReady } from '@/lib/face-detection';
 import type { FaceLandmarks68 } from '@vladmandic/face-api';
@@ -27,55 +27,47 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
   const [error, setError] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [hasPermission, setHasPermission] = useState(true);
+  const [currentFacingMode, setCurrentFacingMode] = useState<'user' | 'environment' | null>(null);
+  const [canToggleCamera, setCanToggleCamera] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const t = useTranslations('camera');
 
   useEffect(() => {
     setError(null);
     setHasPermission(true);
+    setCanToggleCamera(false);
   }, [open]);
 
   useEffect(() => {
-    async function startStream() {
-      if (!open) {
-        return;
-      }
-      setError(null);
-      setIsCapturing(false);
-
-      try {
-        const constraints: MediaStreamConstraints = {
-          video: {
-            facingMode,
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-          },
-          audio: false,
-        };
-
-        const stream = await window.navigator.mediaDevices.getUserMedia(constraints);
-        streamRef.current = stream;
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-        }
-      } catch (err: any) {
-        logger.error('Camera access failed', err);
-        setHasPermission(false);
-        setError(err?.message || 'Unable to access camera');
-      }
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return;
     }
 
-    startStream();
+    const query = window.matchMedia('(max-width: 768px)');
 
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-      }
+    const updateView = (event: MediaQueryList | MediaQueryListEvent) => {
+      setIsMobileView(event.matches);
     };
-  }, [open, facingMode]);
 
+    updateView(query);
+
+    const listener = (event: MediaQueryListEvent) => updateView(event);
+
+    if (query.addEventListener) {
+      query.addEventListener('change', listener);
+      return () => query.removeEventListener('change', listener);
+    }
+
+    query.addListener(listener);
+    return () => query.removeListener(listener);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      const nextMode: 'user' | 'environment' = isMobileView ? 'user' : facingMode;
+      setCurrentFacingMode((prev) => (prev === nextMode ? prev : nextMode));
+    }
+  }, [open, facingMode, isMobileView]);
   const clearOverlay = useCallback(() => {
     const canvas = overlayCanvasRef.current;
     if (!canvas) return;
@@ -92,6 +84,22 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
     isDetectingRef.current = false;
     clearOverlay();
   }, [clearOverlay]);
+
+  const updateCameraToggleAvailability = useCallback(async () => {
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.enumerateDevices) {
+      setCanToggleCamera(false);
+      return;
+    }
+
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoInputs = devices.filter((device) => device.kind === 'videoinput');
+      setCanToggleCamera(videoInputs.length > 1);
+    } catch (err) {
+      logger.warn('Unable to enumerate camera devices', err);
+      setCanToggleCamera(false);
+    }
+  }, []);
 
   const drawLandmarks = useCallback((ctx: CanvasRenderingContext2D, landmarks: FaceLandmarks68) => {
     const canvas = ctx.canvas;
@@ -114,10 +122,10 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
       ctx.stroke();
     };
 
-  drawPath(landmarks.getJawOutline());
-  drawPath(landmarks.getLeftEyeBrow());
-  drawPath(landmarks.getRightEyeBrow());
-  drawPath(landmarks.getNose());
+    drawPath(landmarks.getJawOutline());
+    drawPath(landmarks.getLeftEyeBrow());
+    drawPath(landmarks.getRightEyeBrow());
+    drawPath(landmarks.getNose());
     drawPath(landmarks.getLeftEye(), true);
     drawPath(landmarks.getRightEye(), true);
     drawPath(landmarks.getMouth(), true);
@@ -177,6 +185,57 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
     detectionIntervalRef.current = window.setInterval(detectLandmarks, 450);
   }, [detectLandmarks]);
 
+  const initializeStream = useCallback(
+    async (mode: 'user' | 'environment') => {
+      if (typeof window === 'undefined' || !window.navigator.mediaDevices?.getUserMedia) {
+        setHasPermission(false);
+        setError('Camera not supported');
+        return;
+      }
+
+      stopDetection();
+
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+
+      clearOverlay();
+      setError(null);
+      setIsCapturing(false);
+      setCanToggleCamera(false);
+
+      try {
+        const constraints: MediaStreamConstraints = {
+          video: {
+            facingMode: { ideal: mode },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+          audio: false,
+        };
+
+        const stream = await window.navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream;
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+        }
+
+        setHasPermission(true);
+        await updateCameraToggleAvailability();
+        startDetectionLoop();
+      } catch (err: any) {
+        logger.error('Camera access failed', err);
+        setHasPermission(false);
+        setCanToggleCamera(false);
+        setError(err?.message || 'Unable to access camera');
+      }
+    },
+    [clearOverlay, startDetectionLoop, stopDetection, updateCameraToggleAvailability]
+  );
+
   useEffect(() => {
     let cancelled = false;
 
@@ -207,38 +266,31 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
     };
   }, [open, hasPermission, error, startDetectionLoop, stopDetection]);
 
-  const restartStream = async () => {
-    if (!window.navigator.mediaDevices?.getUserMedia) {
+  const restartStream = useCallback(async () => {
+    if (!currentFacingMode) {
       return;
     }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
+    await initializeStream(currentFacingMode);
+  }, [currentFacingMode, initializeStream]);
+
+  const toggleFacingMode = useCallback(() => {
+    setCurrentFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
+  }, []);
+
+  useEffect(() => {
+    if (!open || !currentFacingMode) {
+      return;
     }
-    setHasPermission(true);
-    setError(null);
-    clearOverlay();
-    try {
-      const stream = await window.navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
-        audio: false,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-        startDetectionLoop();
+    initializeStream(currentFacingMode);
+
+    return () => {
+      stopDetection();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
-    } catch (err: any) {
-      logger.error('Retry camera access failed', err);
-      setHasPermission(false);
-      setError(err?.message || 'Unable to access camera');
-    }
-  };
+    };
+  }, [open, currentFacingMode, initializeStream, stopDetection]);
 
   const handleCapture = async () => {
     if (!videoRef.current || !canvasRef.current) {
@@ -278,78 +330,96 @@ export function CameraCapture({ open, onClose, onCapture, facingMode = 'environm
       streamRef.current = null;
     }
     faceApiRef.current = null;
+    setCanToggleCamera(false);
+    setCurrentFacingMode(null);
     onClose();
   };
 
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) handleClose(); }}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>{t('description')}</DialogDescription>
-        </DialogHeader>
-        <div className="relative aspect-video bg-black overflow-hidden rounded-sm">
-          {!hasPermission || error ? (
-            <div className="flex flex-col items-center justify-center h-full text-center px-6 gap-3">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#111827] text-white">
-                <CameraOff className="w-7 h-7" />
+      <DialogContent className="left-0 top-0 h-dvh w-dvw max-w-none translate-x-0 translate-y-0 rounded-none border-0 p-0 overflow-hidden sm:left-1/2 sm:top-1/2 sm:h-auto sm:w-full sm:max-w-3xl sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-lg sm:border sm:p-6">
+        <div className="flex h-full flex-col">
+          <DialogHeader className="px-4 pt-6 pb-4 sm:px-0 sm:pt-0">
+            <DialogTitle>{t('title')}</DialogTitle>
+            <DialogDescription>{t('description')}</DialogDescription>
+          </DialogHeader>
+          <div className="relative flex-1 bg-black">
+            {!hasPermission || error ? (
+              <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#111827] text-white">
+                  <CameraOff className="h-7 w-7" />
+                </div>
+                <p className="rounded bg-[#7F1D1D] px-3 py-2 text-sm text-[#FEE2E2]">
+                  {t('error_prefix')} {error || t('permission_denied')}
+                </p>
+                <p className="text-xs text-[#F9FAFB]">{t('permission_help')}</p>
               </div>
-              <p className="text-sm text-[#FEE2E2] bg-[#7F1D1D] px-3 py-2 rounded">
-                {t('error_prefix')} {error || t('permission_denied')}
-              </p>
-              <p className="text-xs text-[#F9FAFB]">
-                {t('permission_help')}
-              </p>
-            </div>
-          ) : (
-            <>
-              <video ref={videoRef} className="w-full h-full object-cover" playsInline muted />
-              <canvas
-                ref={overlayCanvasRef}
-                className="pointer-events-none absolute inset-0 w-full h-full"
-                aria-hidden="true"
-              />
-            </>
-          )}
-        </div>
-        <canvas ref={canvasRef} className="hidden" aria-hidden="true" />
-        <DialogFooter className="mt-4">
-          <div className="flex w-full justify-between gap-3">
-            <DialogClose asChild>
-              <Button type="button" variant="ghost" onClick={handleClose} className="border border-[#E5E7EB]">
-                {t('cancel')}
-              </Button>
-            </DialogClose>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={restartStream}
-                disabled={isCapturing}
-                className="border-[#E5E7EB]"
-                title={t('retry')}
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                {t('retry')}
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCapture}
-                disabled={!!error || isCapturing || !hasPermission}
-                className="bg-[#0A0A0A] text-white hover:bg-[#111827] flex items-center"
-              >
-                {isCapturing ? (
-                  t('capturing')
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    {t('capture')}
-                  </>
-                )}
-              </Button>
-            </div>
+            ) : (
+              <>
+                <video ref={videoRef} className="h-full w-full object-cover" playsInline muted />
+                <canvas
+                  ref={overlayCanvasRef}
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  aria-hidden="true"
+                />
+              </>
+            )}
           </div>
-        </DialogFooter>
+          <canvas ref={canvasRef} className="hidden" aria-hidden="true" />
+          <DialogFooter className="mt-4 px-4 pb-6 sm:mt-6 sm:px-0 sm:pb-0">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <DialogClose asChild>
+                <Button type="button" variant="ghost" onClick={handleClose} className="border border-[#E5E7EB]">
+                  {t('cancel')}
+                </Button>
+              </DialogClose>
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={restartStream}
+                    disabled={isCapturing}
+                    className="border-[#E5E7EB]"
+                    title={t('retry')}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    {t('retry')}
+                  </Button>
+                  {canToggleCamera ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        toggleFacingMode();
+                      }}
+                      disabled={isCapturing}
+                      className="border-[#E5E7EB]"
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      {currentFacingMode === 'user' ? t('switch_to_standard') : t('switch_to_selfie')}
+                    </Button>
+                  ) : null}
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleCapture}
+                  disabled={!!error || isCapturing || !hasPermission}
+                  className="flex items-center bg-[#0A0A0A] text-white hover:bg-[#111827]"
+                >
+                  {isCapturing ? (
+                    t('capturing')
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      {t('capture')}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

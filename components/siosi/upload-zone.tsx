@@ -25,7 +25,7 @@ interface UploadZoneProps {
 
 export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function UploadZone({
   onFileSelect,
-  accept = 'image/jpeg,image/png,image/heic',
+  accept = 'image/jpeg,image/png,image/heic,image/heif,image/webp,image/avif',
   maxSize = 10 * 1024 * 1024,
   selectedFile,
   onClearFile,

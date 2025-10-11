@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic';
 
 import { format } from 'date-fns';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Aperture, Gem, PartyPopper, Video, Activity, Home, Trees, Shell, Sun, Thermometer, Droplet, Zap, Camera, Clock, ZoomIn, ThermometerSun, Ghost } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -17,6 +16,7 @@ import { getTranslations } from 'next-intl/server';
 // Client actions wrapper (renders client-only buttons)
 import SessionActionsClient from '@/components/siosi/session-actions-client';
 import SessionProfileCta from '@/components/siosi/session-profile-cta';
+import { SessionPhotoPreview } from '@/components/siosi/session-photo-preview';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
@@ -119,6 +119,31 @@ export default async function SessionPage({ params }: SessionPageProps) {
     sensitive: <ThermometerSun size={16} className="mr-2" />,
   };
 
+  const legacyLidTypeMap: Record<string, string> = {
+    monolid: 'monolid-eyes',
+    hooded: 'hooded-eyes',
+    'deep_set': 'deep-set-eyes',
+    protruding: 'protruding-eyes',
+    downturned: 'downturned-eyes',
+    upturned: 'upturned-eyes',
+    almond: 'almond-eyes',
+    standard: 'almond-eyes',
+  };
+
+  const formatLidType = (value?: string | null) => {
+    if (!value || typeof value !== 'string') return null;
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) return null;
+    const coerced = legacyLidTypeMap[normalized] ?? normalized;
+    const fallbackLabel = coerced
+      .split(/[-_]/)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+    return safeT(`profile.lid_types.${coerced}`, fallbackLabel);
+  };
+
+  const lidTypeLabel = formatLidType(session?.lid_type);
+
   const criticalAnalyses = analyses.filter(
     a => a.verdict === 'NAY' && a.confidence >= 80
   );
@@ -155,16 +180,10 @@ export default async function SessionPage({ params }: SessionPageProps) {
             <div className="flex flex-col md:flex-row items-start gap-6">
               <div className="w-full md:w-1/3">
                 {session?.photo_url ? (
-                  <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm overflow-hidden">
-                    <Image
-                      src={session.photo_url}
-                      alt={safeT('common.photo', 'Photo')}
-                      width={800}
-                      height={800}
-                      className="object-cover w-full h-full"
-                      unoptimized
-                    />
-                  </div>
+                  <SessionPhotoPreview
+                    src={session.photo_url}
+                    alt={safeT('common.photo', 'Photo')}
+                  />
                 ) : (
                   <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm flex items-center justify-center text-[#D1D5DB]">
                     <span className="text-sm">{safeT('common.no_image', 'No image')}</span>
@@ -214,8 +233,8 @@ export default async function SessionPage({ params }: SessionPageProps) {
                         {session?.skin_tone && (
                           <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_tone', 'Skin tone')}: {session.skin_tone}</span>
                         )}
-                        {session?.lid_type && (
-                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {session.lid_type}</span>
+                        {lidTypeLabel && (
+                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {lidTypeLabel}</span>
                         )}
                       </div>
                       <p className="text-sm text-[#6B7280] mb-2">

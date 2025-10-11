@@ -4,7 +4,38 @@ import logger from '@/lib/logger'
 
 const allowedSkinTypes = new Set(['oily', 'dry', 'combination', 'normal', 'sensitive']);
 const allowedSkinTones = new Set(['fair', 'light', 'medium', 'tan', 'deep', 'dark']);
-const allowedLidTypes = new Set(['monolid', 'hooded', 'deep_set', 'protruding', 'downturned', 'upturned', 'almond', 'standard']);
+const allowedLidTypes = new Set([
+  'almond-eyes',
+  'round-eyes',
+  'hooded-eyes',
+  'monolid-eyes',
+  'upturned-eyes',
+  'downturned-eyes',
+  'close-set-eyes',
+  'wide-set-eyes',
+  'deep-set-eyes',
+  'protruding-eyes',
+  // legacy values accepted for backwards compatibility
+  'monolid',
+  'hooded',
+  'deep_set',
+  'protruding',
+  'downturned',
+  'upturned',
+  'almond',
+  'standard',
+]);
+
+const legacyLidTypeMap: Record<string, string> = {
+  monolid: 'monolid-eyes',
+  hooded: 'hooded-eyes',
+  'deep_set': 'deep-set-eyes',
+  protruding: 'protruding-eyes',
+  downturned: 'downturned-eyes',
+  upturned: 'upturned-eyes',
+  almond: 'almond-eyes',
+  standard: 'almond-eyes',
+};
 
 function sanitizeOptionalEnum(
   value: unknown,
@@ -96,7 +127,10 @@ export async function POST(req: NextRequest) {
     const payload: Record<string, unknown> = { user_id: userId };
     if (normalizedSkinType !== undefined) payload.skin_type = normalizedSkinType;
     if (normalizedSkinTone !== undefined) payload.skin_tone = normalizedSkinTone;
-    if (normalizedLidType !== undefined) payload.lid_type = normalizedLidType;
+    if (normalizedLidType !== undefined) {
+      const coerced = normalizedLidType ? legacyLidTypeMap[normalizedLidType] ?? normalizedLidType : normalizedLidType;
+      payload.lid_type = coerced;
+    }
 
     // Upsert profile row by user_id
     // Create a per-request Supabase client.

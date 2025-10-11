@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
@@ -150,15 +151,45 @@ export default function ProfileClient({ locale }: Props) {
 
   const skinTypeOptions: SkinType[] = ['oily', 'dry', 'combination', 'normal', 'sensitive'];
   const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'dark'];
-  const lidTypeOptions: LidType[] = ['monolid', 'hooded', 'deep_set', 'protruding', 'downturned', 'upturned', 'almond', 'standard'];
-  const displayedLidTypes: LidType[] = ['hooded', 'standard', 'deep_set'];
+  const lidTypeOptions: LidType[] = [
+    'almond-eyes',
+    'round-eyes',
+    'hooded-eyes',
+    'monolid-eyes',
+    'upturned-eyes',
+    'downturned-eyes',
+    'close-set-eyes',
+    'wide-set-eyes',
+    'deep-set-eyes',
+    'protruding-eyes',
+  ];
 
-  const normalizeIncomingValue = <T extends string>(value: unknown, allowed: readonly T[]): T | '' => {
+  const legacyLidTypeMap: Record<string, LidType> = {
+    monolid: 'monolid-eyes',
+    hooded: 'hooded-eyes',
+    'deep_set': 'deep-set-eyes',
+    protruding: 'protruding-eyes',
+    downturned: 'downturned-eyes',
+    upturned: 'upturned-eyes',
+    almond: 'almond-eyes',
+    standard: 'almond-eyes',
+  };
+
+  const normalizeIncomingValue = <T extends string>(
+    value: unknown,
+    allowed: readonly T[],
+    legacyMap?: Record<string, T>
+  ): T | '' => {
     if (typeof value !== 'string') return '';
     const normalized = value.trim().toLowerCase();
     if (!normalized) return '';
     const match = allowed.find((option) => option === normalized);
-    return match ?? '';
+    if (match) return match;
+    if (legacyMap) {
+      const mapped = legacyMap[normalized];
+      if (mapped) return mapped;
+    }
+    return '';
   };
 
   useEffect(() => {
@@ -190,7 +221,7 @@ export default function ProfileClient({ locale }: Props) {
         if (data) {
           const normalizedSkinType = normalizeIncomingValue<SkinType>(data.skin_type, skinTypeOptions);
           const normalizedSkinTone = normalizeIncomingValue<SkinTone>(data.skin_tone, skinTones);
-          const normalizedLidType = normalizeIncomingValue<LidType>(data.lid_type, lidTypeOptions);
+          const normalizedLidType = normalizeIncomingValue<LidType>(data.lid_type, lidTypeOptions, legacyLidTypeMap);
 
           setSkinType(normalizedSkinType);
           setSkinTone(normalizedSkinTone);
@@ -310,27 +341,36 @@ export default function ProfileClient({ locale }: Props) {
                       scheduleSave({ lidType: v as LidType });
                     }}
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {displayedLidTypes.map((type) => (
-                        <div key={type}>
-                          <div
-                            className={`border-2 rounded-sm p-4 cursor-pointer transition-all ${
-                              lidType === type
-                                ? 'border-[#0A0A0A] bg-[#F9FAFB]'
-                                : 'border-[#E5E7EB] hover:border-[#6B7280]'
-                            }`}
-                          >
-                            <RadioGroupItem value={type} id={type} className="sr-only" />
-                            <Label htmlFor={type} className="cursor-pointer block text-center">
-                              <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
-                              <span className="text-sm font-medium text-[#0A0A0A]">
-                                {t(`profile.lid_types.${type}`)}
-                              </span>
-                            </Label>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <TooltipProvider delayDuration={150}>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        {lidTypeOptions.map((type) => (
+                          <Tooltip key={type}>
+                            <TooltipTrigger asChild>
+                              <div
+                                className={`border-2 rounded-sm p-4 cursor-pointer transition-all ${
+                                  lidType === type
+                                    ? 'border-[#0A0A0A] bg-[#F9FAFB]'
+                                    : 'border-[#E5E7EB] hover:border-[#6B7280]'
+                                }`}
+                              >
+                                <RadioGroupItem value={type} id={type} className="sr-only" />
+                                <Label htmlFor={type} className="cursor-pointer block text-center">
+                                  <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
+                                  <span className="text-sm font-medium text-[#0A0A0A]">
+                                    {t(`profile.lid_types.${type}`)}
+                                  </span>
+                                </Label>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" align="center" className="max-w-xs text-sm leading-5 text-[#0A0A0A]">
+                              {t(`profile.lid_type_descriptions.${type}`, {
+                                default: t(`profile.lid_types.${type}`),
+                              })}
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </TooltipProvider>
                   </RadioGroup>
                 </div>
               </div>

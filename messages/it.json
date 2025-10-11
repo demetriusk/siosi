@@ -70,6 +70,8 @@
     "permission_denied": "Permesso fotocamera negato",
     "permission_help": "Abilita l'accesso alla fotocamera nelle impostazioni del browser e riprova.",
     "retry": "Riprova fotocamera",
+  "switch_to_selfie": "Usa la fotocamera frontale",
+  "switch_to_standard": "Usa la fotocamera posteriore",
     "capture": "Scatta foto",
     "capturing": "Scatto in corso…",
     "cancel": "Annulla"
@@ -204,9 +206,28 @@
     "skin_tone": "Tono della pelle",
     "lid_type": "Tipo di palpebra",
     "lid_types": {
-      "hooded": "Coperte",
-      "standard": "Standard",
-      "deep_set": "Infossata"
+      "almond-eyes": "Almond Eyes",
+      "round-eyes": "Round Eyes",
+      "hooded-eyes": "Hooded Eyes",
+      "monolid-eyes": "Monolid Eyes",
+      "upturned-eyes": "Upturned Eyes",
+      "downturned-eyes": "Downturned Eyes",
+      "close-set-eyes": "Close-Set Eyes",
+      "wide-set-eyes": "Wide-Set Eyes",
+      "deep-set-eyes": "Deep-Set Eyes",
+      "protruding-eyes": "Protruding Eyes"
+    },
+    "lid_type_descriptions": {
+      "almond-eyes": "Almond eyes are often seen as the classic shape — gracefully balanced with a visible crease and softly tapered ends. Their natural symmetry makes them super versatile for any makeup style.",
+      "round-eyes": "Round eyes are big, bright, and full of character! The whites around the iris give them an open, expressive look that’s perfect for creative eye makeup. Just remember — because they’re more exposed, a little extra eye care goes a long way.",
+      "hooded-eyes": "Hooded eyes have a soft fold of skin that hides the crease, creating a smooth lid area. They look stunning with contouring or gradient shading that adds depth and definition.",
+      "monolid-eyes": "Monolid eyes have a sleek, seamless lid without a crease, offering a clean canvas for layered color effects and artistic makeup looks. Their smooth shape gives a naturally modern vibe.",
+      "upturned-eyes": "Upturned eyes have an elegant lift at the outer corners, creating a naturally bright and lifted look. They pair beautifully with winged eyeliner for an effortlessly glam finish.",
+      "downturned-eyes": "Downturned eyes tilt slightly downward at the outer corners, giving them a soft and gentle appearance. With a bit of darker shadow angled upward, you can easily create a flattering, lifted effect.",
+      "close-set-eyes": "Close-set eyes sit closer together, with less than one eye’s width of space between them. Using lighter tones on the inner corners and defining the outer edges helps open up the face beautifully.",
+      "wide-set-eyes": "Wide-set eyes have a little extra space between them, giving a balanced and open expression. Looks that emphasize the center of the eyes — like smoky or halo styles — bring gorgeous harmony to this shape.",
+      "deep-set-eyes": "Deep-set eyes rest slightly under the brow bone, creating a naturally defined crease. Highlighting the lids and blending softly in the crease helps make them pop and feel more open.",
+      "protruding-eyes": "Protruding eyes have a charming, standout shape that makes them ideal for creative makeup play. With the right mix of shadows and highlights, you can create dreamy, multi-dimensional looks that truly shine."
     },
     "complete_profile": "Completa il tuo profilo per sbloccare altre 5 previsioni",
     "progress": "{completed}/{total} completato",
