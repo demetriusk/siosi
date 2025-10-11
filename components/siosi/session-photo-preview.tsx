@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { ZoomIn, X } from "lucide-react";
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -44,6 +45,9 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         className="max-w-5xl w-[min(92vw,960px)] border-0 bg-[#0A0A0A] p-0 sm:rounded-xl"
         aria-label={alt}
       >
+        <DialogTitle>
+          <VisuallyHidden>{alt}</VisuallyHidden>
+        </DialogTitle>
         <DialogClose
           asChild
         >
@@ -52,8 +56,8 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
             onClick={() => setOpen(false)}
             className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             style={{
-              top: "calc(env(safe-area-inset-top) + 1rem)",
-              right: "calc(env(safe-area-inset-right) + 1rem)",
+              top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
+              right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
             }}
           >
             <X size={18} />
@@ -71,8 +75,8 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
               unoptimized
             />
           </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent sm:hidden" aria-hidden />
-          <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:hidden">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent" aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 flex justify-center p-4">
             <DialogClose asChild>
               <button
                 type="button"
