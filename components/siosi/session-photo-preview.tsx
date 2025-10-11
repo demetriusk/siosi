@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ZoomIn, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useCallback, useState } from "react";
 
@@ -49,13 +49,16 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
         <DialogTitle>
           <VisuallyHidden>{alt}</VisuallyHidden>
         </DialogTitle>
+        <DialogDescription>
+          <VisuallyHidden>Tap or click anywhere on the photo to close</VisuallyHidden>
+        </DialogDescription>
         <DialogClose
           asChild
         >
           <button
             type="button"
             onClick={handleClose}
-            className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="absolute right-4 top-4 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#0A0A0A] shadow-lg transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             style={{
               top: "calc(env(safe-area-inset-top, 0px) + 1rem)",
               right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
@@ -70,7 +73,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
             <button
               type="button"
               onClick={handleClose}
-              className="relative h-full w-full cursor-zoom-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="relative block h-full w-full cursor-zoom-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <Image
                 src={src}
