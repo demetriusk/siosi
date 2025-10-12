@@ -405,7 +405,7 @@ export default function ProfileClient({ locale }: Props) {
                             <button
                               type="button"
                               aria-label={`${t('profile.lid_type')} – ${t(`profile.lid_types.${type}`)}`}
-                              className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] hover:background-[#0A0A0A]  hover:color-[#FFFFFF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                              className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] hover:bg-[#0A0A0A]  hover:text-[#FFFFFF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
                               onClick={(event) => {
                                 event.stopPropagation();
                                 setActiveLidInfo((prev) => (prev === type ? '' : type));
