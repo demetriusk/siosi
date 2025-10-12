@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
 import { SkinType, SkinTone, LidType } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Info, X } from 'lucide-react';
 // Avoid top-level supabase import in client components; we'll dynamically import when needed.
 import { useRouter } from 'next/navigation';
 import logger from '@/lib/logger';
@@ -27,6 +27,7 @@ export default function ProfileClient({ locale }: Props) {
   const [skinTone, setSkinTone] = useState<SkinTone | ''>('');
   const [lidType, setLidType] = useState<LidType | ''>('');
   const [_language, _setLanguage] = useState<string>(locale);
+  const [activeLidInfo, setActiveLidInfo] = useState<LidType | ''>('');
   const t = useTranslations();
   const router = useRouter();
 
@@ -50,6 +51,41 @@ export default function ProfileClient({ locale }: Props) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveLidInfo('');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!activeLidInfo) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) {
+        setActiveLidInfo('');
+        return;
+      }
+
+      if (target.closest('[data-lid-info-panel="true"]')) return;
+      if (target.closest('[data-lid-info-trigger="true"]')) return;
+
+      setActiveLidInfo('');
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [activeLidInfo]);
 
   const saveProfile = useCallback(async (values: { skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }) => {
     try {
@@ -341,39 +377,76 @@ export default function ProfileClient({ locale }: Props) {
                     value={lidType}
                     onValueChange={(v: string) => {
                       setLidType(v as LidType);
+                      setActiveLidInfo('');
                       scheduleSave({ lidType: v as LidType });
                     }}
                   >
-                    <TooltipProvider delayDuration={150}>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        {lidTypeOptions.map((type) => (
-                          <Tooltip key={type}>
-                            <TooltipTrigger asChild>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      {lidTypeOptions.map((type) => {
+                        const isSelected = lidType === type;
+                        const isInfoOpen = activeLidInfo === type;
+
+                        return (
+                          <div
+                            key={type}
+                            className={`relative border-2 rounded-sm p-4 cursor-pointer transition-all ${
+                              isSelected ? 'border-[#0A0A0A] bg-[#F9FAFB]' : 'border-[#E5E7EB] hover:border-[#6B7280]'
+                            }`}
+                            role="presentation"
+                          >
+                            <RadioGroupItem value={type} id={type} className="sr-only" />
+                            <Label htmlFor={type} className="cursor-pointer block text-center">
+                              <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
+                              <span className="text-sm font-medium text-[#0A0A0A]">
+                                {t(`profile.lid_types.${type}`)}
+                              </span>
+                            </Label>
+
+                            <button
+                              type="button"
+                              aria-label={`${t('profile.lid_type')} – ${t(`profile.lid_types.${type}`)}`}
+                              className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setActiveLidInfo((prev) => (prev === type ? '' : type));
+                              }}
+                              data-lid-info-trigger="true"
+                            >
+                              <Info className="h-5 w-5" aria-hidden="true" />
+                            </button>
+
+                            {isInfoOpen ? (
                               <div
-                                className={`border-2 rounded-sm p-4 cursor-pointer transition-all ${
-                                  lidType === type
-                                    ? 'border-[#0A0A0A] bg-[#F9FAFB]'
-                                    : 'border-[#E5E7EB] hover:border-[#6B7280]'
-                                }`}
+                                role="dialog"
+                                aria-label={t(`profile.lid_types.${type}`)}
+                                data-lid-info-panel="true"
+                                className="absolute right-3 top-16 z-20 w-64 max-w-[calc(100vw-3rem)] rounded-sm border border-[#0A0A0A] bg-white p-4 text-left shadow-lg"
+                                onClick={() => setActiveLidInfo('')}
                               >
-                                <RadioGroupItem value={type} id={type} className="sr-only" />
-                                <Label htmlFor={type} className="cursor-pointer block text-center">
-                                  <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
-                                  <span className="text-sm font-medium text-[#0A0A0A]">
-                                    {t(`profile.lid_types.${type}`)}
-                                  </span>
-                                </Label>
+                                <div className="flex items-start gap-3">
+                                  <p className="text-sm leading-5 text-[#0A0A0A]">
+                                    {t(`profile.lid_type_descriptions.${type}`, {
+                                      default: t(`profile.lid_types.${type}`),
+                                    })}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    aria-label={t('common.cancel')}
+                                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-transparent text-[#6B7280] transition-colors hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setActiveLidInfo('');
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" aria-hidden="true" />
+                                  </button>
+                                </div>
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" align="center" className="max-w-xs text-sm leading-5 text-[#0A0A0A]">
-                              {t(`profile.lid_type_descriptions.${type}`, {
-                                default: t(`profile.lid_types.${type}`),
-                              })}
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </TooltipProvider>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </RadioGroup>
                 </div>
               </div>
