@@ -43,18 +43,6 @@ const legacyToCanonicalLidTypeMap: Record<string, string> = {
   wide_set: 'wide-set-eyes',
 };
 
-const canonicalToLegacyLidTypeMap: Record<string, string> = {
-  'almond-eyes': 'almond',
-  'round-eyes': 'round',
-  'hooded-eyes': 'hooded',
-  'monolid-eyes': 'monolid',
-  'upturned-eyes': 'upturned',
-  'downturned-eyes': 'downturned',
-  'close-set-eyes': 'close_set',
-  'wide-set-eyes': 'wide_set',
-  'deep-set-eyes': 'deep_set',
-  'protruding-eyes': 'protruding',
-};
 
 function sanitizeOptionalEnum(
   value: unknown,
@@ -159,12 +147,7 @@ export async function POST(req: NextRequest) {
       if (normalizedLidType === null) {
         payload.lid_type = null;
       } else {
-        if (legacyToCanonicalLidTypeMap[normalizedLidType]) {
-          // already a legacy slug, leave as-is for storage
-          payload.lid_type = normalizedLidType;
-        } else {
-          payload.lid_type = canonicalToLegacyLidTypeMap[normalizedLidType] ?? normalizedLidType;
-        }
+        payload.lid_type = legacyToCanonicalLidTypeMap[normalizedLidType] ?? normalizedLidType;
       }
     }
 
@@ -173,6 +156,7 @@ export async function POST(req: NextRequest) {
       normalizedSkinType,
       normalizedSkinTone,
       normalizedLidType,
+      storedLidType: payload.lid_type,
       payloadKeys: Object.keys(payload),
     };
     logger.debug('Profile save normalized inputs', normalizedSnapshot);
