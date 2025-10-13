@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
   Share,
@@ -25,6 +25,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerClose,
+  DrawerDescription,
 } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
@@ -60,8 +61,6 @@ type Labels = {
   downloadImage: string;
   cancel: string;
   detailsTitle: string;
-  dateLabel: string;
-  nicknameLabel: string;
   deleteLabel: string;
 };
 
@@ -69,7 +68,6 @@ type Props = {
   locale: string;
   sessionId: string;
   createdAtIso: string;
-  nickname?: string | null;
   profileSummary: ProfileSummary;
   contextSummary: ContextSummary;
   labels: Labels;
@@ -79,7 +77,6 @@ export default function SessionActionsClient({
   locale,
   sessionId,
   createdAtIso,
-  nickname,
   profileSummary,
   contextSummary,
   labels,
@@ -93,6 +90,9 @@ export default function SessionActionsClient({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const shareFocusRef = useRef<HTMLDivElement>(null);
+  const detailsFocusRef = useRef<HTMLDivElement>(null);
 
   const formattedCreatedAt = useMemo(() => {
     try {
@@ -364,13 +364,26 @@ export default function SessionActionsClient({
             <Share className="h-4 w-4" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="pb-6">
+        <DrawerContent
+          className="pb-6"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            shareFocusRef.current?.focus();
+          }}
+        >
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
               {labels.shareTitle}
             </DrawerTitle>
+            <DrawerDescription className="sr-only">
+              {labels.shareTitle}
+            </DrawerDescription>
           </DrawerHeader>
-          <div className="px-6 pb-2">
+          <div
+            ref={shareFocusRef}
+            tabIndex={-1}
+            className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
+          >
             <div className="grid grid-cols-4 gap-4">
               {shareTiles.map(({ key, label, icon, action }) => (
                 <button
@@ -443,28 +456,30 @@ export default function SessionActionsClient({
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="pb-6">
+        <DrawerContent
+          className="pb-6"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            detailsFocusRef.current?.focus();
+          }}
+        >
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
               {labels.detailsTitle}
             </DrawerTitle>
+            <DrawerDescription className="sr-only">
+              {labels.detailsTitle}
+            </DrawerDescription>
           </DrawerHeader>
-          <div className="px-6 pb-2">
+          <div
+            ref={detailsFocusRef}
+            tabIndex={-1}
+            className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
+          >
             <div className="space-y-6 text-left">
               <div>
-                <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                  {labels.dateLabel}
-                </p>
-                <p className="mt-1 text-sm font-medium text-[#0A0A0A]">
+                <p className="text-sm font-medium text-[#0A0A0A]">
                   {formattedCreatedAt}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                  {labels.nicknameLabel}
-                </p>
-                <p className="mt-1 text-sm font-medium text-[#0A0A0A]">
-                  {nickname || '—'}
                 </p>
               </div>
               <Separator />

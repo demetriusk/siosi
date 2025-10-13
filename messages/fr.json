@@ -156,9 +156,9 @@
       "maybe": "PEUT-ÊTRE"
     },
     "analyze_another": "Analyser une autre photo",
-  "no_analyses_title": "Aucune analyse pour le moment",
-  "no_analyses_body": "Nous n'avons trouvé aucun résultat pour cette session. Essayez d'analyser une autre photo.",
-  "context": {
+    "no_analyses_title": "Aucune analyse pour le moment",
+    "no_analyses_body": "Nous n'avons trouvé aucun résultat pour cette session. Essayez d'analyser une autre photo.",
+    "context": {
       "title": "Ce que ce look a vérifié",
       "empty": "Aucun contexte supplémentaire n’a été ajouté cette fois. Les résultats peuvent être légèrement moins précis. Quelques précisions rapides aideront les labs à mieux cibler l’analyse.",
       "no_occasion": "Aucune occasion sélectionnée — aucun souci !",
@@ -169,7 +169,17 @@
       "tip": "Ces informations aident les labs à lire le look avec plus de précision. Vous pouvez les ajuster à tout moment pour vos futures sessions.",
       "edit": "Modifier le profil",
       "empty": "Pas encore de détails de profil. Quelques notes (peau, ton, paupières) rendent les recommandations plus personnalisées.",
-      "add": "Ajouter un profil pour des résultats plus précis"
+      "add": "Ajouter un profil pour des résultats plus précis",
+      "drawer_empty": "Aucun détail de profil n’a été utilisé pour cette session."
+    },
+    "share": {
+      "drawer_title": "Partager vers",
+      "device": "Partager via l’appareil",
+      "copy_link": "Copier le lien",
+      "download_image": "Télécharger l’image"
+    },
+    "details": {
+      "title": "Détails de la session"
     }
   },
   "sessions": {

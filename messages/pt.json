@@ -168,8 +168,18 @@
       "title": "Detalhes do perfil",
       "tip": "Esses dados ajudam os labs a analisar o look com mais precisão. Atualize quando quiser para as próximas sessões.",
       "edit": "Editar perfil",
-      "empty": "Ainda sem detalhes de perfil. Algumas notas rápidas (pele, tom, pálpebra) deixam as recomendações mais personalizadas.",
-      "add": "Adicionar perfil para resultados mais precisos"
+      "empty": "Ainda não há detalhes de perfil. Algumas anotações rápidas (pele, tom, pálpebras) deixam as orientações mais personalizadas.",
+      "add": "Adicionar perfil para resultados mais precisos",
+      "drawer_empty": "Nenhum detalhe de perfil foi usado nesta sessão."
+    },
+    "share": {
+      "drawer_title": "Compartilhar em",
+      "device": "Compartilhar pelo dispositivo",
+      "copy_link": "Copiar link",
+      "download_image": "Baixar imagem"
+    },
+    "details": {
+      "title": "Detalhes da sessão"
     }
   },
   "sessions": {

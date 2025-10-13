@@ -232,7 +232,6 @@ export default function AnalyzePage() {
           overall_score: analysis?.overall_score ?? 0,
           confidence_avg: analysis?.confidence_avg ?? 0,
           critical_count: analysis?.critical_count ?? calculateCriticalCountFromArray(analysesArray),
-          nickname: analysis?.nickname ?? undefined,
           user_id: userId,
         })
       });

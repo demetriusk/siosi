@@ -216,8 +216,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
     downloadImage: safeT('results.share.download_image', 'Download image'),
     cancel: safeT('common.cancel', 'Cancel'),
     detailsTitle: safeT('results.details.title', 'Session details'),
-    dateLabel: safeT('results.details.date', 'Date'),
-    nicknameLabel: safeT('results.details.nickname', 'Nickname'),
     deleteLabel: safeT('sessions.delete', 'Delete'),
   };
 
@@ -232,7 +230,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
               locale={locale}
               sessionId={id}
               createdAtIso={createdAt}
-              nickname={session?.nickname}
               profileSummary={profileSummary}
               contextSummary={contextSummary}
               labels={actionLabels}
@@ -280,140 +277,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
                       {safeT('results.overall_score', 'Overall score')}
                     </h2>
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-[#E5E7EB]">
-                  <h3 className="text-base font-semibold text-[#0A0A0A] mb-2">{safeT('results.profile.title', 'Profile details')}</h3>
-                  {hasProfile ? (
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap gap-2">
-                        {session?.skin_type && (
-                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_type', 'Skin type')}: {session.skin_type}</span>
-                        )}
-                        {session?.skin_tone && (
-                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.skin_tone', 'Skin tone')}: {session.skin_tone}</span>
-                        )}
-                        {lidTypeLabel && (
-                          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#374151] text-sm">{safeT('profile.lid_type', 'Lid type')}: {lidTypeLabel}</span>
-                        )}
-                      </div>
-                      <p className="text-sm text-[#6B7280] mb-2">
-                        {safeT('results.profile.tip', 'These details help the labs read the look more precisely. You can tweak them anytime for future sessions.')}
-                      </p>
-                      <SessionProfileCta
-                        locale={locale}
-                        hasProfile
-                        editLabel={safeT('results.profile.edit', 'Edit profile')}
-                        addLabel={safeT('results.profile.add', 'Add profile for more accurate results')}
-                      />
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <p className="text-sm text-[#6B7280] mb-2">
-                        {safeT('results.profile.empty', 'No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.')}
-                      </p>
-                      <SessionProfileCta
-                        locale={locale}
-                        hasProfile={false}
-                        editLabel={safeT('results.profile.edit', 'Edit profile')}
-                        addLabel={safeT('results.profile.add', 'Add profile for more accurate results')}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Context chips (moved closer to photo) */}
-                <div>
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="session-context">
-                      <AccordionTrigger className="text-base font-semibold text-[#0A0A0A] py-0 hover:no-underline">
-                        {safeT('results.context.title', 'What this look was checked for')}
-                      </AccordionTrigger>
-                      <AccordionContent className="pt-3">
-                        {(!occasion && concerns.length === 0 && where === 'both' && !climate) ? (
-                          <p className="text-sm text-[#6B7280]">
-                            {safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.')}
-                          </p>
-                        ) : (
-                          <div className="space-y-4">
-                            {/* Occasion */}
-                            <div>
-                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.occasion_title', 'Occasion')}</div>
-                              <ChipList
-                                items={
-                                  occasion
-                                    ? [{
-                                        key: String(occasion),
-                                        label: safeT(`upload.occasions.${occasion}`, String(occasion)),
-                                        icon: occasionIconMap[String(occasion)]
-                                      }]
-                                    : []
-                                }
-                                selected={occasion as any}
-                                readOnly
-                                onToggle={() => {}}
-                              />
-                              {!occasion && (
-                                <p className="text-xs text-[#6B7280] mt-1">{safeT('results.context.no_occasion', 'No occasion was picked — totally fine!')}</p>
-                              )}
-                            </div>
-
-                            {/* Where */}
-                            <div>
-                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.where_title', 'Where')}</div>
-                              <ChipList
-                                items={[{
-                                  key: where,
-                                  label: safeT(`upload.where.${where}`, where),
-                                  icon: whereIconMap[where]
-                                }]}
-                                selected={where as any}
-                                readOnly
-                                onToggle={() => {}}
-                              />
-                            </div>
-
-                            {/* Climate */}
-                            <div>
-                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.climate_title', 'Climate')}</div>
-                              <ChipList
-                                items={[{
-                                  key: String(climate ?? 'normal'),
-                                  label: climate ? safeT(`upload.climate.${climate}`, climate) : safeT('upload.climate.normal', 'normal'),
-                                  icon: climateIconMap[String(climate ?? 'normal')]
-                                }]}
-                                selected={(climate ?? 'normal') as any}
-                                readOnly
-                                onToggle={() => {}}
-                              />
-                            </div>
-
-                            {/* Concerns */}
-                            <div>
-                              <div className="text-sm font-medium text-[#374151] mb-2">{safeT('upload.concerns_title', 'Concerns')}</div>
-                              {concerns.length > 0 ? (
-                                <ChipList
-                                  items={concerns.map(k => ({
-                                    key: String(k),
-                                    label: safeT(`upload.concerns.${k as string}`, String(k)),
-                                    icon: concernIconMap[String(k)]
-                                  }))}
-                                  selected={concerns as unknown as any}
-                                  multi
-                                  readOnly
-                                  onToggle={() => {}}
-                                />
-                              ) : (
-                                <p className="text-sm text-[#6B7280]">
-                                  {safeT('results.context.no_concerns', 'No specific concerns were selected. If this look needs special attention (flash, transfer, close-ups), adding those next time can boost accuracy.')}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
                 </div>
               </div>
             </div>

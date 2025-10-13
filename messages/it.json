@@ -169,7 +169,17 @@
       "tip": "Queste informazioni aiutano i lab a leggere il look con maggiore precisione. Puoi aggiornarle in qualsiasi momento per le prossime sessioni.",
       "edit": "Modifica profilo",
       "empty": "Ancora nessun dettaglio di profilo. Poche note rapide (pelle, tono, palpebre) rendono i suggerimenti più su misura.",
-      "add": "Aggiungi profilo per risultati più accurati"
+      "add": "Aggiungi profilo per risultati più accurati",
+      "drawer_empty": "Per questa sessione non sono stati usati dettagli del profilo."
+    },
+    "share": {
+      "drawer_title": "Condividi su",
+      "device": "Condividi tramite dispositivo",
+      "copy_link": "Copia link",
+      "download_image": "Scarica immagine"
+    },
+    "details": {
+      "title": "Dettagli sessione"
     }
   },
   "sessions": {

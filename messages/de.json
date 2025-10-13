@@ -168,8 +168,18 @@
       "title": "Profildetails",
       "tip": "Diese Angaben helfen den Labs, den Look präziser zu lesen. Du kannst sie jederzeit für kommende Sessions anpassen.",
       "edit": "Profil bearbeiten",
-      "empty": "Noch keine Profildetails. Ein paar kurze Notizen (Haut, Ton, Lider) machen die Empfehlungen persönlicher.",
-      "add": "Profil ergänzen für genauere Ergebnisse"
+      "empty": "Noch keine Profil-Details. Ein paar kurze Angaben (Haut, Ton, Lider) machen die Hinweise persönlicher – und helfen beim nächsten Look.",
+      "add": "Profil ergänzen für genauere Ergebnisse",
+      "drawer_empty": "Für diese Session wurden keine Profil-Details verwendet."
+    },
+    "share": {
+      "drawer_title": "Teilen mit",
+      "device": "Über Gerät teilen",
+      "copy_link": "Link kopieren",
+      "download_image": "Bild herunterladen"
+    },
+    "details": {
+      "title": "Sitzungsdetails"
     }
   },
   "sessions": {

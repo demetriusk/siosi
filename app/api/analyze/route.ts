@@ -228,36 +228,12 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
     
     // Remove the valid flag before returning analyses
     delete result.valid
-    
-    // Fun single-word nickname request (glamorous, unique). Keep this separate so the core JSON remains stable.
-    let nickname: string | undefined = undefined;
-    try {
-      const nickRes = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        temperature: 0.9,
-        messages: [
-          { 
-            role: 'system', 
-            content: 'Return ONLY a single word. No punctuation. Think rare vintage names or glamorous words with personality—playful but chic. Examples of the vibe: Estelle, Delphine, Sable, Aurelia, Marceline, Cosette, Valora, Ondine, Clemency, Seraphine, Magnolia, Isolde, Lysandra, Celestine, Ophira. Avoid generic adjectives like "radiant" or "luminous". No vulgarity or trademarks.' 
-          },
-          { 
-            role: 'user', 
-            content: `Create a unique single-word glamorous name with character, inspired by: occasion=${occasion||'general'}, concerns=${(concerns||[]).join(',')||'none'}, climate=${climate||'normal'}` 
-          }
-        ],
-        max_tokens: 3
-      });
-      nickname = (nickRes.choices?.[0]?.message?.content || '').trim().split(/\s+/)[0]?.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'-]/g, '').slice(0, 24) || undefined;
-    } catch (error) {
-      logger.debug('Nickname generation failed', error)
-    }
 
     return Response.json({
       analyses: result,
       overall_score: calculateOverallScore(result),
       confidence_avg: calculateAvgConfidence(result),
-      critical_count: calculateCriticalCount(result),
-      nickname
+      critical_count: calculateCriticalCount(result)
     })
     
   } catch (err: any) {

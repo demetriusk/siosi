@@ -169,7 +169,17 @@
       "tip": "These details help the labs read the look more precisely. You can tweak them anytime for future sessions.",
       "edit": "Edit profile",
       "empty": "No profile details yet. A few quick notes (skin, tone, lids) make the guidance feel custom—handy for future looks, too.",
-      "add": "Add profile for more accurate results"
+      "add": "Add profile for more accurate results",
+      "drawer_empty": "No profile details were used this time."
+    },
+    "share": {
+      "drawer_title": "Share to",
+      "device": "Share via device",
+      "copy_link": "Copy link",
+      "download_image": "Download image"
+    },
+    "details": {
+      "title": "Session details"
     }
   },
   "sessions": {

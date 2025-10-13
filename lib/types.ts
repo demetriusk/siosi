@@ -74,7 +74,6 @@ export interface Session {
   id: string;
   created_at: string;
   photo_url: string;
-  nickname?: string;
   occasion?: Occasion;
   concerns?: Concern[];
   indoor_outdoor?: IndoorOutdoor;
