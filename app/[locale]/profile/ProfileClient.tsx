@@ -160,6 +160,9 @@ export default function ProfileClient({ locale }: Props) {
 
       if (normalizedSkinTypeCode !== undefined) {
         payload.skin_type_code = normalizedSkinTypeCode;
+        if (normalizedSkinTypeCode === null) {
+          payload.skin_type = null;
+        }
       }
 
       const res = await fetch('/api/profile/save', {

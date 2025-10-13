@@ -2,7 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSkinTypeProfile, prepareSkinTypeForAI, splitSkinTypeCode } from '@/lib/skin-type';
+import { Check } from 'lucide-react';
+import { getSkinTypeProfile, splitSkinTypeCode } from '@/lib/skin-type';
 import { useQuiz } from './quiz-context';
 
 type QuizResultProps = {
@@ -20,7 +21,11 @@ export function QuizResult({ onRetakeAction, onViewProfileAction, onRetrySaveAct
 
   const profile = getSkinTypeProfile(skinTypeCode);
   const breakdown = splitSkinTypeCode(profile.code);
-  const aiSummary = prepareSkinTypeForAI(profile.code);
+
+  const formatNeedItem = (value: string): string => {
+    if (!value) return value;
+    return value.replace(/\b([a-z])/g, (match) => match.toUpperCase());
+  };
 
   return (
     <div className="space-y-8">
@@ -53,25 +58,26 @@ export function QuizResult({ onRetakeAction, onViewProfileAction, onRetrySaveAct
             <h3 className="text-base font-semibold tracking-tight text-[#0A0A0A]">Your Makeup Needs</h3>
             <div className="grid gap-4 sm:grid-cols-2">
               {(Object.entries(profile.makeup_needs) as [string, string[]][]).map(([category, items]) => (
-                <div key={category} className="rounded-sm border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                <div key={category} className="rounded-sm border border-[#E5E7EB] bg-white p-4">
                   <p className="text-xs uppercase tracking-wide text-[#6B7280]">{category.replace('_', ' ')}</p>
-                  <ul className="mt-2 space-y-1 text-sm text-[#374151]">
+                  <ul className="mt-2 space-y-2 list-none text-sm text-[#374151]">
                     {items.length === 0 ? (
-                      <li className="text-[#9CA3AF]">No recommendations yet.</li>
+                      <li className="flex items-start gap-2 text-[#9CA3AF]">
+                        <Check className="mt-0.5 h-3 w-3 text-[#D1D5DB]" aria-hidden="true" />
+                        <span>No recommendations yet.</span>
+                      </li>
                     ) : (
-                      items.map((item) => <li key={item}>{item}</li>)
+                      items.map((item) => (
+                        <li key={item} className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-3 w-3 text-[#0A0A0A]" aria-hidden="true" />
+                          <span>{formatNeedItem(item)}</span>
+                        </li>
+                      ))
                     )}
                   </ul>
                 </div>
               ))}
             </div>
-          </section>
-
-          <section className="space-y-3">
-            <h3 className="text-base font-semibold tracking-tight text-[#0A0A0A]">AI Context</h3>
-            <pre className="whitespace-pre-wrap rounded-sm border border-[#E5E7EB] bg-[#F9FAFB] p-4 text-xs leading-5 text-[#4B5563]">
-              {aiSummary}
-            </pre>
           </section>
         </CardContent>
       </Card>
