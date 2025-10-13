@@ -53,12 +53,12 @@ export function SessionCard({ session, locale }: SessionCardProps) {
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-[#0A0A0A]/20 to-transparent" />
 
           <div className="absolute inset-x-0 bottom-0 p-4">
-            <div className="pointer-events-none flex flex-col gap-3 rounded-md border border-white/10 bg-white/10 p-3 backdrop-blur-sm">
+            <div className="pointer-events-none rounded-md border border-white/10 bg-white/10 p-3 backdrop-blur-sm">
               <div className="flex items-center justify-between text-white">
                 <span className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${getScoreBadgeClass(session.overall_score)}`}>
                   {getScoreBadgeText(session.overall_score)}
                 </span>
-                <span className="text-xs font-bold leading-none">
+                <span className="text-xm font-bold leading-none">
                   {session.overall_score.toFixed(1)}
                 </span>
               </div>
