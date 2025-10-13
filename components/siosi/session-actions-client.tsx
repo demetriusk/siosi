@@ -465,10 +465,10 @@ export default function SessionActionsClient({
         >
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
-              {labels.detailsTitle}
+              {formattedCreatedAt}
             </DrawerTitle>
             <DrawerDescription className="sr-only">
-              {labels.detailsTitle}
+              {formattedCreatedAt}
             </DrawerDescription>
           </DrawerHeader>
           <div
@@ -477,11 +477,6 @@ export default function SessionActionsClient({
             className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
           >
             <div className="space-y-6 text-left">
-              <div>
-                <p className="text-sm font-medium text-[#0A0A0A]">
-                  {formattedCreatedAt}
-                </p>
-              </div>
               <Separator />
               <div>
                 <p className="text-sm font-semibold text-[#0A0A0A]">
