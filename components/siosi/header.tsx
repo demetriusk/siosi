@@ -126,9 +126,11 @@ export function Header({ locale }: HeaderProps) {
                 {t('login')}
               </Link>
             )}
-            <div className="w-40">
-              <LanguageSelect locale={locale} />
-            </div>
+            {!user && (
+              <div className="w-40">
+                <LanguageSelect locale={locale} />
+              </div>
+            )}
           </div>
 
           <button
@@ -198,11 +200,13 @@ export function Header({ locale }: HeaderProps) {
               </div>
             )}
 
-            <div className="px-3 py-2">
-              <div className="w-full">
-                <LanguageSelect locale={locale} onChangeClose={() => setMobileMenuOpen(false)} />
+            {!user && (
+              <div className="px-3 py-2">
+                <div className="w-full">
+                  <LanguageSelect locale={locale} onChangeClose={() => setMobileMenuOpen(false)} />
+                </div>
               </div>
-            </div>
+            )}
           </nav>
         </div>
       )}
