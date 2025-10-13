@@ -225,21 +225,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-            <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
-              <Link href={`/${locale}/sessions`}>
-                <ChevronLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-            <SessionActionsClient
-              locale={locale}
-              sessionId={id}
-              createdAtIso={createdAt}
-              profileSummary={profileSummary}
-              contextSummary={contextSummary}
-              labels={actionLabels}
-            />
-          </div>
 
           <Card className="mb-8 p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-start gap-6">
@@ -257,6 +242,23 @@ export default async function SessionPage({ params }: SessionPageProps) {
               </div>
 
               <div className="flex-1 flex flex-col gap-6">
+
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+                  <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
+                    <Link href={`/${locale}/sessions`}>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <SessionActionsClient
+                    locale={locale}
+                    sessionId={id}
+                    createdAtIso={createdAt}
+                    profileSummary={profileSummary}
+                    contextSummary={contextSummary}
+                    labels={actionLabels}
+                  />
+                </div>
+          
                 {/* Overall score */}
                 <div className="flex items-center gap-4">
                   <div className="relative inline-block">
