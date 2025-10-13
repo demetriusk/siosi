@@ -1,12 +1,16 @@
-import quizJson from '../quiz-questions.json';
-import skinTypesJson from '../skin-types.json';
+import {
+  QUIZ_DATA as RAW_QUIZ_DATA,
+  SKIN_TYPES_DATA as RAW_SKIN_TYPES_DATA,
+  QuizAxis,
+  RawSkinTypeProfile,
+} from './skin-type-data';
+
+export type { QuizAxis } from './skin-type-data';
 
 export type OilLevelCode = 'O' | 'N' | 'D';
 export type ConcernCode = 'C' | 'A' | 'R' | 'S';
 export type UndertoneCode = 'W' | 'K' | 'N';
 export type SkinTypeCode = `${OilLevelCode}-${ConcernCode}-${UndertoneCode}`;
-
-export type QuizAxis = 'oil_level' | 'concerns' | 'undertone';
 
 export interface QuizAnswerOption {
   id: string;
@@ -46,60 +50,25 @@ export interface SkinTypeProfile {
   makeup_needs: MakeupNeeds;
 }
 
-interface RawQuizQuestion {
-  id: string;
-  axis: QuizAxis;
-  question: string;
-  answers: QuizAnswerOption[];
-}
-
-interface RawQuizData {
-  version: string;
-  title: string;
-  description: string;
-  scoring_method: string;
-  questions: RawQuizQuestion[];
-  axes: Record<QuizAxis, { name: string; codes: string[]; default_tie: string }>;
-}
-
-interface RawSkinTypeProfile {
-  code: string;
-  oil_level: string;
-  concern: string;
-  undertone: string;
-  profile_summary: string;
-  description: string;
-  makeup_needs?: Partial<MakeupNeeds>;
-}
-
-interface RawSkinTypeData {
-  version: string;
-  system_name: string;
-  total_types: number;
-  types: RawSkinTypeProfile[];
-}
-
-const QUIZ_DATA = quizJson.quiz as RawQuizData;
 export const QUIZ_METADATA = {
-  version: QUIZ_DATA.version,
-  title: QUIZ_DATA.title,
-  description: QUIZ_DATA.description,
+  version: RAW_QUIZ_DATA.version,
+  title: RAW_QUIZ_DATA.title,
+  description: RAW_QUIZ_DATA.description,
 };
-const SKIN_TYPES_DATA = skinTypesJson.skin_types as RawSkinTypeData;
 
 export const QUIZ_AXIS_DEFAULTS: Record<QuizAxis, string> = {
-  oil_level: QUIZ_DATA.axes.oil_level.default_tie,
-  concerns: QUIZ_DATA.axes.concerns.default_tie,
-  undertone: QUIZ_DATA.axes.undertone.default_tie,
+  oil_level: RAW_QUIZ_DATA.axes.oil_level.default_tie,
+  concerns: RAW_QUIZ_DATA.axes.concerns.default_tie,
+  undertone: RAW_QUIZ_DATA.axes.undertone.default_tie,
 };
 
 export const QUIZ_AXIS_CODES: Record<QuizAxis, string[]> = {
-  oil_level: QUIZ_DATA.axes.oil_level.codes,
-  concerns: QUIZ_DATA.axes.concerns.codes,
-  undertone: QUIZ_DATA.axes.undertone.codes,
+  oil_level: RAW_QUIZ_DATA.axes.oil_level.codes,
+  concerns: RAW_QUIZ_DATA.axes.concerns.codes,
+  undertone: RAW_QUIZ_DATA.axes.undertone.codes,
 };
 
-const QUIZ_QUESTIONS: QuizQuestion[] = QUIZ_DATA.questions.map((question) => ({
+const QUIZ_QUESTIONS: QuizQuestion[] = RAW_QUIZ_DATA.questions.map((question) => ({
   id: question.id,
   axis: question.axis,
   question: question.question,
@@ -115,7 +84,7 @@ const QUESTION_MAP = new Map<string, QuizQuestion>(
 );
 
 const SKIN_TYPE_MAP = new Map<SkinTypeCode, SkinTypeProfile>(
-  SKIN_TYPES_DATA.types.reduce<[SkinTypeCode, SkinTypeProfile][]>((acc, rawProfile) => {
+  RAW_SKIN_TYPES_DATA.types.reduce<[SkinTypeCode, SkinTypeProfile][]>((acc, rawProfile: RawSkinTypeProfile) => {
     if (!rawProfile.code) {
       return acc;
     }
@@ -145,23 +114,24 @@ const SKIN_TYPE_MAP = new Map<SkinTypeCode, SkinTypeProfile>(
   }, [])
 );
 
-const DEFAULT_PROFILE: SkinTypeProfile = {
-  code: 'N-C-N',
-  oil_level: 'Normal',
-  concern: 'Clear',
-  undertone: 'Neutral',
-  profile_summary: 'Please Retake Quiz',
-  description:
-    "We couldn't find your skin type profile. Please retake the quiz to update your results.",
-  makeup_needs: {
-    primer: [],
-    foundation: [],
-    concealer: [],
-    powder: [],
-    blush: [],
-    highlighter: [],
-  },
-};
+const DEFAULT_PROFILE: SkinTypeProfile =
+  SKIN_TYPE_MAP.get('N-C-N') ?? {
+    code: 'N-C-N',
+    oil_level: 'Normal / Combination',
+    concern: 'Clear & Low-Maintenance',
+    undertone: 'Neutral',
+    profile_summary: 'Please Retake Quiz',
+    description:
+      "We couldn't find your skin type profile. Please retake the quiz to update your results.",
+    makeup_needs: {
+      primer: [],
+      foundation: [],
+      concealer: [],
+      powder: [],
+      blush: [],
+      highlighter: [],
+    },
+  };
 
 export const QUIZ_TOTAL_QUESTIONS = QUIZ_QUESTIONS.length;
 
@@ -174,7 +144,7 @@ export function getQuizQuestion(questionId: string): QuizQuestion | undefined {
 }
 
 export function getAxisName(axis: QuizAxis): string {
-  return QUIZ_DATA.axes[axis].name;
+  return RAW_QUIZ_DATA.axes[axis].name;
 }
 
 export function getAxisCodes(axis: QuizAxis): string[] {
