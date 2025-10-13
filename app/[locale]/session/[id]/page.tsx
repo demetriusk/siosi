@@ -1,21 +1,17 @@
 export const dynamic = 'force-dynamic';
 
-import { format } from 'date-fns';
 import Link from 'next/link';
-import { Aperture, Gem, PartyPopper, Video, Activity, Home, Trees, Shell, Sun, Thermometer, Droplet, Zap, Camera, Clock, ZoomIn, ThermometerSun, Ghost, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
 // Client actions wrapper (renders client-only buttons)
 import SessionActionsClient from '@/components/siosi/session-actions-client';
-import SessionProfileCta from '@/components/siosi/session-profile-cta';
 import { SessionPhotoPreview } from '@/components/siosi/session-photo-preview';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
@@ -83,42 +79,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const concerns = session?.concerns ?? [];
   const where = session?.indoor_outdoor ?? 'both';
   const climate = session?.climate;
-  const hasProfile = Boolean(session?.skin_type || session?.skin_tone || session?.lid_type);
-
-  // Icon maps (string-keyed to gracefully handle legacy/extended values)
-  const occasionIconMap: Record<string, React.ReactNode> = {
-    photoshoot: <Aperture size={16} className="mr-2" />,
-    wedding: <Gem size={16} className="mr-2" />,
-    party: <PartyPopper size={16} className="mr-2" />,
-    video: <Video size={16} className="mr-2" />,
-    testing: <Activity size={16} className="mr-2" />,
-    work: <Activity size={16} className="mr-2" />,
-    everyday: <Activity size={16} className="mr-2" />,
-    date: <PartyPopper size={16} className="mr-2" />,
-    stage: <Activity size={16} className="mr-2" />,
-    special: <Gem size={16} className="mr-2" />,
-  };
-  const whereIconMap: Record<string, React.ReactNode> = {
-    indoor: <Home size={16} className="mr-2" />,
-    outdoor: <Trees size={16} className="mr-2" />,
-    both: <Shell size={16} className="mr-2" />,
-  };
-  const climateIconMap: Record<string, React.ReactNode> = {
-    dry: <Sun size={16} className="mr-2" />,
-    normal: <Thermometer size={16} className="mr-2" />,
-    humid: <Droplet size={16} className="mr-2" />,
-    hot_humid: <Zap size={16} className="mr-2" />,
-  };
-  const concernIconMap: Record<string, React.ReactNode> = {
-    flash: <Camera size={16} className="mr-2" />,
-    lasting: <Clock size={16} className="mr-2" />,
-    closeup: <ZoomIn size={16} className="mr-2" />,
-    weather: <ThermometerSun size={16} className="mr-2" />,
-    heat: <ThermometerSun size={16} className="mr-2" />,
-    transfer: <Ghost size={16} className="mr-2" />,
-    sensitive: <ThermometerSun size={16} className="mr-2" />,
-  };
-
   const legacyLidTypeMap: Record<string, string> = {
     monolid: 'monolid-eyes',
     hooded: 'hooded-eyes',

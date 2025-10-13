@@ -1,11 +1,9 @@
 "use client";
 
-import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
   Share,
-  Upload,
   EllipsisVertical,
   Download,
   Facebook,

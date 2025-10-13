@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import LanguageSelect from './language-select';
+import { useSupabaseUser } from '@/hooks/use-supabase-user';
+import { cn } from '@/lib/utils';
 // NOTE: we purposely avoid importing `supabase` at module scope here to prevent
 // bundling server-side vendor chunks into client-side runtime. We'll dynamically
 // load it inside the client effect where needed.
@@ -18,9 +19,8 @@ interface HeaderProps {
 export function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const t = useTranslations('nav');
-  const [user, setUser] = useState<any>(null);
+  const user = useSupabaseUser();
 
   // Basic navigation items. Keep these simple and locale-aware.
   const navigation = [
@@ -32,61 +32,15 @@ export function Header({ locale }: HeaderProps) {
     { name: t('profile'), href: `/${locale}/profile` }
   ];
 
-  useEffect(() => {
-    let mounted = true;
-    const fetchUser = async () => {
-      try {
-        // dynamically import the supabase client from our helper module.
-        const mod = await import('@/lib/supabase');
-        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
-
-        // try to read the current session/user from Supabase
-        const maybeGetUser = (maybeSupabase as any)?.auth?.getUser ?? (maybeSupabase as any)?.auth?.user;
-        if (maybeGetUser) {
-          // supabase v2: getUser()
-          if (typeof (maybeSupabase as any)?.auth?.getUser === 'function') {
-            const { data } = await (maybeSupabase as any).auth.getUser();
-            if (mounted) setUser(data?.user ?? null);
-          } else if (typeof (maybeSupabase as any)?.auth?.user === 'function') {
-            if (mounted) setUser((maybeSupabase as any).auth.user());
-          }
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    fetchUser();
-
-    // try to subscribe to auth changes if available
-    let listener: any = null;
-    (async () => {
-      try {
-        const mod = await import('@/lib/supabase');
-        const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
-        listener = (maybeSupabase as any)?.auth?.onAuthStateChange?.((event: string, session: any) => {
-          if (!mounted) return;
-          setUser(session?.user ?? null);
-        });
-      } catch {
-        // ignore
-      }
-    })();
-
-    return () => {
-      mounted = false;
-      try {
-        if (listener?.subscription?.unsubscribe) listener.subscription.unsubscribe();
-      } catch {
-        // ignore
-      }
-    };
-  }, []);
-
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50">
+    <header
+      className={cn(
+        'bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50',
+        user ? 'md:hidden' : undefined
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
