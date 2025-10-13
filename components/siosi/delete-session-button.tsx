@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,13 @@ import { toast } from 'sonner';
 import { Trash } from 'lucide-react';
 import logger from '@/lib/logger';
 
-export default function DeleteSessionButton({ locale, sessionId }: { locale: string; sessionId: string }) {
+type DeleteSessionButtonProps = {
+  locale: string;
+  sessionId: string;
+  renderTriggerAction?: (helpers: { openDialog: () => void }) => ReactNode;
+};
+
+export default function DeleteSessionButton({ locale, sessionId, renderTriggerAction }: DeleteSessionButtonProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -75,12 +82,23 @@ export default function DeleteSessionButton({ locale, sessionId }: { locale: str
     }
   };
 
+  const openDialog = () => setOpen(true);
+
   return (
     <>
-      <Button variant="outline" size="sm" className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white" onClick={() => setOpen(true)}>
-        <Trash className="w-4 h-4 mr-2" />
-        {t('sessions.delete') || 'Delete'}
-      </Button>
+      {renderTriggerAction ? (
+        renderTriggerAction({ openDialog })
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+          onClick={openDialog}
+        >
+          <Trash className="w-4 h-4 mr-2" />
+          {t('sessions.delete') || 'Delete'}
+        </Button>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>

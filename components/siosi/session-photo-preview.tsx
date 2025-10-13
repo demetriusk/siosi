@@ -82,7 +82,7 @@ export function SessionPhotoPreview({ src, alt, className }: SessionPhotoPreview
                   className="pointer-events-none object-contain"
                   unoptimized
                 />
-                <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 rounded-full bg-[#0A0A0A]/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 rounded-full bg-[#0A0A0A]/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white z-50">
                   Tap to close
                 </span>
               </button>

@@ -176,7 +176,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
               )}
             </div>
             {/* Server component renders a small client wrapper for actions */}
-            <SessionActionsClient locale={locale} sessionId={id} />
+            <SessionActionsClient locale={locale} sessionId={id} createdAtIso={createdAt} />
           </div>
 
           <Card className="mb-8 p-6 md:p-8">

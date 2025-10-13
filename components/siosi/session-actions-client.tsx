@@ -1,8 +1,19 @@
 "use client";
 
 import Link from 'next/link';
-import { Share2, Download, Upload, Copy, Instagram } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import {
+  Share,
+  Upload,
+  EllipsisVertical,
+  Download,
+  Facebook,
+  MessageCircle,
+  MessageSquare,
+  Copy,
+  Trash,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeleteSessionButton from './delete-session-button';
 import {
@@ -11,15 +22,31 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
-import { SiWhatsapp, SiTelegram } from '@icons-pack/react-simple-icons';
+import { SiWhatsapp } from '@icons-pack/react-simple-icons';
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+} from '@/components/ui/drawer';
+import { format } from 'date-fns';
 
-type Props = { locale: string; sessionId: string };
+type Props = { locale: string; sessionId: string; createdAtIso: string };
 
-export default function SessionActionsClient({ locale, sessionId }: Props) {
-  // use sonner toast directly
+type ShareTile = {
+  key: string;
+  label: string;
+  icon: ReactNode;
+  action: () => void;
+};
+
+export default function SessionActionsClient({ locale, sessionId, createdAtIso }: Props) {
   const sessionUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/${locale}/session/${sessionId}`
     : `/${locale}/session/${sessionId}`;
@@ -27,6 +54,15 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+
+  const formattedCreatedAt = useMemo(() => {
+    try {
+      return format(new Date(createdAtIso), 'MMMM d, yyyy • h:mm a');
+    } catch {
+      return createdAtIso;
+    }
+  }, [createdAtIso]);
 
   useEffect(() => {
     let mounted = true;
@@ -60,8 +96,8 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
             setIsAuthenticated(!!data?.session?.user);
             setAuthChecked(true);
           }
-        } else {
-          if (mounted) setAuthChecked(true);
+        } else if (mounted) {
+          setAuthChecked(true);
         }
 
         listener = maybeSupabase.auth.onAuthStateChange?.((event: string, session: any) => {
@@ -90,7 +126,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
 
   async function onNativeShare() {
     if (!canNativeShare) {
-  toast('Not available', { description: 'Native share is not supported in this browser' });
+      toast('Not available', { description: 'Native share is not supported in this browser' });
       return;
     }
 
@@ -100,7 +136,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
         text: 'Check out my siOsi makeup analysis',
         url: sessionUrl,
       });
-  toast.success('Shared', { description: 'Shared via device share sheet' });
+      toast.success('Shared', { description: 'Shared via device share sheet' });
     } catch (error) {
       logger.debug('Native share cancelled or failed', error);
       toast('Share cancelled', { description: 'Share was not completed' });
@@ -109,7 +145,7 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
 
   function onCopyLink() {
     if (!navigator?.clipboard) {
-  toast.error('Copy failed', { description: 'Clipboard not available' });
+      toast.error('Copy failed', { description: 'Clipboard not available' });
       return;
     }
     navigator.clipboard.writeText(sessionUrl)
@@ -125,106 +161,42 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
   function onShareWhatsapp() {
     const text = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
     const href = `https://wa.me/?text=${text}`;
-    window.open(href, '_blank');
+    window.open(href, '_blank', 'noopener');
   }
 
-  function onShareTelegram() {
+  function onShareMessenger() {
     const text = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
-    const href = `https://t.me/share/url?url=${encodeURIComponent(sessionUrl)}&text=${text}`;
-    window.open(href, '_blank');
+    const href = `https://m.me/?link=${encodeURIComponent(sessionUrl)}&ref=${text}`;
+    window.open(href, '_blank', 'noopener');
   }
 
-  function onShareInstagram() {
-    // replaced by shareImage flow below - kept for compatibility but no-op
-    // Instagram web doesn't support direct programmatic uploads. Use the image share flow instead.
-    shareImage();
+  function onShareSms() {
+    const body = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
+    const href = `sms:?&body=${body}`;
+    window.location.href = href;
   }
 
-  // --- Image poster generation + Web Share flow (friendly fallback) ---
-  async function makePosterImage(photoUrl: string, titleText = 'siOsi analysis') {
-    if (!photoUrl) return null;
+  function onShareFacebook() {
+    const href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(sessionUrl)}`;
+    window.open(href, '_blank', 'noopener');
+  }
+
+  async function downloadImage() {
     try {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.src = photoUrl;
-      await img.decode();
-
-      const w = 1200;
-      const h = 1400;
-      const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return null;
-
-      // background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, w, h);
-
-      // draw image centered with padding
-      const pad = 80;
-      const maxImgW = w - pad * 2;
-      const maxImgH = h - 320; // leave room for caption area
-      let iw = img.width;
-      let ih = img.height;
-      const scale = Math.min(maxImgW / iw, maxImgH / ih, 1);
-      iw = Math.round(iw * scale);
-      ih = Math.round(ih * scale);
-      const ix = Math.round((w - iw) / 2);
-      const iy = Math.round((h - ih) / 2) - 60;
-      ctx.drawImage(img, ix, iy, iw, ih);
-
-      // bottom caption box
-      ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      ctx.fillRect(0, h - 180, w, 180);
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'left';
-      ctx.font = 'bold 36px Arial, sans-serif';
-      const xtext = pad;
-      const ytext = h - 120;
-      ctx.fillText(titleText, xtext, ytext);
-      ctx.font = '20px Arial, sans-serif';
-      ctx.fillText('My siOsi makeup analysis', xtext, ytext + 40);
-
-      return await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/png', 0.9)
-      );
-    } catch (error) {
-      logger.debug('Poster image generation failed', error);
-      return null;
-    }
-  }
-
-  async function shareImage() {
-    // Friendly, low-tech flow:
-    // 1) Try to generate a poster image and use navigator.share(files) on devices that support it.
-    // 2) If not supported or failed, download the image and copy a short caption to clipboard and show clear instructions via toast.
-
-    if (!sessionUrl) {
-  toast.error('No image', { description: 'No session URL available to share' });
-      return;
-    }
-
-    // Try to find the session photo on the page using the image URL from the sessionUrl context.
-    // As a simple approach, fetch the session endpoint we already have which includes `photo_url`.
-    try {
-      // Try server-generated poster first (SVG) for better consistency
       let blob: Blob | null = null;
       try {
-  const posterRes = await fetch(`/api/sessions/${sessionId}/poster`);
+        const posterRes = await fetch(`/api/sessions/${sessionId}/poster`);
         if (posterRes.ok) {
           const contentType = posterRes.headers.get('content-type') || '';
           if (contentType.includes('application/json')) {
             const json = await posterRes.json();
             if (json?.url) {
-              // fetch the PNG from storage
               const pngRes = await fetch(json.url);
               if (pngRes.ok) blob = await pngRes.blob();
             }
           } else if (contentType.includes('image/png')) {
             blob = await posterRes.blob();
           } else if (contentType.includes('image/svg')) {
-            // server returned SVG (png generation not available) - convert to PNG client-side
             const svgText = await posterRes.text();
             const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(svgBlob);
@@ -232,51 +204,65 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
             img.crossOrigin = 'anonymous';
             img.src = url;
             await img.decode();
-            const c = document.createElement('canvas');
-            c.width = img.naturalWidth || 1200;
-            c.height = img.naturalHeight || 1400;
-            const ctx = c.getContext('2d');
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || 1200;
+            canvas.height = img.naturalHeight || 1400;
+            const ctx = canvas.getContext('2d');
             if (ctx) ctx.drawImage(img, 0, 0);
-            blob = await new Promise<Blob | null>((resolve) => c.toBlob((b) => resolve(b), 'image/png'));
+            blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), 'image/png'));
             URL.revokeObjectURL(url);
           }
         }
       } catch (error) {
         logger.debug('Poster API fetch failed', error);
-        blob = null;
       }
 
       if (!blob) {
-        // fallback to client-side poster
         const sessionRes = await fetch(`/api/sessions/${sessionId}`);
         if (!sessionRes.ok) throw new Error('Failed to fetch session');
         const sessionData = await sessionRes.json();
         const photoUrl: string | undefined = sessionData?.photo_url;
         if (!photoUrl) {
-          toast.error('No photo', { description: 'This session has no photo to share' });
+          toast.error('No photo', { description: 'This session has no photo to download' });
           return;
         }
 
-        blob = await makePosterImage(photoUrl, 'siOsi analysis');
-        if (!blob) throw new Error('Could not create image');
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = photoUrl;
+        await img.decode();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || 1200;
+        canvas.height = img.naturalHeight || 1400;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas not supported');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const pad = 80;
+        const maxImgW = canvas.width - pad * 2;
+        const maxImgH = canvas.height - 320;
+        let iw = img.width;
+        let ih = img.height;
+        const scale = Math.min(maxImgW / iw, maxImgH / ih, 1);
+        iw = Math.round(iw * scale);
+        ih = Math.round(ih * scale);
+        const ix = Math.round((canvas.width - iw) / 2);
+        const iy = Math.round((canvas.height - ih) / 2) - 60;
+        ctx.drawImage(img, ix, iy, iw, ih);
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 36px Verdana, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('siOsi analysis', pad, canvas.height - 120);
+        ctx.font = '20px Verdana, sans-serif';
+        ctx.fillText('My siOsi makeup analysis', pad, canvas.height - 80);
+        blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), 'image/png', 0.92));
       }
 
-      const file = new File([blob], `siosi-${sessionId}.png`, { type: 'image/png' });
+      if (!blob) throw new Error('Could not prepare image');
 
-      // Use Web Share API with files when available (mobile browsers)
-      const canShareFiles = typeof (navigator as any).canShare === 'function' && (navigator as any).canShare({ files: [file] });
-      if (canShareFiles) {
-        try {
-          await (navigator as any).share({ files: [file], title: 'siOsi analysis', text: 'Check out my siOsi makeup analysis' });
-          toast.success('Shared', { description: 'Shared via device share sheet' });
-          return;
-        } catch (error) {
-          logger.debug('Native share failed or was cancelled', error);
-          // user cancelled or share failed, fall through to download fallback
-        }
-      }
-
-      // Fallback: download the image and copy a suggested caption so low-tech users can follow simple steps.
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -285,84 +271,160 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-
-      // Copy a short caption to clipboard to make uploading easier for low-tech users
-      const caption = 'My siOsi makeup analysis — see results: ' + sessionUrl;
-      try {
-        await navigator.clipboard.writeText(caption);
-      } catch (error) {
-        logger.debug('Failed to copy caption to clipboard', error);
-      }
-
-    toast('Image downloaded', { description: 'Open Instagram (or another app) and upload the downloaded image. Caption copied to clipboard.' });
+      toast.success('Image downloaded', { description: 'Poster saved to your device' });
     } catch (error) {
-      logger.error('Share poster generation failed', error);
-      toast.error('Share failed', { description: 'Could not create shareable image' });
+      logger.error('Download image failed', error);
+      toast.error('Download failed', { description: 'Could not create shareable image' });
     }
   }
 
-  async function onSave() {
+  const shareTiles: ShareTile[] = [
+    {
+      key: 'whatsapp',
+      label: 'WhatsApp',
+      icon: <SiWhatsapp className="h-6 w-6" role="img" aria-hidden />,
+      action: onShareWhatsapp,
+    },
+    {
+      key: 'messenger',
+      label: 'Messenger',
+      icon: <MessageCircle className="h-6 w-6 text-[#2563EB]" />,
+      action: onShareMessenger,
+    },
+    {
+      key: 'sms',
+      label: 'Message',
+      icon: <MessageSquare className="h-6 w-6 text-[#10B981]" />,
+      action: onShareSms,
+    },
+    {
+      key: 'facebook',
+      label: 'Facebook',
+      icon: <Facebook className="h-6 w-6 text-[#1877F2]" />,
+      action: onShareFacebook,
+    },
+  ];
+
+  const handleShare = (action: () => void) => () => {
     try {
-      const res = await fetch(`/api/sessions/${sessionId}`);
-      if (!res.ok) throw new Error('Failed to fetch session');
-      const data = await res.json();
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `siosi-session-${sessionId}.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-  toast.success('Saved', { description: 'Session JSON downloaded' });
-    } catch (error) {
-      logger.error('Save session export failed', error);
-      toast.error('Save failed', { description: 'Could not download session' });
+      action();
+    } finally {
+      setShareOpen(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2">
+      <Drawer open={shareOpen} onOpenChange={setShareOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 border-[#E5E7EB]"
+            aria-label="Share session"
+          >
+            <Share className="h-4 w-4" />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent className="pb-6">
+          <DrawerHeader className="pb-2">
+            <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
+              Share to
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className="px-6 pb-2">
+            <div className="grid grid-cols-4 gap-4">
+              {shareTiles.map(({ key, label, icon, action }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={handleShare(action)}
+                  className="flex flex-col items-center gap-2 text-xs font-medium text-[#111827]"
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F3F4F6]">
+                    {icon}
+                  </span>
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="mt-6 grid gap-2">
+              {canNativeShare && (
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    await onNativeShare();
+                    setShareOpen(false);
+                  }}
+                  className="justify-start gap-2 border-[#E5E7EB]"
+                >
+                  <Share className="h-4 w-4" />
+                  Share via device
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  onCopyLink();
+                  setShareOpen(false);
+                }}
+                className="justify-start gap-2 border-[#E5E7EB]"
+              >
+                <Copy className="h-4 w-4" />
+                Copy link
+              </Button>
+            </div>
+            <DrawerClose asChild>
+              <Button variant="ghost" className="mt-4 w-full text-sm text-[#6B7280]">
+                Cancel
+              </Button>
+            </DrawerClose>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="border-[#E5E7EB]">
-            <Share2 className="w-4 h-4 mr-2" />
-            Share
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-9 w-9 border-[#E5E7EB]"
+            aria-label="Session options"
+          >
+            <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {canNativeShare && (
-            <>
-              <DropdownMenuItem onSelect={onNativeShare}>
-                <Share2 className="w-4 h-4 mr-2" />
-                Share…
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel className="text-[#0A0A0A]">
+            {formattedCreatedAt}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {authChecked && isAuthenticated && (
+            <DeleteSessionButton
+              locale={locale}
+              sessionId={sessionId}
+              renderTriggerAction={({ openDialog }) => (
+                <DropdownMenuItem
+                  className="text-[#EF4444] focus:text-[#EF4444]"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    openDialog();
+                  }}
+                >
+                  <Trash className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              )}
+            />
           )}
-
-          <DropdownMenuItem onSelect={onSave}>
-            <Download className="w-4 h-4 mr-2" />
-            Save
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={onShareInstagram}>
-            <Instagram className="w-4 h-4 mr-2" />
-            Share to Instagram
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onShareWhatsapp}>
-            <SiWhatsapp className="w-4 h-4 mr-2" role="img" aria-hidden />
-            Share to WhatsApp
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={onShareTelegram}>
-            <SiTelegram className="w-4 h-4 mr-2" role="img" aria-hidden />
-            Share to Telegram
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={onCopyLink}>
-            <Copy className="w-4 h-4 mr-2" />
-            Copy link
+          <DropdownMenuItem
+            onSelect={(event) => {
+              event.preventDefault();
+              downloadImage();
+            }}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download image
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -373,10 +435,6 @@ export default function SessionActionsClient({ locale, sessionId }: Props) {
           Analyze another
         </Button>
       </Link>
-
-      {authChecked && isAuthenticated && (
-        <DeleteSessionButton locale={locale} sessionId={sessionId} />
-      )}
     </div>
   );
 }
