@@ -1,10 +1,10 @@
+import type { ParamsWithLocale } from '@/lib/types';
+
 import QuizClient from './QuizClient';
 
-interface SkinTypeQuizPageProps {
-  params: { locale?: string };
-}
+interface SkinTypeQuizPageProps extends ParamsWithLocale {}
 
-export default function SkinTypeQuizPage({ params }: SkinTypeQuizPageProps) {
-  const locale = params?.locale ?? 'en';
+export default async function SkinTypeQuizPage({ params }: SkinTypeQuizPageProps) {
+  const { locale } = await params!;
   return <QuizClient locale={locale} />;
 }
