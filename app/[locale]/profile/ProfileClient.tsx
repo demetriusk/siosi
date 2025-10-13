@@ -23,6 +23,18 @@ interface Props {
 
 const SKIN_TYPE_CODE_PATTERN = /^[OND]-[CARS]-[WKN]$/;
 
+type LatestProfileSnapshot = {
+  skinTone: SkinTone | '';
+  lidType: LidType | '';
+  skinTypeCode: string | null | '';
+};
+
+type SaveProfileInput = {
+  skinTone: SkinTone | '';
+  lidType: LidType | '';
+  skinTypeCode?: string | null | '';
+};
+
 export default function ProfileClient({ locale }: Props) {
   // use Sonner's toast directly
   const [skinTypeCode, setSkinTypeCode] = useState<string>('');
@@ -36,14 +48,19 @@ export default function ProfileClient({ locale }: Props) {
 
   // Debounced autosave machinery
   const saveTimerRef = useRef<number | null>(null);
-  const latestValuesRef = useRef<{ skinTone: SkinTone | ''; lidType: LidType | '' }>({
+  const latestValuesRef = useRef<LatestProfileSnapshot>({
     skinTone: '',
     lidType: '',
+    skinTypeCode: '',
   });
 
   useEffect(() => {
-    latestValuesRef.current = { skinTone, lidType };
-  }, [skinTone, lidType]);
+    latestValuesRef.current = {
+      skinTone,
+      lidType,
+      skinTypeCode: skinTypeCode || '',
+    };
+  }, [skinTone, lidType, skinTypeCode]);
 
   useEffect(() => {
     return () => {
@@ -87,7 +104,7 @@ export default function ProfileClient({ locale }: Props) {
     };
   }, [activeLidInfo]);
 
-  const saveProfile = useCallback(async (values: { skinTone: SkinTone | ''; lidType: LidType | ''; skinTypeCode?: string | null | '' }) => {
+  const saveProfile = useCallback(async (values: SaveProfileInput) => {
     try {
       // dynamically import client supabase to obtain session token
       const mod = await import('@/lib/supabase');
@@ -173,14 +190,14 @@ export default function ProfileClient({ locale }: Props) {
     }
   }, []);
 
-  const scheduleSave = useCallback((nextValues?: Partial<{ skinTone: SkinTone | ''; lidType: LidType | '' }>) => {
+  const scheduleSave = useCallback((nextValues?: Partial<LatestProfileSnapshot>) => {
     if (saveTimerRef.current) {
       window.clearTimeout(saveTimerRef.current);
     }
     if (nextValues && Object.keys(nextValues).length > 0) {
       latestValuesRef.current = { ...latestValuesRef.current, ...nextValues };
     }
-    const payload = { ...latestValuesRef.current };
+    const payload: SaveProfileInput = { ...latestValuesRef.current };
     // debounce saves to avoid spamming API on rapid changes
     saveTimerRef.current = window.setTimeout(() => {
       void saveProfile(payload);
@@ -302,9 +319,15 @@ export default function ProfileClient({ locale }: Props) {
           latestValuesRef.current = {
             skinTone: normalizedSkinTone,
             lidType: normalizedLidType,
+            skinTypeCode: normalizedSkinType || '',
           };
         } else {
           setSkinTypeCode('');
+          latestValuesRef.current = {
+            skinTone: '',
+            lidType: '',
+            skinTypeCode: '',
+          };
         }
         setIsSkinTypeLoading(false);
       } catch (error) {
@@ -342,7 +365,11 @@ export default function ProfileClient({ locale }: Props) {
                     window.clearTimeout(saveTimerRef.current);
                     saveTimerRef.current = null;
                   }
-                  const cleared = { skinTone: '' as SkinTone | '', lidType: '' as LidType | '' };
+                  const cleared: LatestProfileSnapshot = {
+                    skinTone: '' as SkinTone | '',
+                    lidType: '' as LidType | '',
+                    skinTypeCode: null,
+                  };
                   latestValuesRef.current = cleared;
                   void saveProfile({ ...cleared, skinTypeCode: null });
                 }}

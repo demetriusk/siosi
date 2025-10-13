@@ -46,7 +46,7 @@ export function SkinTypeCard({
         <CardTitle className="text-xl font-semibold tracking-tight text-[#0A0A0A]">
           {hasResult ? profile?.profile_summary ?? 'Your Skin Type' : 'Find Your Skin Type'}
         </CardTitle>
-        <p className="max-w-xl text-sm leading-6 text-[#4B5563]">
+        <p className="text-sm leading-6 text-[#4B5563]">
           {hasResult
             ? 'This 36-type quiz blends oil balance, concern focus, and undertone to tailor your makeup routine.'
             : 'Spend two minutes to map your oil balance, skin concerns, and undertone. We build a 36-type profile to personalize every lab result.'}
@@ -172,7 +172,7 @@ export function SkinTypeCard({
   if (variant === 'standalone') {
     return (
       <Card className={[combinedClassName].filter(Boolean).join(' ')}>
-        <CardHeader className="flex flex-row items-start justify-between gap-6">
+        <CardHeader>
           {renderHeader()}
         </CardHeader>
         <CardContent>
@@ -184,7 +184,7 @@ export function SkinTypeCard({
 
   return (
     <div className={[combinedClassName].filter(Boolean).join(' ')}>
-      <div className="flex flex-row items-start justify-between gap-6 pb-4">
+      <div>
         {renderHeader()}
       </div>
       {renderBody()}
