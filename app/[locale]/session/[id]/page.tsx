@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { format } from 'date-fns';
 import Link from 'next/link';
-import { Aperture, Gem, PartyPopper, Video, Activity, Home, Trees, Shell, Sun, Thermometer, Droplet, Zap, Camera, Clock, ZoomIn, ThermometerSun, Ghost } from 'lucide-react';
+import { Aperture, Gem, PartyPopper, Video, Activity, Home, Trees, Shell, Sun, Thermometer, Droplet, Zap, Camera, Clock, ZoomIn, ThermometerSun, Ghost, ChevronLeft } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
@@ -226,6 +226,12 @@ export default async function SessionPage({ params }: SessionPageProps) {
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+            <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
+              <Link href={`/${locale}/sessions`}>
+                <ChevronLeft className="h-4 w-4" />
+                {safeT('sessions.back_to_all', 'Back to sessions')}
+              </Link>
+            </Button>
             <SessionActionsClient
               locale={locale}
               sessionId={id}
@@ -345,11 +351,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
               <p className="text-sm text-[#6B7280]">
                 {safeT('results.no_analyses_body', 'We couldn\'t find any lab results for this session. Try analyzing another photo.')}
               </p>
-              <div className="mt-4">
-                <Link href={`/${locale}/analyze`}>
-                  <Button>{safeT('results.analyze_another', 'Analyze another')}</Button>
-                </Link>
-              </div>
             </Card>
           )}
 
