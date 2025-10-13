@@ -335,122 +335,6 @@ export default function ProfileClient({ locale }: Props) {
           </div>
 
           <div className="space-y-6">
-            <SkinTypeCard
-              skinTypeCode={skinTypeCode}
-              onTakeQuizAction={() => router.push(`/${locale}/skin-type-quiz`)}
-              onRetakeAction={skinTypeCode ? () => router.push(`/${locale}/skin-type-quiz`) : undefined}
-              isLoading={isSkinTypeLoading}
-            />
-
-            <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
-              <div className="space-y-6">
-                <div>
-                  <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
-                    {t('profile.skin_tone')}
-                  </Label>
-                  <div className="flex gap-3">
-                    {skinTones.map((tone: SkinTone, index: number) => (
-                      <button
-                        key={tone}
-                        onClick={() => {
-                          setSkinTone(tone);
-                          scheduleSave({ skinTone: tone });
-                        }}
-                        className={`w-12 h-12 rounded-full transition-all ${
-                          skinTone === tone ? 'ring-4 ring-[#0A0A0A] ring-offset-2' : ''
-                        }`}
-                        style={{
-                          backgroundColor: `hsl(${30 - index * 5}, ${50 + index * 5}%, ${85 - index * 12}%)`
-                        }}
-                        aria-label={tone}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
-                    {t('profile.lid_type')}
-                  </Label>
-                  <RadioGroup
-                    value={lidType}
-                    onValueChange={(v: string) => {
-                      setLidType(v as LidType);
-                      setActiveLidInfo('');
-                      scheduleSave({ lidType: v as LidType });
-                    }}
-                  >
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      {lidTypeOptions.map((type: LidType) => {
-                        const isSelected = lidType === type;
-                        const isInfoOpen = activeLidInfo === type;
-
-                        return (
-                          <div
-                            key={type}
-                            className={`relative border-2 rounded-sm p-4 cursor-pointer transition-all ${
-                              isSelected ? 'border-[#0A0A0A] bg-[#F9FAFB]' : 'border-[#E5E7EB] hover:border-[#6B7280]'
-                            }`}
-                            role="presentation"
-                          >
-                            <RadioGroupItem value={type} id={type} className="sr-only" />
-                            <Label htmlFor={type} className="cursor-pointer block text-center">
-                              <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
-                              <span className="text-sm font-medium text-[#0A0A0A]">
-                                {t(`profile.lid_types.${type}`)}
-                              </span>
-                            </Label>
-
-                            <button
-                              type="button"
-                              aria-label={`${t('profile.lid_type')} – ${t(`profile.lid_types.${type}`)}`}
-                              className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] hover:bg-[#0A0A0A]  hover:text-[#FFFFFF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                setActiveLidInfo((prev) => (prev === type ? '' : type));
-                              }}
-                              data-lid-info-trigger="true"
-                            >
-                              <Info className="h-5 w-5" aria-hidden="true" />
-                            </button>
-
-                            {isInfoOpen ? (
-                              <div
-                                role="dialog"
-                                aria-label={t(`profile.lid_types.${type}`)}
-                                data-lid-info-panel="true"
-                                className="absolute right-3 top-16 z-20 w-64 max-w-[calc(100vw-3rem)] rounded-sm border border-[#0A0A0A] bg-white p-4 text-left shadow-lg"
-                                onClick={() => setActiveLidInfo('')}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <p className="text-sm leading-5 text-[#0A0A0A]">
-                                    {t(`profile.lid_type_descriptions.${type}`, {
-                                      default: t(`profile.lid_types.${type}`),
-                                    })}
-                                  </p>
-                                  <button
-                                    type="button"
-                                    aria-label={t('common.cancel')}
-                                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-transparent text-[#6B7280] transition-colors hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setActiveLidInfo('');
-                                    }}
-                                  >
-                                    <X className="h-4 w-4" aria-hidden="true" />
-                                  </button>
-                                </div>
-                              </div>
-                            ) : null}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </RadioGroup>
-                </div>
-              </div>
-            </div>
-
             <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-sm p-4">
               <p className="text-sm text-[#6B7280] mb-2">
                 {t('profile.complete_profile')}
@@ -468,17 +352,123 @@ export default function ProfileClient({ locale }: Props) {
               </div>
             </div>
 
-            {/* Logout button above Danger Zone */}
-            <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-[#6B7280]">{t('nav.logout')}</p>
-                <Button
-                  variant="outline"
-                  className="h-9 px-3 border-[#E5E7EB]"
-                  onClick={handleLogout}
+            <div className="bg-white border border-[#E5E7EB] rounded-sm p-6 space-y-6">
+              <SkinTypeCard
+                variant="embedded"
+                className="space-y-6"
+                skinTypeCode={skinTypeCode}
+                onTakeQuizAction={() => router.push(`/${locale}/skin-type-quiz`)}
+                onRetakeAction={skinTypeCode ? () => router.push(`/${locale}/skin-type-quiz`) : undefined}
+                isLoading={isSkinTypeLoading}
+              />
+
+              <div className="h-px bg-[#E5E7EB]" />
+
+              <div>
+                <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
+                  {t('profile.skin_tone')}
+                </Label>
+                <div className="flex flex-wrap gap-3">
+                  {skinTones.map((tone: SkinTone, index: number) => (
+                    <button
+                      key={tone}
+                      onClick={() => {
+                        setSkinTone(tone);
+                        scheduleSave({ skinTone: tone });
+                      }}
+                      className={`w-12 h-12 rounded-full transition-all ${
+                        skinTone === tone ? 'ring-4 ring-[#0A0A0A] ring-offset-2' : ''
+                      }`}
+                      style={{
+                        backgroundColor: `hsl(${30 - index * 5}, ${50 + index * 5}%, ${85 - index * 12}%)`
+                      }}
+                      aria-label={tone}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-px bg-[#E5E7EB]" />
+
+              <div>
+                <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
+                  {t('profile.lid_type')}
+                </Label>
+                <RadioGroup
+                  value={lidType}
+                  onValueChange={(v: string) => {
+                    setLidType(v as LidType);
+                    setActiveLidInfo('');
+                    scheduleSave({ lidType: v as LidType });
+                  }}
                 >
-                  {t('nav.logout')}
-                </Button>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    {lidTypeOptions.map((type: LidType) => {
+                      const isSelected = lidType === type;
+                      const isInfoOpen = activeLidInfo === type;
+
+                      return (
+                        <div
+                          key={type}
+                          className={`relative border-2 rounded-sm p-4 cursor-pointer transition-all ${
+                            isSelected ? 'border-[#0A0A0A] bg-[#F9FAFB]' : 'border-[#E5E7EB] hover:border-[#6B7280]'
+                          }`}
+                          role="presentation"
+                        >
+                          <RadioGroupItem value={type} id={type} className="sr-only" />
+                          <Label htmlFor={type} className="cursor-pointer block text-center">
+                            <div className="w-16 h-16 mx-auto mb-2 bg-[#E5E7EB] rounded" />
+                            <span className="text-sm font-medium text-[#0A0A0A]">
+                              {t(`profile.lid_types.${type}`)}
+                            </span>
+                          </Label>
+
+                          <button
+                            type="button"
+                            aria-label={`${t('profile.lid_type')} – ${t(`profile.lid_types.${type}`)}`}
+                            className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#0A0A0A] transition-colors hover:border-[#0A0A0A] hover:bg-[#0A0A0A]  hover:text-[#FFFFFF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setActiveLidInfo((prev) => (prev === type ? '' : type));
+                            }}
+                            data-lid-info-trigger="true"
+                          >
+                            <Info className="h-5 w-5" aria-hidden="true" />
+                          </button>
+
+                          {isInfoOpen ? (
+                            <div
+                              role="dialog"
+                              aria-label={t(`profile.lid_types.${type}`)}
+                              data-lid-info-panel="true"
+                              className="absolute right-3 top-16 z-20 w-64 max-w-[calc(100vw-3rem)] rounded-sm border border-[#0A0A0A] bg-white p-4 text-left shadow-lg"
+                              onClick={() => setActiveLidInfo('')}
+                            >
+                              <div className="flex items-start gap-3">
+                                <p className="text-sm leading-5 text-[#0A0A0A]">
+                                  {t(`profile.lid_type_descriptions.${type}`, {
+                                    default: t(`profile.lid_types.${type}`),
+                                  })}
+                                </p>
+                                <button
+                                  type="button"
+                                  aria-label={t('common.cancel')}
+                                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border border-transparent text-[#6B7280] transition-colors hover:text-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setActiveLidInfo('');
+                                  }}
+                                >
+                                  <X className="h-4 w-4" aria-hidden="true" />
+                                </button>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </RadioGroup>
               </div>
             </div>
 
@@ -491,14 +481,28 @@ export default function ProfileClient({ locale }: Props) {
               </div>
             </div>
 
-            <div className="bg-white border-2 border-[#EF4444] rounded-sm p-6">
-              <h3 className="text-base font-semibold text-[#0A0A0A] mb-3">
-                {t('profile.danger_zone')}
-              </h3>
-              <p className="text-sm text-[#6B7280] mb-4">
-                This action cannot be undone. This will permanently delete all your sessions and data.
-              </p>
-                <DeleteProfileButton locale={locale} />
+            <div className="bg-white border-2 border-[#EF4444] rounded-sm p-6 space-y-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-base font-semibold text-[#0A0A0A] mb-1">
+                    {t('profile.danger_zone')}
+                  </h3>
+                  <p className="text-sm text-[#6B7280]">
+                    This action cannot be undone. This will permanently delete all your sessions and data.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  className="h-9 px-3 border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+                  onClick={handleLogout}
+                >
+                  {t('nav.logout')}
+                </Button>
+              </div>
+
+              <div className="h-px bg-[#EF4444] opacity-40" />
+
+              <DeleteProfileButton locale={locale} />
             </div>
           </div>
         </div>
