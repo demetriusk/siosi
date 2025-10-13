@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, ChevronDown, ChevronUp, ScanFace } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSkinTypeProfile } from '@/lib/skin-type';
@@ -52,7 +52,6 @@ export function SkinTypeCard({
             : 'Spend two minutes to map your oil balance, skin concerns, and undertone. We build a 36-type profile to personalize every lab result.'}
         </p>
       </div>
-      <ScanFace className="h-6 w-6 text-[#0A0A0A]" aria-hidden="true" />
     </>
   );
 
@@ -173,7 +172,7 @@ export function SkinTypeCard({
   if (variant === 'standalone') {
     return (
       <Card className={[combinedClassName].filter(Boolean).join(' ')}>
-        <CardHeader className="flex flex-row items-start justify-between gap-6 pb-4">
+        <CardHeader className="flex flex-row items-start justify-between gap-6">
           {renderHeader()}
         </CardHeader>
         <CardContent>

@@ -87,7 +87,7 @@ export default function ProfileClient({ locale }: Props) {
     };
   }, [activeLidInfo]);
 
-  const saveProfile = useCallback(async (values: { skinTone: SkinTone | ''; lidType: LidType | '' }) => {
+  const saveProfile = useCallback(async (values: { skinTone: SkinTone | ''; lidType: LidType | ''; skinTypeCode?: string | null | '' }) => {
     try {
       // dynamically import client supabase to obtain session token
       const mod = await import('@/lib/supabase');
@@ -121,14 +121,34 @@ export default function ProfileClient({ locale }: Props) {
 
       const normalizedSkinTone = (values.skinTone as string) || null;
       const normalizedLidType = (values.lidType as string) || null;
+      let normalizedSkinTypeCode: string | null | undefined = undefined;
+      if (Object.prototype.hasOwnProperty.call(values, 'skinTypeCode')) {
+        const raw = values.skinTypeCode;
+        if (!raw) {
+          normalizedSkinTypeCode = null;
+        } else if (typeof raw === 'string') {
+          normalizedSkinTypeCode = raw.toUpperCase();
+        } else {
+          normalizedSkinTypeCode = null;
+        }
+      }
 
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
+      const payload: Record<string, string | null> = {
+        skin_tone: normalizedSkinTone,
+        lid_type: normalizedLidType,
+      };
+
+      if (normalizedSkinTypeCode !== undefined) {
+        payload.skin_type_code = normalizedSkinTypeCode;
+      }
+
       const res = await fetch('/api/profile/save', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ skin_tone: normalizedSkinTone, lid_type: normalizedLidType }),
+        body: JSON.stringify(payload),
       });
 
       // handle non-json responses safely
@@ -305,7 +325,7 @@ export default function ProfileClient({ locale }: Props) {
 
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
+          <div className="mb-4">
             <div className="flex items-center justify-between gap-4">
               <h1 className="text-3xl text-[#0A0A0A] mb-2">
                 {t('profile.title')}
@@ -315,6 +335,7 @@ export default function ProfileClient({ locale }: Props) {
                 size="sm"
                 className="h-8 px-2 text-[#6B7280]"
                 onClick={() => {
+                  setSkinTypeCode('');
                   setSkinTone('');
                   setLidType('');
                   if (saveTimerRef.current) {
@@ -323,15 +344,12 @@ export default function ProfileClient({ locale }: Props) {
                   }
                   const cleared = { skinTone: '' as SkinTone | '', lidType: '' as LidType | '' };
                   latestValuesRef.current = cleared;
-                  void saveProfile(cleared);
+                  void saveProfile({ ...cleared, skinTypeCode: null });
                 }}
               >
                 {t('common.clear')}
               </Button>
             </div>
-            <p className="text-[#6B7280]">
-              Help us provide better analysis by completing your profile
-            </p>
           </div>
 
           <div className="space-y-6">
