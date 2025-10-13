@@ -10,7 +10,8 @@
     "login": "My Profile",
     "logout": "Log out",
     "profile": "My Profile",
-    "about": "About"
+    "about": "About",
+    "new_photo": "New photo"
   },
   "auth": {
     "login": {

@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { CircleAlert as AlertCircle } from 'lucide-react';
 import { Session } from '@/lib/types';
 import { useTranslations } from 'next-intl';
 

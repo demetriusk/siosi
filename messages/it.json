@@ -10,7 +10,8 @@
     "login": "Accedi",
     "logout": "Disconnetti",
     "profile": "Profilo",
-    "about": "Informazioni"
+    "about": "Informazioni",
+    "new_photo": "Nuova foto"
   },
   "auth": {
     "login": {

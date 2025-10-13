@@ -10,7 +10,8 @@
     "login": "Se connecter",
     "logout": "Se déconnecter",
     "profile": "Profil",
-    "about": "À propos"
+    "about": "À propos",
+    "new_photo": "Nouvelle photo"
   },
   "auth": {
     "login": {

@@ -10,7 +10,8 @@
     "login": "Meu perfil",
     "logout": "Sair",
     "profile": "Meu perfil",
-    "about": "Sobre"
+    "about": "Sobre",
+    "new_photo": "Nova foto"
   },
   "auth": {
     "login": {

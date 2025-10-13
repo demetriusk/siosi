@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/sonner';
+import { MobileBottomNav } from '@/components/siosi/mobile-bottom-nav';
+import { cn } from '@/lib/utils';
 import type { ParamsWithLocale } from '@/lib/types';
 
 // Import messages statically
@@ -84,10 +86,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body className={cn(inter.className, 'pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0')}>
         <NextIntlClientProvider locale={locale} messages={getMessages(locale)}>
           {children}
           <Toaster />
+          <MobileBottomNav locale={locale} />
         </NextIntlClientProvider>
       </body>
     </html>

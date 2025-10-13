@@ -86,7 +86,7 @@ export function Header({ locale }: HeaderProps) {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] sticky top-0 z-50">
+    <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
