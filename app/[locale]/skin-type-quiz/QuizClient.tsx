@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
@@ -64,9 +64,32 @@ function QuizShell({ locale }: QuizClientProps) {
   const lastAttemptedCodeRef = useRef<string | null>(null);
   const [retryToken, setRetryToken] = useState(0);
 
+  const persistSkinTypeCode = useCallback(async (code: string | null) => {
+    const token = await resolveSupabaseToken();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const res = await fetch('/api/profile/save', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ skin_type_code: code }),
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+      let message = 'Failed to save skin type';
+      try {
+        const parsed = text ? JSON.parse(text) : null;
+        message = parsed?.error || parsed?.message || message;
+      } catch {
+        if (text) message = text;
+      }
+      throw new Error(message);
+    }
+  }, []);
+
   useEffect(() => {
     if (!state.isComplete || !state.skinTypeCode) {
-      setIsSaving(false);
       return;
     }
 
@@ -83,52 +106,48 @@ function QuizShell({ locale }: QuizClientProps) {
     setIsSaving(true);
     setSaveError(null);
 
-    const persist = async () => {
-      try {
-        const token = await resolveSupabaseToken();
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) headers.Authorization = `Bearer ${token}`;
-
-        const res = await fetch('/api/profile/save', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ skin_type_code: state.skinTypeCode }),
-        });
-
-        if (!res.ok) {
-          const text = await res.text();
-          let message = 'Failed to save skin type';
-          try {
-            const parsed = text ? JSON.parse(text) : null;
-            message = parsed?.error || parsed?.message || message;
-          } catch {
-            if (text) message = text;
-          }
-          throw new Error(message);
-        }
-
+    persistSkinTypeCode(state.skinTypeCode)
+      .then(() => {
         if (cancelled) return;
-
         lastSavedCodeRef.current = state.skinTypeCode;
         lastAttemptedCodeRef.current = null;
         setIsSaving(false);
         setSaveError(null);
-      } catch (error) {
+      })
+      .catch((error) => {
         if (cancelled) return;
-  const message = error instanceof Error ? error.message : 'Failed to save skin type';
-  logger.error('Skin type save error', error);
+        const message = error instanceof Error ? error.message : 'Failed to save skin type';
+        logger.error('Skin type save error', error);
         setIsSaving(false);
         setSaveError(message);
         toast.error(message);
-      }
-    };
-
-    void persist();
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [state.isComplete, state.skinTypeCode, retryToken]);
+  }, [state.isComplete, state.skinTypeCode, retryToken, persistSkinTypeCode]);
+
+  const handleResetQuiz = useCallback(async () => {
+    resetQuiz();
+    setCurrentQuestionIndex(0);
+    lastAttemptedCodeRef.current = null;
+    setSaveError(null);
+    setIsSaving(true);
+    setRetryToken(0);
+
+    try {
+      await persistSkinTypeCode(null);
+      lastSavedCodeRef.current = null;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save skin type';
+      logger.error('Skin type clear error', error);
+      setSaveError(message);
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [persistSkinTypeCode, resetQuiz, setCurrentQuestionIndex]);
 
   const handleRetrySave = () => {
     if (!state.skinTypeCode) return;
@@ -137,15 +156,14 @@ function QuizShell({ locale }: QuizClientProps) {
     setIsSaving(false);
     setRetryToken((token) => token + 1);
   };
-
+  
   const handleRetake = () => {
     lastSavedCodeRef.current = null;
     lastAttemptedCodeRef.current = null;
     setSaveError(null);
     setIsSaving(false);
     setRetryToken(0);
-    resetQuiz();
-    setCurrentQuestionIndex(0);
+    void handleResetQuiz();
   };
 
   return (
@@ -161,22 +179,14 @@ function QuizShell({ locale }: QuizClientProps) {
               </p>
             </div>
             {state.isComplete ? (
-              <Button variant="ghost" className="self-start text-[#0A0A0A]" onClick={resetQuiz}>
+              <Button variant="ghost" className="self-start text-[#0A0A0A]" onClick={() => void handleResetQuiz()}>
                 Start Over
               </Button>
             ) : (
               <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-                <Button variant="ghost" className="text-[#0A0A0A]" onClick={resetQuiz}>
+                <Button variant="ghost" className="text-[#0A0A0A]" onClick={() => void handleResetQuiz()}>
                   Reset
                 </Button>
-                <span aria-hidden="true">·</span>
-                <button
-                  type="button"
-                  className="underline decoration-[#D1D5DB] decoration-2 underline-offset-4 hover:decoration-[#0A0A0A]"
-                  onClick={() => setCurrentQuestionIndex(0)}
-                >
-                  Jump to top
-                </button>
               </div>
             )}
           </div>

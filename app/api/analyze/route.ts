@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import OpenAI from 'openai'
 import logger from '@/lib/logger'
+import { prepareSkinTypeForAI, splitSkinTypeCode } from '@/lib/skin-type'
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,18 +46,40 @@ export async function POST(req: NextRequest) {
     
     // Build context information
     const hasProfile = skinType || skinTone || lidType;
-    const profileInfo = hasProfile 
-      ? `${skinType || 'unknown'} skin, ${skinTone || 'unknown'} tone, ${lidType || 'unknown'} eyes`
+    const profileSummaryParts: string[] = [];
+    if (skinTone) profileSummaryParts.push(`${skinTone} tone`);
+    if (lidType) profileSummaryParts.push(`${lidType} eyes`);
+    if (skinType) profileSummaryParts.unshift(`${skinType}`);
+    const profileInfo = hasProfile
+      ? profileSummaryParts.join(', ') || 'profile provided'
       : 'profile not provided';
-    
-    const contextInfo = `
-Event: ${occasion || 'general use'}
-Location: ${indoor_outdoor || 'not specified'}
-Climate: ${climate || 'normal'}
-Concerns: ${concerns?.length ? concerns.join(', ') : 'none'}
-User profile: ${profileInfo}
-${!hasProfile ? 'Note: User profile incomplete. Base undertone/texture analysis solely on the visible makeup in the photo.' : ''}
-`.trim();
+
+    let skinTypeQuizContext: string | null = null;
+    if (typeof skinType === 'string') {
+      const { oilLevel, concern, undertone } = splitSkinTypeCode(skinType);
+      if (oilLevel && concern && undertone) {
+        skinTypeQuizContext = prepareSkinTypeForAI(skinType);
+      }
+    }
+
+    const baseContextLines = [
+      `Event: ${occasion || 'general use'}`,
+      `Location: ${indoor_outdoor || 'not specified'}`,
+      `Climate: ${climate || 'normal'}`,
+      `Concerns: ${concerns?.length ? concerns.join(', ') : 'none'}`,
+      `User profile: ${profileInfo}`,
+    ];
+
+    if (!hasProfile) {
+      baseContextLines.push('Note: User profile incomplete. Base undertone/texture analysis solely on the visible makeup in the photo.');
+    }
+
+    const contextSections = [baseContextLines.join('\n')];
+    if (skinTypeQuizContext) {
+      contextSections.push(skinTypeQuizContext);
+    }
+
+    const contextInfo = contextSections.join('\n\n');
 
     logger.debug('Analysis context:', { occasion, indoor_outdoor, climate, concerns, hasProfile });
 

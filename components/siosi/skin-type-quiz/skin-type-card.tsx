@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, ScanFace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSkinTypeProfile } from '@/lib/skin-type';
@@ -50,7 +50,7 @@ export function SkinTypeCard({ skinTypeCode, onTakeQuizAction, onRetakeAction, i
               : 'Spend two minutes to map your oil balance, skin concerns, and undertone. We build a 36-type profile to personalize every lab result.'}
           </p>
         </div>
-  <Sparkles className="h-6 w-6 text-[#0A0A0A]" aria-hidden="true" />
+  <ScanFace className="h-6 w-6 text-[#0A0A0A]" aria-hidden="true" />
       </CardHeader>
 
       <CardContent className="space-y-6">
