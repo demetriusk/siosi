@@ -267,7 +267,7 @@ export default function AnalyzePage() {
                 {progressMessages[currentMessage] ?? ''}
               </p>
             </div>
-            <p className="text-sm text-[#6B7280]">This usually takes 8-15 seconds</p>
+            <p className="text-sm text-[#6B7280]">This usually takes 10-20 seconds</p>
           </div>
         </div>
       </div>
