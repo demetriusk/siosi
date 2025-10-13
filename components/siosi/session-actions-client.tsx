@@ -12,18 +12,9 @@ import {
   MessageCircle,
   MessageSquare,
   Copy,
-  Trash,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeleteSessionButton from './delete-session-button';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
 import { SiWhatsapp } from '@icons-pack/react-simple-icons';
@@ -35,9 +26,8 @@ import {
   DrawerTitle,
   DrawerClose,
 } from '@/components/ui/drawer';
+import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-
-type Props = { locale: string; sessionId: string; createdAtIso: string };
 
 type ShareTile = {
   key: string;
@@ -46,7 +36,54 @@ type ShareTile = {
   action: () => void;
 };
 
-export default function SessionActionsClient({ locale, sessionId, createdAtIso }: Props) {
+type ProfileSummary = {
+  title: string;
+  items: string[];
+  emptyMessage: string;
+  hasAny: boolean;
+};
+
+type ContextSummary = {
+  title: string;
+  occasion?: { label: string; value: string } | null;
+  where?: { label: string; value: string } | null;
+  climate?: { label: string; value: string } | null;
+  concerns: { title: string; items: string[] };
+  emptyMessage: string;
+  hasAny: boolean;
+};
+
+type Labels = {
+  shareTitle: string;
+  shareViaDevice: string;
+  copyLink: string;
+  downloadImage: string;
+  cancel: string;
+  detailsTitle: string;
+  dateLabel: string;
+  nicknameLabel: string;
+  deleteLabel: string;
+};
+
+type Props = {
+  locale: string;
+  sessionId: string;
+  createdAtIso: string;
+  nickname?: string | null;
+  profileSummary: ProfileSummary;
+  contextSummary: ContextSummary;
+  labels: Labels;
+};
+
+export default function SessionActionsClient({
+  locale,
+  sessionId,
+  createdAtIso,
+  nickname,
+  profileSummary,
+  contextSummary,
+  labels,
+}: Props) {
   const sessionUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/${locale}/session/${sessionId}`
     : `/${locale}/session/${sessionId}`;
@@ -55,6 +92,7 @@ export default function SessionActionsClient({ locale, sessionId, createdAtIso }
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const formattedCreatedAt = useMemo(() => {
     try {
@@ -329,7 +367,7 @@ export default function SessionActionsClient({ locale, sessionId, createdAtIso }
         <DrawerContent className="pb-6">
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
-              Share to
+              {labels.shareTitle}
             </DrawerTitle>
           </DrawerHeader>
           <div className="px-6 pb-2">
@@ -359,7 +397,7 @@ export default function SessionActionsClient({ locale, sessionId, createdAtIso }
                   className="justify-start gap-2 border-[#E5E7EB]"
                 >
                   <Share className="h-4 w-4" />
-                  Share via device
+                  {labels.shareViaDevice}
                 </Button>
               )}
               <Button
@@ -371,20 +409,31 @@ export default function SessionActionsClient({ locale, sessionId, createdAtIso }
                 className="justify-start gap-2 border-[#E5E7EB]"
               >
                 <Copy className="h-4 w-4" />
-                Copy link
+                {labels.copyLink}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await downloadImage();
+                  setShareOpen(false);
+                }}
+                className="justify-start gap-2 border-[#E5E7EB]"
+              >
+                <Download className="h-4 w-4" />
+                {labels.downloadImage}
               </Button>
             </div>
             <DrawerClose asChild>
               <Button variant="ghost" className="mt-4 w-full text-sm text-[#6B7280]">
-                Cancel
+                {labels.cancel}
               </Button>
             </DrawerClose>
           </div>
         </DrawerContent>
       </Drawer>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      <Drawer open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DrawerTrigger asChild>
           <Button
             variant="outline"
             size="icon"
@@ -393,41 +442,131 @@ export default function SessionActionsClient({ locale, sessionId, createdAtIso }
           >
             <EllipsisVertical className="h-4 w-4" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel className="text-[#0A0A0A]">
-            {formattedCreatedAt}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {authChecked && isAuthenticated && (
-            <DeleteSessionButton
-              locale={locale}
-              sessionId={sessionId}
-              renderTriggerAction={({ openDialog }) => (
-                <DropdownMenuItem
-                  className="text-[#EF4444] focus:text-[#EF4444]"
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    openDialog();
-                  }}
-                >
-                  <Trash className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
+        </DrawerTrigger>
+        <DrawerContent className="pb-6">
+          <DrawerHeader className="pb-2">
+            <DrawerTitle className="text-center text-base font-semibold text-[#0A0A0A]">
+              {labels.detailsTitle}
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className="px-6 pb-2">
+            <div className="space-y-6 text-left">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                  {labels.dateLabel}
+                </p>
+                <p className="mt-1 text-sm font-medium text-[#0A0A0A]">
+                  {formattedCreatedAt}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                  {labels.nicknameLabel}
+                </p>
+                <p className="mt-1 text-sm font-medium text-[#0A0A0A]">
+                  {nickname || '—'}
+                </p>
+              </div>
+              <Separator />
+              <div>
+                <p className="text-sm font-semibold text-[#0A0A0A]">
+                  {profileSummary.title}
+                </p>
+                {profileSummary.hasAny ? (
+                  <ul className="mt-2 space-y-1 text-sm text-[#111827]">
+                    {profileSummary.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2 text-sm text-[#6B7280]">
+                    {profileSummary.emptyMessage}
+                  </p>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#0A0A0A]">
+                  {contextSummary.title}
+                </p>
+                {contextSummary.hasAny ? (
+                  <div className="mt-2 space-y-3 text-sm text-[#111827]">
+                    {contextSummary.occasion?.value && (
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                          {contextSummary.occasion.label}
+                        </p>
+                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                          {contextSummary.occasion.value}
+                        </p>
+                      </div>
+                    )}
+                    {contextSummary.where?.value && (
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                          {contextSummary.where.label}
+                        </p>
+                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                          {contextSummary.where.value}
+                        </p>
+                      </div>
+                    )}
+                    {contextSummary.climate?.value && (
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                          {contextSummary.climate.label}
+                        </p>
+                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                          {contextSummary.climate.value}
+                        </p>
+                      </div>
+                    )}
+                    {contextSummary.concerns.items.length > 0 && (
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                          {contextSummary.concerns.title}
+                        </p>
+                        <ul className="mt-1 list-disc space-y-1 pl-5 text-sm font-medium text-[#0A0A0A]">
+                          {contextSummary.concerns.items.map((concern) => (
+                            <li key={concern}>{concern}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-[#6B7280]">
+                    {contextSummary.emptyMessage}
+                  </p>
+                )}
+              </div>
+              <Separator />
+              {authChecked && isAuthenticated && (
+                <DeleteSessionButton
+                  locale={locale}
+                  sessionId={sessionId}
+                  renderTriggerAction={({ openDialog }) => (
+                    <Button
+                      variant="outline"
+                      className="w-full justify-center border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+                      onClick={() => {
+                        setDetailsOpen(false);
+                        openDialog();
+                      }}
+                    >
+                      {labels.deleteLabel}
+                    </Button>
+                  )}
+                />
               )}
-            />
-          )}
-          <DropdownMenuItem
-            onSelect={(event) => {
-              event.preventDefault();
-              downloadImage();
-            }}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Download image
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            </div>
+            <DrawerClose asChild>
+              <Button variant="ghost" className="mt-6 w-full text-sm text-[#6B7280]">
+                {labels.cancel}
+              </Button>
+            </DrawerClose>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       <Link href={`/${locale}/analyze`}>
         <Button variant="outline" size="sm" className="border-[#E5E7EB]">

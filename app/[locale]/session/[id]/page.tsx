@@ -160,6 +160,67 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
   const categorizedCount = criticalAnalyses.length + watchAnalyses.length + goodAnalyses.length;
 
+  const profileDetails: string[] = [];
+  if (session?.skin_type) {
+    profileDetails.push(`${safeT('profile.skin_type', 'Skin type')}: ${session.skin_type}`);
+  }
+  if (session?.skin_tone) {
+    profileDetails.push(`${safeT('profile.skin_tone', 'Skin tone')}: ${session.skin_tone}`);
+  }
+  if (lidTypeLabel) {
+    profileDetails.push(`${safeT('profile.lid_type', 'Lid type')}: ${lidTypeLabel}`);
+  }
+
+  const profileSummary = {
+    title: safeT('results.profile.title', 'Profile details'),
+    items: profileDetails,
+    emptyMessage: safeT('results.profile.drawer_empty', 'No profile details were used this time.'),
+    hasAny: profileDetails.length > 0,
+  };
+
+  const concernLabels = concerns.map((key) => safeT(`upload.concerns.${String(key)}`, String(key)));
+  const contextHasAny = Boolean(occasion || concernLabels.length > 0 || (where && where !== 'both') || climate);
+
+  const contextSummary = {
+    title: safeT('results.context.title', 'What this look was checked for'),
+    occasion: occasion
+      ? {
+          label: safeT('upload.occasion_title', 'Occasion'),
+          value: safeT(`upload.occasions.${occasion}`, String(occasion)),
+        }
+      : null,
+    where: contextHasAny || (where && where !== 'both')
+      ? {
+          label: safeT('upload.where_title', 'Where'),
+          value: safeT(`upload.where.${where}`, String(where)),
+        }
+      : null,
+    climate: climate
+      ? {
+          label: safeT('upload.climate_title', 'Climate'),
+          value: safeT(`upload.climate.${climate}`, String(climate)),
+        }
+      : null,
+    concerns: {
+      title: safeT('upload.concerns_title', 'Concerns'),
+      items: concernLabels,
+    },
+    emptyMessage: safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.'),
+    hasAny: contextHasAny,
+  };
+
+  const actionLabels = {
+    shareTitle: safeT('results.share.drawer_title', 'Share to'),
+    shareViaDevice: safeT('results.share.device', 'Share via device'),
+    copyLink: safeT('results.share.copy_link', 'Copy link'),
+    downloadImage: safeT('results.share.download_image', 'Download image'),
+    cancel: safeT('common.cancel', 'Cancel'),
+    detailsTitle: safeT('results.details.title', 'Session details'),
+    dateLabel: safeT('results.details.date', 'Date'),
+    nicknameLabel: safeT('results.details.nickname', 'Nickname'),
+    deleteLabel: safeT('sessions.delete', 'Delete'),
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header locale={locale} />
@@ -167,16 +228,15 @@ export default async function SessionPage({ params }: SessionPageProps) {
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-            <div>
-              <time className="text-sm text-[#6B7280] block">
-                {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
-              </time>
-              {session?.nickname && (
-                <div className="text-base font-semibold text-[#0A0A0A] mt-0.5">{session.nickname}</div>
-              )}
-            </div>
-            {/* Server component renders a small client wrapper for actions */}
-            <SessionActionsClient locale={locale} sessionId={id} createdAtIso={createdAt} />
+            <SessionActionsClient
+              locale={locale}
+              sessionId={id}
+              createdAtIso={createdAt}
+              nickname={session?.nickname}
+              profileSummary={profileSummary}
+              contextSummary={contextSummary}
+              labels={actionLabels}
+            />
           </div>
 
           <Card className="mb-8 p-6 md:p-8">
@@ -219,9 +279,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
                     <h2 className="text-xl font-semibold text-[#0A0A0A]">
                       {safeT('results.overall_score', 'Overall score')}
                     </h2>
-                    <p className="text-sm text-[#6B7280] mt-1">
-                      {format(new Date(createdAt), 'MMMM d, yyyy • h:mm a')}
-                    </p>
                   </div>
                 </div>
 
