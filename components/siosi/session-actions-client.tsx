@@ -577,13 +577,6 @@ export default function SessionActionsClient({
           </div>
         </DrawerContent>
       </Drawer>
-
-      <Link href={`/${locale}/analyze`}>
-        <Button variant="outline" size="sm" className="border-[#E5E7EB]">
-          <Upload className="w-4 h-4 mr-2" />
-          Analyze another
-        </Button>
-      </Link>
     </div>
   );
 }
