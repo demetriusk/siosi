@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { format } from 'date-fns';
-import { ArrowRight, CircleAlert as AlertCircle } from 'lucide-react';
+import { CircleAlert as AlertCircle } from 'lucide-react';
 import { Session } from '@/lib/types';
 import { useTranslations } from 'next-intl';
 
@@ -16,10 +15,10 @@ export function SessionCard({ session, locale }: SessionCardProps) {
   const t = useTranslations('sessions');
 
   const getScoreBadgeClass = (score: number) => {
-    if (score >= 8) return 'bg-[#10B981] text-white';
-    if (score >= 6) return 'bg-[#F59E0B] text-white';
-    if (score >= 4) return 'bg-[#F97316] text-white';
-    return 'bg-[#EF4444] text-white';
+    if (score >= 8) return 'bg-[#10B981]';
+    if (score >= 6) return 'bg-[#F59E0B]';
+    if (score >= 4) return 'bg-[#F97316]';
+    return 'bg-[#EF4444]';
   };
 
   const getScoreBadgeText = (score: number) => {
@@ -30,57 +29,47 @@ export function SessionCard({ session, locale }: SessionCardProps) {
   };
 
   return (
-    <Link href={`/${locale}/session/${session.id}`}>
-      <div className="bg-white border border-[#E5E7EB] rounded-sm overflow-hidden hover:shadow-lg transition-all group">
-        <div className="aspect-video bg-[#F9FAFB] relative overflow-hidden">
+    <Link
+      href={`/${locale}/session/${session.id}`}
+      className="block break-inside-avoid mb-4 group"
+    >
+      <article className="relative overflow-hidden rounded-lg bg-[#111827]">
+        <div className="relative aspect-[3/4]">
           {session.photo_url ? (
             <Image
               src={session.photo_url}
               alt="Makeup analysis"
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(min-width: 1280px) 320px, (min-width: 768px) 260px, 45vw"
               unoptimized
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[#D1D5DB]">
-              <span className="text-sm">No image</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-[#1F2937] text-white/70 text-sm">
+              <span>No image</span>
             </div>
           )}
-        </div>
 
-        <div className="p-4 space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex flex-col">
-              <time className="text-xs text-[#6B7280]">
-                {format(new Date(session.created_at), 'MMM d, yyyy • h:mm a')}
-              </time>
-              {session.nickname && (
-                <span className="text-sm text-[#0A0A0A] font-semibold leading-tight">{session.nickname}</span>
-              )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-[#0A0A0A]/20 to-transparent" />
+
+          <div className="absolute inset-x-0 bottom-0 p-4">
+            <div className="pointer-events-none flex flex-col gap-3 rounded-md border border-white/10 bg-white/10 p-3 backdrop-blur-sm">
+              <div className="flex items-center justify-between text-white">
+                <span className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${getScoreBadgeClass(session.overall_score)}`}>
+                  {getScoreBadgeText(session.overall_score)}
+                </span>
+                <span className="text-3xl font-bold leading-none">
+                  {session.overall_score.toFixed(1)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-white/90">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">{session.critical_count}</span>
+              </div>
             </div>
-            {session.critical_count > 0 && (
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-[#EF4444] text-white text-xs font-medium rounded-full">
-                <AlertCircle className="w-3 h-3" />
-                {session.critical_count}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className={`px-3 py-1 text-sm font-semibold rounded ${getScoreBadgeClass(session.overall_score)}`}>
-              {getScoreBadgeText(session.overall_score)}
-            </span>
-            <span className="text-2xl font-bold text-[#0A0A0A]">
-              {session.overall_score.toFixed(1)}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between text-sm text-[#6B7280] group-hover:text-[#0A0A0A] transition-colors">
-            <span>{t('view_report')}</span>
-            <ArrowRight className="w-4 h-4" />
           </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

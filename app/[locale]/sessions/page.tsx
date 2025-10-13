@@ -129,7 +129,7 @@ export default function SessionsPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="columns-2 gap-4 md:columns-3 xl:columns-4">
               {sessions.map((session) => (
                 <SessionCard key={session.id} session={session} locale={locale} />
               ))}
