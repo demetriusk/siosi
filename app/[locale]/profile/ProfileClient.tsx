@@ -530,27 +530,27 @@ export default function ProfileClient({ locale }: Props) {
             </div>
 
             <div className="bg-white border-2 border-[#EF4444] rounded-sm p-6 space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+
                   <h3 className="text-base font-semibold text-[#0A0A0A] mb-1">
                     {t('profile.danger_zone')}
                   </h3>
                   <p className="text-sm text-[#6B7280]">
                     This action cannot be undone. This will permanently delete all your sessions and data.
                   </p>
-                </div>
+
+              <div className="h-px bg-[#EF4444] opacity-40" />
+
+              <div className="flex flex-wrap items-center gap-3 sm:justify-between">
+                <DeleteProfileButton locale={locale} />
+
                 <Button
-                  variant="outline"
-                  className="h-9 px-3 border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+                  variant="secondary"
+                  className="h-9 px-3"
                   onClick={handleLogout}
                 >
                   {t('nav.logout')}
                 </Button>
               </div>
-
-              <div className="h-px bg-[#EF4444] opacity-40" />
-
-              <DeleteProfileButton locale={locale} />
             </div>
           </div>
         </div>
@@ -620,7 +620,7 @@ function DeleteProfileButton({ locale }: { locale: string }) {
     <>
       <Button
         variant="outline"
-        className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+        className="h-9 px-3 border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
         onClick={() => setOpen(true)}
       >
         {t('profile.delete_data')}
