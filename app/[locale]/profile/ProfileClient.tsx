@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import LanguageSelect from '@/components/siosi/language-select';
 import { toast } from 'sonner';
-import { SkinType, SkinTone, LidType } from '@/lib/types';
+import { SkinTone, LidType } from '@/lib/types';
+import { SkinTypeCard } from '@/components/siosi/skin-type-quiz/skin-type-card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Info, X } from 'lucide-react';
 // Avoid top-level supabase import in client components; we'll dynamically import when needed.
@@ -21,9 +21,12 @@ interface Props {
   locale: string;
 }
 
+const SKIN_TYPE_CODE_PATTERN = /^[OND]-[CARS]-[WKN]$/;
+
 export default function ProfileClient({ locale }: Props) {
   // use Sonner's toast directly
-  const [skinType, setSkinType] = useState<SkinType | ''>('');
+  const [skinTypeCode, setSkinTypeCode] = useState<string>('');
+  const [isSkinTypeLoading, setIsSkinTypeLoading] = useState<boolean>(true);
   const [skinTone, setSkinTone] = useState<SkinTone | ''>('');
   const [lidType, setLidType] = useState<LidType | ''>('');
   const [_language, _setLanguage] = useState<string>(locale);
@@ -33,15 +36,14 @@ export default function ProfileClient({ locale }: Props) {
 
   // Debounced autosave machinery
   const saveTimerRef = useRef<number | null>(null);
-  const latestValuesRef = useRef<{ skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }>({
-    skinType: '',
+  const latestValuesRef = useRef<{ skinTone: SkinTone | ''; lidType: LidType | '' }>({
     skinTone: '',
     lidType: '',
   });
 
   useEffect(() => {
-    latestValuesRef.current = { skinType, skinTone, lidType };
-  }, [skinType, skinTone, lidType]);
+    latestValuesRef.current = { skinTone, lidType };
+  }, [skinTone, lidType]);
 
   useEffect(() => {
     return () => {
@@ -77,17 +79,15 @@ export default function ProfileClient({ locale }: Props) {
 
       if (target.closest('[data-lid-info-panel="true"]')) return;
       if (target.closest('[data-lid-info-trigger="true"]')) return;
-
       setActiveLidInfo('');
     };
-
     document.addEventListener('pointerdown', handlePointerDown);
     return () => {
       document.removeEventListener('pointerdown', handlePointerDown);
     };
   }, [activeLidInfo]);
 
-  const saveProfile = useCallback(async (values: { skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }) => {
+  const saveProfile = useCallback(async (values: { skinTone: SkinTone | ''; lidType: LidType | '' }) => {
     try {
       // dynamically import client supabase to obtain session token
       const mod = await import('@/lib/supabase');
@@ -119,7 +119,6 @@ export default function ProfileClient({ locale }: Props) {
         logger.debug('Failed to resolve auth token from Supabase client', error);
       }
 
-      const normalizedSkinType = (values.skinType as string) || null;
       const normalizedSkinTone = (values.skinTone as string) || null;
       const normalizedLidType = (values.lidType as string) || null;
 
@@ -129,7 +128,7 @@ export default function ProfileClient({ locale }: Props) {
       const res = await fetch('/api/profile/save', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ skin_type: normalizedSkinType, skin_tone: normalizedSkinTone, lid_type: normalizedLidType }),
+        body: JSON.stringify({ skin_tone: normalizedSkinTone, lid_type: normalizedLidType }),
       });
 
       // handle non-json responses safely
@@ -154,7 +153,7 @@ export default function ProfileClient({ locale }: Props) {
     }
   }, []);
 
-  const scheduleSave = useCallback((nextValues?: Partial<{ skinType: SkinType | ''; skinTone: SkinTone | ''; lidType: LidType | '' }>) => {
+  const scheduleSave = useCallback((nextValues?: Partial<{ skinTone: SkinTone | ''; lidType: LidType | '' }>) => {
     if (saveTimerRef.current) {
       window.clearTimeout(saveTimerRef.current);
     }
@@ -182,12 +181,11 @@ export default function ProfileClient({ locale }: Props) {
     }
   }, [locale, router]);
 
-  const completedFields = [skinType, skinTone, lidType].filter(Boolean).length;
+  const completedFields = [skinTypeCode, skinTone, lidType].filter(Boolean).length;
   const totalFields = 3;
 
-  const skinTypeOptions: SkinType[] = ['oily', 'dry', 'combination', 'normal', 'sensitive'];
-  const skinTones: SkinTone[] = ['fair', 'light', 'medium', 'tan', 'deep', 'dark'];
-  const lidTypeOptions: LidType[] = [
+  const skinTones = useMemo<SkinTone[]>(() => ['fair', 'light', 'medium', 'tan', 'deep', 'dark'], []);
+  const lidTypeOptions = useMemo<LidType[]>(() => [
     'almond-eyes',
     'round-eyes',
     'hooded-eyes',
@@ -198,21 +196,24 @@ export default function ProfileClient({ locale }: Props) {
     'wide-set-eyes',
     'deep-set-eyes',
     'protruding-eyes',
-  ];
+  ], []);
 
-  const legacyLidTypeMap: Record<string, LidType> = {
-    monolid: 'monolid-eyes',
-    hooded: 'hooded-eyes',
-    'deep_set': 'deep-set-eyes',
-    protruding: 'protruding-eyes',
-    downturned: 'downturned-eyes',
-    upturned: 'upturned-eyes',
-    almond: 'almond-eyes',
-    standard: 'almond-eyes',
-    round: 'round-eyes',
-    close_set: 'close-set-eyes',
-    wide_set: 'wide-set-eyes',
-  };
+  const legacyLidTypeMap = useMemo<Record<string, LidType>>(
+    () => ({
+      monolid: 'monolid-eyes',
+      hooded: 'hooded-eyes',
+      'deep_set': 'deep-set-eyes',
+      protruding: 'protruding-eyes',
+      downturned: 'downturned-eyes',
+      upturned: 'upturned-eyes',
+      almond: 'almond-eyes',
+      standard: 'almond-eyes',
+      round: 'round-eyes',
+      close_set: 'close-set-eyes',
+      wide_set: 'wide-set-eyes',
+    }),
+    []
+  );
 
   const normalizeIncomingValue = <T extends string>(
     value: unknown,
@@ -231,6 +232,12 @@ export default function ProfileClient({ locale }: Props) {
     return '';
   };
 
+  const normalizeSkinTypeCode = useCallback((value: unknown): string => {
+    if (typeof value !== 'string') return '';
+    const upper = value.toUpperCase();
+    return SKIN_TYPE_CODE_PATTERN.test(upper) ? upper : '';
+  }, []);
+
   useEffect(() => {
     let active = true;
 
@@ -238,11 +245,17 @@ export default function ProfileClient({ locale }: Props) {
       try {
         const mod = await import('@/lib/supabase');
         const maybeSupabase: any = (mod as any).supabase ?? (mod as any).default ?? null;
-        if (!maybeSupabase?.from) return;
+        if (!maybeSupabase?.from) {
+          setIsSkinTypeLoading(false);
+          return;
+        }
 
         const userRes = await maybeSupabase.auth?.getUser?.();
         const userId: string | undefined = userRes?.data?.user?.id ?? userRes?.user?.id;
-        if (!userId) return;
+        if (!userId) {
+          setIsSkinTypeLoading(false);
+          return;
+        }
 
         const { data, error } = await maybeSupabase
           .from('profiles')
@@ -254,33 +267,37 @@ export default function ProfileClient({ locale }: Props) {
 
         if (error) {
           logger.debug('Failed to load profile defaults', error);
+          setIsSkinTypeLoading(false);
           return;
         }
 
         if (data) {
-          const normalizedSkinType = normalizeIncomingValue<SkinType>(data.skin_type, skinTypeOptions);
+          const normalizedSkinType = normalizeSkinTypeCode(data.skin_type_code ?? data.skin_type);
           const normalizedSkinTone = normalizeIncomingValue<SkinTone>(data.skin_tone, skinTones);
           const normalizedLidType = normalizeIncomingValue<LidType>(data.lid_type, lidTypeOptions, legacyLidTypeMap);
 
-          setSkinType(normalizedSkinType);
+          setSkinTypeCode(normalizedSkinType);
           setSkinTone(normalizedSkinTone);
           setLidType(normalizedLidType);
           latestValuesRef.current = {
-            skinType: normalizedSkinType,
             skinTone: normalizedSkinTone,
             lidType: normalizedLidType,
           };
+        } else {
+          setSkinTypeCode('');
         }
+        setIsSkinTypeLoading(false);
       } catch (error) {
         if (!active) return;
         logger.debug('Profile defaults load threw', error);
+        setIsSkinTypeLoading(false);
       }
     })();
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [normalizeSkinTypeCode, skinTones, lidTypeOptions, legacyLidTypeMap]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -298,14 +315,13 @@ export default function ProfileClient({ locale }: Props) {
                 size="sm"
                 className="h-8 px-2 text-[#6B7280]"
                 onClick={() => {
-                  setSkinType('');
                   setSkinTone('');
                   setLidType('');
                   if (saveTimerRef.current) {
                     window.clearTimeout(saveTimerRef.current);
                     saveTimerRef.current = null;
                   }
-                  const cleared = { skinType: '' as SkinType | '', skinTone: '' as SkinTone | '', lidType: '' as LidType | '' };
+                  const cleared = { skinTone: '' as SkinTone | '', lidType: '' as LidType | '' };
                   latestValuesRef.current = cleared;
                   void saveProfile(cleared);
                 }}
@@ -319,38 +335,21 @@ export default function ProfileClient({ locale }: Props) {
           </div>
 
           <div className="space-y-6">
+            <SkinTypeCard
+              skinTypeCode={skinTypeCode}
+              onTakeQuizAction={() => router.push(`/${locale}/skin-type-quiz`)}
+              onRetakeAction={skinTypeCode ? () => router.push(`/${locale}/skin-type-quiz`) : undefined}
+              isLoading={isSkinTypeLoading}
+            />
+
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-6">
               <div className="space-y-6">
-                <div>
-                  <Label htmlFor="skin-type" className="text-base font-semibold text-[#0A0A0A] mb-3 block">
-                    {t('profile.skin_type')}
-                  </Label>
-                  <Select
-                    value={skinType || undefined}
-                    onValueChange={(v: string) => {
-                      setSkinType(v as SkinType);
-                      scheduleSave({ skinType: v as SkinType });
-                    }}
-                  >
-                    <SelectTrigger id="skin-type" className="border-[#E5E7EB]">
-                      <SelectValue placeholder="Select your skin type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {skinTypeOptions.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {t(`profile.skin_types.${type}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div>
                   <Label className="text-base font-semibold text-[#0A0A0A] mb-3 block">
                     {t('profile.skin_tone')}
                   </Label>
                   <div className="flex gap-3">
-                    {skinTones.map((tone, index) => (
+                    {skinTones.map((tone: SkinTone, index: number) => (
                       <button
                         key={tone}
                         onClick={() => {
@@ -382,7 +381,7 @@ export default function ProfileClient({ locale }: Props) {
                     }}
                   >
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      {lidTypeOptions.map((type) => {
+                      {lidTypeOptions.map((type: LidType) => {
                         const isSelected = lidType === type;
                         const isInfoOpen = activeLidInfo === type;
 

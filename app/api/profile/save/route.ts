@@ -29,6 +29,8 @@ const allowedLidTypes = new Set([
   'wide_set',
 ]);
 
+const SKIN_TYPE_CODE_PATTERN = /^[OND]-[CARS]-[WKN]$/i;
+
 const legacyToCanonicalLidTypeMap: Record<string, string> = {
   monolid: 'monolid-eyes',
   hooded: 'hooded-eyes',
@@ -65,6 +67,25 @@ function sanitizeOptionalEnum(
   }
 
   return { value: normalized, error: null };
+}
+
+function sanitizeSkinTypeCode(value: unknown): { value: string | null | undefined; error: string | null } {
+  if (value === undefined) return { value: undefined, error: null };
+  if (value === null) return { value: null, error: null };
+  if (typeof value !== 'string') {
+    return { value: undefined, error: 'Invalid skin_type_code value' };
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return { value: null, error: null };
+  }
+
+  if (!SKIN_TYPE_CODE_PATTERN.test(trimmed)) {
+    return { value: undefined, error: 'Unsupported skin_type_code value' };
+  }
+
+  return { value: trimmed.toUpperCase(), error: null };
 }
 
 export async function POST(req: NextRequest) {
@@ -122,9 +143,15 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { value: normalizedSkinType, error: skinTypeError } = sanitizeOptionalEnum(body?.skin_type, allowedSkinTypes, 'skin_type');
+    const { value: normalizedSkinTypeCode, error: skinTypeCodeError } = sanitizeSkinTypeCode(body?.skin_type_code);
+    if (skinTypeCodeError) {
+      logger.warn('Profile save rejected skin_type_code', { requestId, raw: body?.skin_type_code, error: skinTypeCodeError });
+      return Response.json({ error: skinTypeCodeError, request_id: requestId }, { status: 400 });
+    }
+
+    const { value: normalizedLegacySkinType, error: skinTypeError } = sanitizeOptionalEnum(body?.skin_type, allowedSkinTypes, 'skin_type');
     if (skinTypeError) {
-      logger.warn('Profile save rejected skin_type', { requestId, raw: body?.skin_type, normalizedSkinType, skinTypeError });
+      logger.warn('Profile save rejected skin_type', { requestId, raw: body?.skin_type, normalizedSkinType: normalizedLegacySkinType, skinTypeError });
       return Response.json({ error: skinTypeError, request_id: requestId }, { status: 400 });
     }
 
@@ -141,7 +168,14 @@ export async function POST(req: NextRequest) {
     }
 
     const payload: Record<string, unknown> = { user_id: userId };
-    if (normalizedSkinType !== undefined) payload.skin_type = normalizedSkinType;
+    const resolvedSkinType = normalizedSkinTypeCode ?? normalizedLegacySkinType;
+    if (resolvedSkinType !== undefined) {
+      if (typeof resolvedSkinType === 'string' && SKIN_TYPE_CODE_PATTERN.test(resolvedSkinType)) {
+        payload.skin_type = resolvedSkinType.toUpperCase();
+      } else {
+        payload.skin_type = resolvedSkinType;
+      }
+    }
     if (normalizedSkinTone !== undefined) payload.skin_tone = normalizedSkinTone;
     if (normalizedLidType !== undefined) {
       if (normalizedLidType === null) {
@@ -153,7 +187,7 @@ export async function POST(req: NextRequest) {
 
     const normalizedSnapshot = {
       requestId,
-      normalizedSkinType,
+      normalizedSkinType: resolvedSkinType,
       normalizedSkinTone,
       normalizedLidType,
       storedLidType: payload.lid_type,

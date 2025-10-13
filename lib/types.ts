@@ -1,3 +1,5 @@
+import type { SkinTypeCode } from './skin-type';
+
 export type Verdict = 'YAY' | 'NAY' | 'MAYBE';
 
 export type LabName = 
@@ -31,7 +33,8 @@ export interface LabAnalysis {
   created_at?: string;
 }
 
-export type SkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';
+export type LegacySkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';
+export type SkinType = LegacySkinType | SkinTypeCode;
 export type SkinTone = 'fair' | 'light' | 'medium' | 'tan' | 'deep' | 'dark';
 export type LidType =
   | 'almond-eyes'
