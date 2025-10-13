@@ -30,7 +30,7 @@ export function SkinTypeCard({
 }: SkinTypeCardProps) {
   const [expanded, setExpanded] = useState(false);
   const hasResult = Boolean(skinTypeCode);
-  const profile = hasResult ? getSkinTypeProfile(skinTypeCode) : null;
+  const profile = hasResult && skinTypeCode ? getSkinTypeProfile(skinTypeCode) : null;
 
   const combinedClassName = [
     variant === 'standalone' ? 'border-[#E5E7EB] shadow-none' : 'space-y-6',

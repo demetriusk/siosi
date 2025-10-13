@@ -26,18 +26,18 @@ const SKIN_TYPE_CODE_PATTERN = /^[OND]-[CARS]-[WKN]$/;
 type LatestProfileSnapshot = {
   skinTone: SkinTone | '';
   lidType: LidType | '';
-  skinTypeCode: string | null | '';
+  skinTypeCode: string | null;
 };
 
 type SaveProfileInput = {
   skinTone: SkinTone | '';
   lidType: LidType | '';
-  skinTypeCode?: string | null | '';
+  skinTypeCode?: string | null;
 };
 
 export default function ProfileClient({ locale }: Props) {
   // use Sonner's toast directly
-  const [skinTypeCode, setSkinTypeCode] = useState<string>('');
+  const [skinTypeCode, setSkinTypeCode] = useState<string | null>(null);
   const [isSkinTypeLoading, setIsSkinTypeLoading] = useState<boolean>(true);
   const [skinTone, setSkinTone] = useState<SkinTone | ''>('');
   const [lidType, setLidType] = useState<LidType | ''>('');
@@ -51,14 +51,14 @@ export default function ProfileClient({ locale }: Props) {
   const latestValuesRef = useRef<LatestProfileSnapshot>({
     skinTone: '',
     lidType: '',
-    skinTypeCode: '',
+    skinTypeCode: null,
   });
 
   useEffect(() => {
     latestValuesRef.current = {
       skinTone,
       lidType,
-      skinTypeCode: skinTypeCode || '',
+      skinTypeCode: skinTypeCode ?? null,
     };
   }, [skinTone, lidType, skinTypeCode]);
 
@@ -269,10 +269,10 @@ export default function ProfileClient({ locale }: Props) {
     return '';
   };
 
-  const normalizeSkinTypeCode = useCallback((value: unknown): string => {
-    if (typeof value !== 'string') return '';
+  const normalizeSkinTypeCode = useCallback((value: unknown): string | null => {
+    if (typeof value !== 'string') return null;
     const upper = value.toUpperCase();
-    return SKIN_TYPE_CODE_PATTERN.test(upper) ? upper : '';
+    return SKIN_TYPE_CODE_PATTERN.test(upper) ? upper : null;
   }, []);
 
   useEffect(() => {
@@ -319,14 +319,14 @@ export default function ProfileClient({ locale }: Props) {
           latestValuesRef.current = {
             skinTone: normalizedSkinTone,
             lidType: normalizedLidType,
-            skinTypeCode: normalizedSkinType || '',
+            skinTypeCode: normalizedSkinType,
           };
         } else {
-          setSkinTypeCode('');
+          setSkinTypeCode(null);
           latestValuesRef.current = {
             skinTone: '',
             lidType: '',
-            skinTypeCode: '',
+            skinTypeCode: null,
           };
         }
         setIsSkinTypeLoading(false);
@@ -358,7 +358,7 @@ export default function ProfileClient({ locale }: Props) {
                 size="sm"
                 className="h-8 px-2 text-[#6B7280]"
                 onClick={() => {
-                  setSkinTypeCode('');
+                  setSkinTypeCode(null);
                   setSkinTone('');
                   setLidType('');
                   if (saveTimerRef.current) {
