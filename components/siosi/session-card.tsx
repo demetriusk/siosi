@@ -58,13 +58,9 @@ export function SessionCard({ session, locale }: SessionCardProps) {
                 <span className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${getScoreBadgeClass(session.overall_score)}`}>
                   {getScoreBadgeText(session.overall_score)}
                 </span>
-                <span className="text-3xl font-bold leading-none">
+                <span className="text-xs font-bold leading-none">
                   {session.overall_score.toFixed(1)}
                 </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-white/90">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">{session.critical_count}</span>
               </div>
             </div>
           </div>
