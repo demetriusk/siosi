@@ -58,20 +58,15 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
 
         <Link
           href={`/${locale}/analyze`}
-          className={cn(
-            'flex flex-col items-center gap-2 text-xs font-medium transition-colors',
-            analyzeActive ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
-          )}
         >
           <span
             className={cn(
-              'flex h-14 w-14 items-center justify-center rounded-full text-white shadow-[0_8px_20px_rgba(10,10,10,0.2)] transition-colors',
+              'flex h-10 w-10 items-center justify-center rounded-full text-white shadow-[0_8px_20px_rgba(10,10,10,0.2)] transition-colors',
               analyzeActive ? 'bg-[#0A0A0A]' : 'bg-[#0A0A0A]'
             )}
           >
             <Plus className="h-6 w-6" strokeWidth={2.5} />
           </span>
-          <span>{t('new_photo')}</span>
         </Link>
 
         {renderNavItem(navItems[1])}
