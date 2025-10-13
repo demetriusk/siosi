@@ -171,22 +171,6 @@ export function Header({ locale }: HeaderProps) {
                   </Link>
                 ))}
 
-                <button
-                  onClick={async () => {
-                    try {
-                      const mod = await import('@/lib/supabase');
-                      const maybeSupabase = (mod as any).supabase ?? (mod as any).default ?? null;
-                      await (maybeSupabase as any)?.auth?.signOut?.();
-                    } catch {
-                      // ignore
-                    }
-                    setMobileMenuOpen(false);
-                    router.push(`/${locale}/auth`);
-                  }}
-                  className="w-full text-left px-3 py-2 text-base font-medium rounded text-[#6B7280] hover:text-[#0A0A0A] hover:bg-[#F9FAFB]"
-                >
-                  {t('logout')}
-                </button>
               </div>
             ) : (
               <div className="space-y-2">
