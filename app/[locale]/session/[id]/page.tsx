@@ -229,7 +229,6 @@ export default async function SessionPage({ params }: SessionPageProps) {
             <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
               <Link href={`/${locale}/sessions`}>
                 <ChevronLeft className="h-4 w-4" />
-                {safeT('sessions.back_to_all', 'Back to sessions')}
               </Link>
             </Button>
             <SessionActionsClient
