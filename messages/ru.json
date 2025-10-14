@@ -180,13 +180,13 @@
       "download_image": "Скачать изображение"
     },
     "details": {
-      "title": "Детали сессии"
+      "title": "Детали"
     }
   },
   "sessions": {
     "title": "Мои сессии",
     "empty_title": "Сессий пока нет",
-    "empty_subtitle": "Загрузите первое фото, чтобы начать",
+    "empty_subtitle": "Загрузите фото, чтобы начать",
     "view_report": "Смотреть отчёт",
     "score_badges": {
       "excellent": "YAY",
