@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/sonner';
 import { MobileBottomNav } from '@/components/siosi/mobile-bottom-nav';
 import { AppShell } from '@/components/siosi/app-shell';
+import { RegisterSW } from '@/components/register-sw';
 import { cn } from '@/lib/utils';
 import type { ParamsWithLocale } from '@/lib/types';
 
@@ -53,12 +54,20 @@ export const metadata: Metadata = {
       { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
       { url: '/favicon.ico', type: 'image/x-icon' }
     ],
-    apple: '/apple-touch-icon.png',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' }
+    ],
     shortcut: '/favicon.ico'
   },
   manifest: '/site.webmanifest',
-  other: {
-    'apple-mobile-web-app-title': 'siOsi'
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' }
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'siOsi'
   }
 };
 
@@ -93,6 +102,7 @@ export default async function LocaleLayout({
           <Toaster />
           <MobileBottomNav locale={locale} />
         </NextIntlClientProvider>
+        <RegisterSW />
       </body>
     </html>
   );
