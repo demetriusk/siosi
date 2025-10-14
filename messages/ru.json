@@ -184,8 +184,8 @@
     }
   },
   "sessions": {
-    "title": "Мои сессии",
-    "empty_title": "Сессий пока нет",
+    "title": "Мои луки",
+    "empty_title": "Луков пока нет",
     "empty_subtitle": "Загрузите фото, чтобы начать",
     "view_report": "Смотреть отчёт",
     "score_badges": {
@@ -194,11 +194,11 @@
       "needs_work": "NO",
       "issues_found": "NAY"
     },
-    "deleted_toast": "Сессия удалена",
+    "deleted_toast": "Лук удалён",
     "delete": "Удалить",
     "deleting": "Удаляем...",
-    "confirm_delete_title": "Удалить сессию?",
-    "confirm_delete_desc": "Это действие навсегда удалит сессию. Его нельзя отменить."
+    "confirm_delete_title": "Удалить лук?",
+    "confirm_delete_desc": "Это действие навсегда удалит лук. Его нельзя отменить."
   },
   "profile": {
     "confirm_delete_title": "Вы уверены?",
