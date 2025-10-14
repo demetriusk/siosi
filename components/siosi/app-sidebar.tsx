@@ -91,7 +91,7 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
           className="flex h-11 w-11 items-center justify-center rounded-full border border-sidebar-border bg-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50"
         >
           <span ref={logoRef} className="logo-mask h-7 w-7" aria-hidden />
-          <span className="sr-only">siOsi home</span>
+          <span className="sr-only">síOsí Home</span>
         </Link>
 
         <SidebarSeparator className="my-1 h-px w-8 bg-sidebar-border" />

@@ -83,7 +83,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
           )}
         >
           <span ref={logoRef} className="logo-mask h-5 w-5" aria-hidden />
-          <span className="text-xs">siOsi</span>
+          <span className="text-xs">síOsí</span>
         </Link>
 
         {navigation.map((item) => renderNavItem(item))}

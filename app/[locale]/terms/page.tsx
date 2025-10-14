@@ -22,7 +22,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">1. Acceptance of Terms</h2>
               <p>
-                Welcome to siOsi. By accessing or using our website and services (&ldquo;Service&rdquo;), you agree to be bound
+                Welcome to síOsí. By accessing or using our website and services (&ldquo;Service&rdquo;), you agree to be bound
                 by these Terms of Service (&ldquo;Terms&rdquo;). If you do not agree to these Terms, please do not use the Service.
               </p>
             </section>
@@ -30,7 +30,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">2. Description of Service</h2>
               <p>
-                siOsi provides AI-powered makeup analysis based on photos you upload. The Service analyzes images to
+                síOsí provides AI-powered makeup analysis based on photos you upload. The Service analyzes images to
                 produce predictions and recommendations about makeup performance under various conditions.
               </p>
             </section>
@@ -40,7 +40,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
               <p>
                 You may need to create an account to use certain features. You are responsible for keeping your
                 account credentials secure. You retain ownership of any photos or information you upload, but you grant
-                siOsi a license to store, analyze, and display those photos as necessary to provide the Service.
+                síOsí a license to store, analyze, and display those photos as necessary to provide the Service.
               </p>
             </section>
 
@@ -56,16 +56,16 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">5. Intellectual Property</h2>
               <p>
-                All content, code, and models provided by siOsi are the property of siOsi or its licensors and are
+                All content, code, and models provided by síOsí are the property of síOsí or its licensors and are
                 protected by copyright and other laws. You may not copy, reproduce, or create derivative works from
-                siOsi&rsquo;s proprietary materials without express permission.
+                síOsí&rsquo;s proprietary materials without express permission.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">6. Disclaimers</h2>
               <p>
-                The analysis provided by siOsi is for informational purposes only. Predictions are based on AI models
+                The analysis provided by síOsí is for informational purposes only. Predictions are based on AI models
                 and may not always be accurate. DO NOT rely solely on the Service for medical, safety, or other
                 professional advice.
               </p>
@@ -74,7 +74,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">7. Limitation of Liability</h2>
               <p>
-                To the fullest extent permitted by law, siOsi and its affiliates are not liable for indirect,
+                To the fullest extent permitted by law, síOsí and its affiliates are not liable for indirect,
                 incidental, special, consequential, or punitive damages arising out of your use of the Service.
               </p>
             </section>
@@ -90,7 +90,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
             <section>
               <h2 className="text-2xl text-[#0A0A0A] mb-4">9. Governing Law</h2>
               <p>
-                These Terms are governed by the laws of the jurisdiction where siOsi is operated, without regard to
+                These Terms are governed by the laws of the jurisdiction where síOsí is operated, without regard to
                 conflict of law principles.
               </p>
             </section>

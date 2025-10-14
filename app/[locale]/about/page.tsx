@@ -33,7 +33,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               </h2>
               <div className="space-y-4 text-[#374151]">
                 <p>
-                  siOsi uses advanced AI models trained on thousands of makeup photos to predict how
+                  síOsí uses advanced AI models trained on thousands of makeup photos to predict how
                   your makeup will perform in different situations. Our analysis covers multiple aspects:
                 </p>
                 <ul className="space-y-2 ml-6">

@@ -11,7 +11,8 @@
     "logout": "Ausloggen",
     "profile": "Profil",
     "about": "Über",
-    "new_photo": "Neues Foto"
+    "new_photo": "Neues Foto",
+    "support": "Support"
   },
   "auth": {
     "login": {
@@ -188,10 +189,10 @@
     "empty_subtitle": "Laden Sie Ihr erstes Foto hoch, um zu beginnen",
     "view_report": "Bericht ansehen",
     "score_badges": {
-      "excellent": "Ausgezeichnet",
-      "good": "Gut",
-      "needs_work": "Verbesserungswürdig",
-      "issues_found": "Probleme gefunden"
+      "excellent": "YAY",
+      "good": "SÍ",
+      "needs_work": "NO",
+      "issues_found": "NAY"
     },
     "deleted_toast": "Sitzung gelöscht",
     "delete": "Löschen",

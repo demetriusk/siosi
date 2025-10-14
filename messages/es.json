@@ -11,7 +11,8 @@
     "logout": "Cerrar sesión",
     "profile": "Mi perfil",
     "about": "Acerca de",
-    "new_photo": "Nueva foto"
+    "new_photo": "Nueva foto",
+    "support": "Soporte"
   },
   "auth": {
     "login": {
@@ -188,10 +189,10 @@
     "empty_subtitle": "Sube tu primera foto para comenzar",
     "view_report": "Ver informe",
     "score_badges": {
-      "excellent": "Excelente",
-      "good": "Bueno",
-      "needs_work": "Necesita mejorar",
-      "issues_found": "Problemas detectados"
+      "excellent": "YAY",
+      "good": "SÍ",
+      "needs_work": "NO",
+      "issues_found": "NAY"
     },
     "deleted_toast": "Sesión eliminada",
     "delete": "Eliminar",
@@ -248,8 +249,8 @@
     "delete_data": "Eliminar todos mis datos"
   },
   "about": {
-    "title": "¿Qué es siOsi?",
-    "description": "siOsi es un analista de maquillaje impulsado por IA que te ayuda a entender cómo se comportará tu maquillaje en diferentes situaciones. Sube una foto y obtén predicciones instantáneas en varios aspectos.",
+    "title": "¿Qué es síOsí?",
+    "description": "síOsí es un analista de maquillaje impulsado por IA que te ayuda a entender cómo se comportará tu maquillaje en diferentes situaciones. Sube una foto y obtén predicciones instantáneas en varios aspectos.",
     "confidence_title": "Comprender las puntuaciones de confianza",
     "confidence_high": "Muy probablemente preciso",
     "confidence_medium": "Buena predicción, con algo de incertidumbre",

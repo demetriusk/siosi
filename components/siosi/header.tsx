@@ -46,7 +46,7 @@ export function Header({ locale }: HeaderProps) {
 
             <Link href={`/${locale}`} className="flex items-center group">
               <div className="logo-mask w-8 h-8 mr-3 flex-none overflow-visible" aria-hidden></div>
-              <span className="text-2xl tracking-tight text-[#0A0A0A]">siOsi</span>
+              <span className="text-2xl tracking-tight text-[#0A0A0A]">síOsí</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-4">

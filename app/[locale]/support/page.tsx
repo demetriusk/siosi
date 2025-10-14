@@ -100,7 +100,7 @@ export default function SupportPage() {
         throw new Error(data.error || 'Failed to send message');
       }
 
-      toast.success('Message sent! siOsi will get back to you soon.');
+      toast.success('Message sent! síOsí will get back to you soon.');
       setMessage('');
       setEmail('');
     } catch (err: any) {

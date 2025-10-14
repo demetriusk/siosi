@@ -11,7 +11,8 @@
     "logout": "Log out",
     "profile": "My Profile",
     "about": "About",
-    "new_photo": "New photo"
+    "new_photo": "New photo",
+    "support": "Support"
   },
   "auth": {
     "login": {
@@ -188,10 +189,10 @@
     "empty_subtitle": "Upload your first photo to get started",
     "view_report": "View Report",
     "score_badges": {
-      "excellent": "Excellent",
-      "good": "Good",
-      "needs_work": "Needs Work",
-      "issues_found": "Issues Found"
+      "excellent": "YAY",
+      "good": "SÍ",
+      "needs_work": "NO",
+      "issues_found": "NAY"
     },
     "deleted_toast": "Session deleted",
     "delete": "Delete",
@@ -248,8 +249,8 @@
     "delete_data": "Delete all my data"
   },
   "about": {
-    "title": "What is siOsi?",
-    "description": "siOsi is an AI-powered makeup analyst that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
+    "title": "What is síOsí?",
+    "description": "síOsí is an AI-powered makeup analyst that helps you understand how your makeup will perform in different situations. Upload a photo and get instant predictions across multiple aspects.",
     "confidence_title": "Understanding Confidence Scores",
     "confidence_high": "Very likely accurate",
     "confidence_medium": "Good prediction, some uncertainty",

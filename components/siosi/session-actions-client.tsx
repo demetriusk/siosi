@@ -168,8 +168,8 @@ export default function SessionActionsClient({
 
     try {
       await navigator.share({
-        title: 'siOsi makeup analysis',
-        text: 'Check out my siOsi makeup analysis',
+        title: 'síOsí makeup analysis',
+        text: 'Check out my síOsí makeup analysis',
         url: sessionUrl,
       });
       toast.success('Shared', { description: 'Shared via device share sheet' });
@@ -195,19 +195,19 @@ export default function SessionActionsClient({
   }
 
   function onShareWhatsapp() {
-    const text = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
+    const text = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
     const href = `https://wa.me/?text=${text}`;
     window.open(href, '_blank', 'noopener');
   }
 
   function onShareMessenger() {
-    const text = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
+    const text = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
     const href = `https://m.me/?link=${encodeURIComponent(sessionUrl)}&ref=${text}`;
     window.open(href, '_blank', 'noopener');
   }
 
   function onShareSms() {
-    const body = encodeURIComponent(`Check out my siOsi makeup analysis: ${sessionUrl}`);
+    const body = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
     const href = `sms:?&body=${body}`;
     window.location.href = href;
   }
@@ -289,11 +289,11 @@ export default function SessionActionsClient({
         ctx.fillStyle = 'rgba(0,0,0,0.6)';
         ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
         ctx.fillStyle = '#fff';
-        ctx.font = 'bold 36px Verdana, sans-serif';
+        ctx.font = 'bold 36px Arial, sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('siOsi analysis', pad, canvas.height - 120);
-        ctx.font = '20px Verdana, sans-serif';
-        ctx.fillText('My siOsi makeup analysis', pad, canvas.height - 80);
+        ctx.fillText('siOsi.me', pad, canvas.height - 120);
+        ctx.font = '20px Arial, sans-serif';
+        ctx.fillText('My síOsí makeup analysis', pad, canvas.height - 80);
         blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), 'image/png', 0.92));
       }
 

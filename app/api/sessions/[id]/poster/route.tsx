@@ -82,7 +82,7 @@ export async function GET(req: NextRequest, context: any) {
     if (inter400) fonts.push({ name: 'Inter', data: inter400, weight: 400, style: 'normal' });
     if (inter700) fonts.push({ name: 'Inter', data: inter700, weight: 700, style: 'normal' });
 
-    const titleText = `siOsi score: ${overall}`;
+    const titleText = `síOsí score: ${overall}`;
 
     // Supabase storage public URL for cached posters
     const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -132,7 +132,7 @@ export async function GET(req: NextRequest, context: any) {
         <div style={{ padding: '36px 56px', display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ fontSize: 32, fontWeight: 700, color: '#0f172a' }}>{titleText}</div>
           <div style={{ fontSize: 18, color: '#475569', maxWidth: 980 }}>
-            My siOsi makeup analysis — shareable summary.
+            My síOsí makeup analysis — shareable summary.
           </div>
           <div style={{ marginTop: 8, fontSize: 14, color: '#94a3b8' }}>siosi.app</div>
         </div>

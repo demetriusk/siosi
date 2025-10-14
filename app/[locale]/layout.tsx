@@ -53,7 +53,7 @@ const botIdProtectedRoutes = [
 ];
 
 export const metadata: Metadata = {
-  title: 'siOsi — AI Makeup Analysis',
+  title: 'síOsí — AI Makeup Analysis',
   description: 'Get instant AI makeup analysis with confidence scores',
   icons: {
     icon: [
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'siOsi'
+    title: 'síOsí'
   }
 };
 

@@ -1,6 +1,6 @@
 {
-  "name": "siOsi",
-  "short_name": "siOsi",
+  "name": "síOsí",
+  "short_name": "síOsí",
   "description": "AI-powered makeup analysis, personalized for your skin goals.",
   "start_url": "/en?source=pwa",
   "scope": "/",

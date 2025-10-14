@@ -39,8 +39,8 @@ ${userId ? `User ID: ${userId}` : `Email: ${email}`}
 Message:
 ${message}
 
----
-Sent from siOsi Support Form
+-- 
+Sent from síOsí Support Form
     `.trim();
 
     // Try to send via Resend (FREE 3000/month)

@@ -11,7 +11,8 @@
     "logout": "Disconnetti",
     "profile": "Profilo",
     "about": "Informazioni",
-    "new_photo": "Nuova foto"
+    "new_photo": "Nuova foto",
+    "support": "Supporto"
   },
   "auth": {
     "login": {
@@ -188,10 +189,10 @@
     "empty_subtitle": "Carica la tua prima foto per iniziare",
     "view_report": "Visualizza rapporto",
     "score_badges": {
-      "excellent": "Eccellente",
-      "good": "Buono",
-      "needs_work": "Necessita lavoro",
-      "issues_found": "Problemi trovati"
+      "excellent": "YAY",
+      "good": "SÍ",
+      "needs_work": "NO",
+      "issues_found": "NAY"
     },
     "deleted_toast": "Sessione eliminata",
     "delete": "Elimina",
