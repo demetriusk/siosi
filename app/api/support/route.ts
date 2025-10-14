@@ -3,13 +3,18 @@ import logger from '@/lib/logger';
 
 const SUPPORT_EMAIL = 'help@siosi.me';
 
+type TurnstileVerification = {
+  success: boolean;
+  errors?: string[];
+};
+
 // Verify Cloudflare Turnstile token
-async function verifyTurnstile(token: string, remoteIp?: string): Promise<boolean> {
+async function verifyTurnstile(token: string, remoteIp?: string): Promise<TurnstileVerification> {
   const secretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
   
   if (!secretKey) {
     logger.warn('CLOUDFLARE_TURNSTILE_SECRET_KEY not set - skipping verification');
-    return true; // Allow in dev mode
+    return { success: true }; // Allow in dev mode
   }
 
   try {
@@ -34,11 +39,22 @@ async function verifyTurnstile(token: string, remoteIp?: string): Promise<boolea
         errors: data['error-codes'],
         remoteIp,
       });
+      console.warn('Turnstile verification failed', {
+        errors: data['error-codes'],
+        remoteIp,
+      });
     }
-    return data.success === true;
+    return {
+      success: data.success === true,
+      errors: Array.isArray(data['error-codes']) ? data['error-codes'] : undefined,
+    };
   } catch (error) {
     logger.error('Turnstile verification error:', error);
-    return false;
+    console.error('Turnstile verification error:', error);
+    return {
+      success: false,
+      errors: ['turnstile_verification_exception'],
+    };
   }
 }
 
@@ -67,13 +83,25 @@ export async function POST(req: NextRequest) {
         return Response.json({ error: 'Security check required' }, { status: 400 });
       }
 
-      const isValidToken = await verifyTurnstile(turnstileToken, remoteIp);
-      if (!isValidToken) {
+      const verification = await verifyTurnstile(turnstileToken, remoteIp);
+      if (!verification.success) {
         logger.warn('Invalid Turnstile token', {
           user: userId || email,
           remoteIp,
+          errors: verification.errors,
         });
-        return Response.json({ error: 'Security check failed. Please try again.' }, { status: 400 });
+        console.warn('Invalid Turnstile token', {
+          user: userId || email,
+          remoteIp,
+          errors: verification.errors,
+        });
+        return Response.json(
+          {
+            error: 'Security check failed. Please try again.',
+            turnstileErrors: verification.errors ?? null,
+          },
+          { status: 400 },
+        );
       }
     } else if (turnstileToken) {
       logger.info('Received Turnstile token while verification disabled');
