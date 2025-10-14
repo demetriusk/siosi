@@ -102,6 +102,7 @@ export default function SupportPage() {
           email: userId ? undefined : email.trim(),
           userId: userId || undefined,
           turnstileToken: captchaRequired ? captchaToken : undefined,
+          captchaToken: captchaRequired ? captchaToken : undefined,
         }),
       });
 
