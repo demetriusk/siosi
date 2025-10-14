@@ -61,12 +61,24 @@ async function verifyTurnstile(token: string, remoteIp?: string): Promise<Turnst
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { message, email, userId, turnstileToken } = body;
+    const {
+      message,
+      email,
+      userId,
+      turnstileToken,
+      captchaToken,
+    } = body;
     const turnstileSecretConfigured = Boolean(process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY);
     const remoteIp =
       req.headers.get('cf-connecting-ip') ??
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
       undefined;
+    const providedToken =
+      typeof turnstileToken === 'string' && turnstileToken.trim().length > 0
+        ? turnstileToken
+        : typeof captchaToken === 'string' && captchaToken.trim().length > 0
+          ? captchaToken
+          : null;
 
     // Validate inputs
     if (!message || typeof message !== 'string') {
@@ -79,11 +91,11 @@ export async function POST(req: NextRequest) {
 
     // Verify Turnstile token
     if (turnstileSecretConfigured) {
-      if (!turnstileToken || typeof turnstileToken !== 'string') {
+      if (!providedToken) {
         return Response.json({ error: 'Security check required' }, { status: 400 });
       }
 
-      const verification = await verifyTurnstile(turnstileToken, remoteIp);
+      const verification = await verifyTurnstile(providedToken, remoteIp);
       if (!verification.success) {
         logger.warn('Invalid Turnstile token', {
           user: userId || email,
