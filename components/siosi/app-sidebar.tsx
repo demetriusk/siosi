@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { LayoutGrid, Plus, UserRound } from 'lucide-react';
 import { Sidebar, SidebarSeparator } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { useSupabaseUser } from '@/hooks/use-supabase-user';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslations } from 'next-intl';
 
@@ -14,6 +13,7 @@ export const APP_SIDEBAR_WIDTH = '4.5rem';
 
 interface AppSidebarProps {
   locale: string;
+  user: unknown;
 }
 
 interface NavItem {
@@ -22,8 +22,7 @@ interface NavItem {
   label: string;
 }
 
-export function AppSidebar({ locale }: AppSidebarProps) {
-  const user = useSupabaseUser();
+export function AppSidebar({ locale, user }: AppSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
 
@@ -54,12 +53,11 @@ export function AppSidebar({ locale }: AppSidebarProps) {
   const isActive = (href: string) => pathname.startsWith(href);
 
   return (
-    <>
-      <Sidebar
-        collapsible="none"
-        className="hidden border-r border-sidebar-border bg-white/90 backdrop-blur md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex md:w-[var(--app-sidebar-width)] md:flex-col md:items-center md:py-6"
-        style={{ '--app-sidebar-width': APP_SIDEBAR_WIDTH } as CSSProperties}
-      >
+    <Sidebar
+      collapsible="none"
+      className="hidden border-r border-sidebar-border bg-white/90 backdrop-blur md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex md:w-[var(--app-sidebar-width)] md:flex-col md:items-center md:py-6"
+      style={{ '--app-sidebar-width': APP_SIDEBAR_WIDTH } as CSSProperties}
+    >
       <div className="flex flex-1 flex-col items-center gap-5">
         <Link
           href={`/${locale}`}
@@ -117,8 +115,6 @@ export function AppSidebar({ locale }: AppSidebarProps) {
           </TooltipContent>
         </Tooltip>
       </div>
-      </Sidebar>
-      <div className="hidden md:block md:w-[var(--app-sidebar-width)]" aria-hidden />
-    </>
+    </Sidebar>
   );
 }

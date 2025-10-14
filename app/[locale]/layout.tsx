@@ -1,11 +1,10 @@
 import '../globals.css';
-import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/ui/sonner';
 import { MobileBottomNav } from '@/components/siosi/mobile-bottom-nav';
-import { AppSidebar, APP_SIDEBAR_WIDTH } from '@/components/siosi/app-sidebar';
+import { AppShell } from '@/components/siosi/app-shell';
 import { cn } from '@/lib/utils';
 import type { ParamsWithLocale } from '@/lib/types';
 
@@ -90,15 +89,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={cn(inter.className, 'pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0')}>
         <NextIntlClientProvider locale={locale} messages={getMessages(locale)}>
-          <div
-            className="relative flex min-h-screen w-full"
-            style={{ '--app-sidebar-width': APP_SIDEBAR_WIDTH } as CSSProperties}
-          >
-            <AppSidebar locale={locale} />
-            <div className="flex min-h-screen w-full flex-1 flex-col">
-              {children}
-            </div>
-          </div>
+          <AppShell locale={locale}>{children}</AppShell>
           <Toaster />
           <MobileBottomNav locale={locale} />
         </NextIntlClientProvider>
