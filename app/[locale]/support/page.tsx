@@ -9,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Turnstile } from '@marsidev/react-turnstile';
 
 const SUPPORT_TOPICS = [
   'I have a question about my analysis results',
@@ -29,9 +28,6 @@ export default function SupportPage() {
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const captchaRequired = Boolean(turnstileSiteKey);
 
   useEffect(() => {
     let mounted = true;
@@ -86,11 +82,6 @@ export default function SupportPage() {
       return;
     }
 
-    if (captchaRequired && !captchaToken) {
-      toast.error('Please complete the security check');
-      return;
-    }
-
     setSubmitting(true);
 
     try {
@@ -101,8 +92,6 @@ export default function SupportPage() {
           message: message.trim(),
           email: userId ? undefined : email.trim(),
           userId: userId || undefined,
-          turnstileToken: captchaRequired ? captchaToken : undefined,
-          captchaToken: captchaRequired ? captchaToken : undefined,
         }),
       });
 
@@ -114,9 +103,6 @@ export default function SupportPage() {
       toast.success('Message sent! siOsi will get back to you soon.');
       setMessage('');
       setEmail('');
-      if (captchaRequired) {
-        setCaptchaToken(null);
-      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to send message');
     } finally {
@@ -134,7 +120,7 @@ export default function SupportPage() {
           <div className="bg-white border border-[#E5E7EB] rounded-sm p-8">
             <h1 className="text-2xl font-semibold text-[#0A0A0A] mb-2">Contact Support</h1>
             <p className="text-[#6B7280] mb-8">
-              Have a question or issue? We're here to help. Select a topic below or describe your problem.
+              Have a question or issue? We&apos;re here to help. Select a topic below or describe your problem.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -180,20 +166,9 @@ export default function SupportPage() {
                 />
               </div>
 
-              {turnstileSiteKey && (
-                <div>
-                  <Turnstile
-                    siteKey={turnstileSiteKey}
-                    onSuccess={(token) => setCaptchaToken(token)}
-                    onError={() => setCaptchaToken(null)}
-                    onExpire={() => setCaptchaToken(null)}
-                  />
-                </div>
-              )}
-
               <Button
                 type="submit"
-                disabled={submitting || (captchaRequired && !captchaToken)}
+                disabled={submitting}
                 className="bg-[#0A0A0A] text-white hover:bg-[#111827]"
               >
                 {submitting ? 'Sending...' : 'Send Message'}

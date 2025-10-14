@@ -2,6 +2,7 @@ import '../globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
+import { BotIdClient } from 'botid/client';
 import { Toaster } from '@/components/ui/sonner';
 import { MobileBottomNav } from '@/components/siosi/mobile-bottom-nav';
 import { AppShell } from '@/components/siosi/app-shell';
@@ -44,6 +45,12 @@ function getMessages(locale: string) {
 }
 
 const inter = Inter({ subsets: ['latin'] });
+const botIdProtectedRoutes = [
+  {
+    path: '/api/support',
+    method: 'POST',
+  },
+];
 
 export const metadata: Metadata = {
   title: 'siOsi — AI Makeup Analysis',
@@ -96,6 +103,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <BotIdClient protect={botIdProtectedRoutes} />
+      </head>
       <body className={cn(inter.className, 'pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0')}>
         <NextIntlClientProvider locale={locale} messages={getMessages(locale)}>
           <AppShell locale={locale}>{children}</AppShell>
