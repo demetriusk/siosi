@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { message, email, userId, turnstileToken } = body;
+    const turnstileSecretConfigured = Boolean(process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY);
 
     // Validate inputs
     if (!message || typeof message !== 'string') {
@@ -47,14 +48,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify Turnstile token
-    if (!turnstileToken) {
-      return Response.json({ error: 'Security check required' }, { status: 400 });
-    }
+    if (turnstileSecretConfigured) {
+      if (!turnstileToken || typeof turnstileToken !== 'string') {
+        return Response.json({ error: 'Security check required' }, { status: 400 });
+      }
 
-    const isValidToken = await verifyTurnstile(turnstileToken);
-    if (!isValidToken) {
-      logger.warn('Invalid Turnstile token from', userId || email);
-      return Response.json({ error: 'Security check failed. Please try again.' }, { status: 400 });
+      const isValidToken = await verifyTurnstile(turnstileToken);
+      if (!isValidToken) {
+        logger.warn('Invalid Turnstile token from', userId || email);
+        return Response.json({ error: 'Security check failed. Please try again.' }, { status: 400 });
+      }
+    } else if (turnstileToken) {
+      logger.info('Received Turnstile token while verification disabled');
     }
 
     // Construct email content
