@@ -4,7 +4,7 @@ import logger from '@/lib/logger';
 const SUPPORT_EMAIL = 'help@siosi.me';
 
 // Verify Cloudflare Turnstile token
-async function verifyTurnstile(token: string): Promise<boolean> {
+async function verifyTurnstile(token: string, remoteIp?: string): Promise<boolean> {
   const secretKey = process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
   
   if (!secretKey) {
@@ -13,18 +13,28 @@ async function verifyTurnstile(token: string): Promise<boolean> {
   }
 
   try {
+    const params = new URLSearchParams();
+    params.append('secret', secretKey);
+    params.append('response', token);
+    if (remoteIp) {
+      params.append('remoteip', remoteIp);
+    }
+
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        secret: secretKey,
-        response: token,
-      }),
+      body: params.toString(),
     });
 
     const data = await response.json();
+    if (!data.success) {
+      logger.warn('Turnstile verification failed', {
+        errors: data['error-codes'],
+        remoteIp,
+      });
+    }
     return data.success === true;
   } catch (error) {
     logger.error('Turnstile verification error:', error);
@@ -37,6 +47,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { message, email, userId, turnstileToken } = body;
     const turnstileSecretConfigured = Boolean(process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY);
+    const remoteIp =
+      req.headers.get('cf-connecting-ip') ??
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+      undefined;
 
     // Validate inputs
     if (!message || typeof message !== 'string') {
@@ -53,9 +67,12 @@ export async function POST(req: NextRequest) {
         return Response.json({ error: 'Security check required' }, { status: 400 });
       }
 
-      const isValidToken = await verifyTurnstile(turnstileToken);
+      const isValidToken = await verifyTurnstile(turnstileToken, remoteIp);
       if (!isValidToken) {
-        logger.warn('Invalid Turnstile token from', userId || email);
+        logger.warn('Invalid Turnstile token', {
+          user: userId || email,
+          remoteIp,
+        });
         return Response.json({ error: 'Security check failed. Please try again.' }, { status: 400 });
       }
     } else if (turnstileToken) {
