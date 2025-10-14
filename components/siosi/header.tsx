@@ -21,18 +21,8 @@ export function Header({ locale }: HeaderProps) {
   const t = useTranslations('nav');
   const user = useSupabaseUser();
 
-  if (user) {
-    return (
-      <div className="md:hidden fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+1rem)] z-50">
-        <Link
-          href={`/${locale}`}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E5E7EB] bg-white shadow-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50"
-        >
-          <span className="logo-mask h-7 w-7" aria-hidden />
-          <span className="sr-only">siOsi home</span>
-        </Link>
-      </div>
-    );
+  if (user === undefined || user) {
+    return null;
   }
 
   // Basic navigation items. Keep these simple and locale-aware.
@@ -48,7 +38,7 @@ export function Header({ locale }: HeaderProps) {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50">
+  <header className="bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 

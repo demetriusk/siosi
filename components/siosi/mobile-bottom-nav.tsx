@@ -21,7 +21,12 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
 
-  const navItems: NavItemConfig[] = [
+  const primaryNavItems: NavItemConfig[] = [
+    {
+      href: `/${locale}/analyze`,
+      label: t('new_photo'),
+      icon: Plus
+    },
     {
       href: `/${locale}/sessions`,
       label: t('sessions'),
@@ -35,7 +40,6 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   ];
 
   const isActive = (href: string) => pathname.startsWith(href);
-  const analyzeActive = pathname.startsWith(`/${locale}/analyze`);
 
   const renderNavItem = ({ href, label, icon: Icon }: NavItemConfig) => (
     <Link
@@ -54,22 +58,20 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E5E7EB] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 md:hidden">
       <div className="mx-auto flex w-full max-w-md items-end justify-between px-8 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
-        {renderNavItem(navItems[0])}
+        {renderNavItem(primaryNavItems[0])}
 
         <Link
-          href={`/${locale}/analyze`}
+          href={`/${locale}`}
+          aria-label="siOsi home"
         >
-          <span
-            className={cn(
-              'flex h-10 w-10 items-center justify-center rounded-full text-white shadow-[0_8px_20px_rgba(10,10,10,0.2)] transition-colors',
-              analyzeActive ? 'bg-[#0A0A0A]' : 'bg-[#0A0A0A]'
-            )}
-          >
-            <Plus className="h-6 w-6" strokeWidth={2.5} />
+          <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#E5E7EB] bg-white shadow-[0_8px_20px_rgba(10,10,10,0.12)] outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/40">
+            <span className="logo-mask h-7 w-7" aria-hidden />
           </span>
         </Link>
 
-        {renderNavItem(navItems[1])}
+        <div className="flex items-center gap-8">
+          {primaryNavItems.slice(1).map(renderNavItem)}
+        </div>
       </div>
     </nav>
   );

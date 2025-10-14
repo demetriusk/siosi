@@ -56,11 +56,11 @@ export function UsageBanner({ locale }: UsageBannerProps) {
               You’ve reached your limit
             </p>
             <p className="text-sm text-red-700">
-              Sign up for unlimited analyses and save your results
+              Sign up for more analyses and save your results
             </p>
           </div>
           <Link href={`/${locale}/auth`}>
-            <Button className="bg-red-600 hover:bg-red-700 text-white ml-4">
+            <Button className="ml-4 bg-[#0A0A0A] text-white hover:bg-[#0A0A0A]/90 focus-visible:ring-[#0A0A0A]/50">
               Sign Up Free
             </Button>
           </Link>
@@ -71,19 +71,19 @@ export function UsageBanner({ locale }: UsageBannerProps) {
 
   // Show remaining analyses
   return (
-    <Alert className="bg-blue-50 border-blue-200">
-      <ScanFace className="h-5 w-5 text-blue-600" />
+    <Alert className="bg-white border-[#0A0A0A] mb-8">
+      <ScanFace className="h-5 w-5 text-[#0A0A0A]" />
       <AlertDescription className="ml-2 flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-blue-900 mb-1">
+          <p className="text-sm font-semibold text-[#0A0A0A] mb-1">
             {remaining} {remaining === 1 ? 'analysis' : 'analyses'} remaining
           </p>
-          <p className="text-sm text-blue-700">
-            Sign up for unlimited analyses and to save your results
+          <p className="text-sm text-[#4B5563]">
+            Sign up for more analyses and to save your results
           </p>
         </div>
         <Link href={`/${locale}/auth`}>
-          <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100 ml-4">
+          <Button className="ml-4 bg-[#0A0A0A] text-white hover:bg-[#0A0A0A]/90 focus-visible:ring-[#0A0A0A]/50">
             Sign Up Free
           </Button>
         </Link>
