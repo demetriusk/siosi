@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AlertCircle, Sparkles } from 'lucide-react';
+import { AlertCircle, ScanFace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getSupabase } from '@/lib/supabase';
@@ -48,12 +48,12 @@ export function UsageBanner({ locale }: UsageBannerProps) {
   // Show limit reached message
   if (remaining === 0) {
     return (
-      <Alert className="bg-red-50 border-red-200">
+      <Alert className="bg-red-50 border-red-200 mb-8">
         <AlertCircle className="h-5 w-5 text-red-600" />
         <AlertDescription className="ml-2 flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-red-900 mb-1">
-              You've reached your limit
+              You’ve reached your limit
             </p>
             <p className="text-sm text-red-700">
               Sign up for unlimited analyses and save your results
@@ -72,7 +72,7 @@ export function UsageBanner({ locale }: UsageBannerProps) {
   // Show remaining analyses
   return (
     <Alert className="bg-blue-50 border-blue-200">
-      <Sparkles className="h-5 w-5 text-blue-600" />
+      <ScanFace className="h-5 w-5 text-blue-600" />
       <AlertDescription className="ml-2 flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-blue-900 mb-1">
