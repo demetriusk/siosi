@@ -112,7 +112,11 @@
       filter: grayscale(100%) brightness(0%);
       background-position: 0 0;
     }
-    40% {
+    35% {
+      filter: none;
+      background-position: 100% 0;
+    }
+    70% {
       filter: none;
       background-position: 100% 0;
     }
@@ -123,7 +127,7 @@
   }
 
   .logo-mask.logo-burst {
-    animation: logo-burst 900ms ease forwards;
+    animation: logo-burst 1100ms ease-in-out forwards;
   }
 
   /* Also allow hovering the logo-mask itself to trigger the animation (covers footer case) */
