@@ -41,7 +41,7 @@
     "hero_title": "Узнай заранее — сияй увереннее",
     "hero_subtitle": "Мгновенный анализ макияжа на ИИ с оценками уверенности",
     "upload_cta": "Или сделайте фото сейчас",
-    "supported_formats": "Поддерживаемые форматы: JPG, PNG, HEIC (до 10 МБ)",
+    "supported_formats": "Поддерживаемые форматы: JPG, PNG, HEIC, WEBP, AVIF (до 10 МБ)",
     "what_analyzed_title": "Что анализируем",
     "labs": {
       "flashback": "Лаборатория вспышки",

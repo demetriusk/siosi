@@ -7,6 +7,7 @@ import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap,
 import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
+import { UsageBanner } from '@/components/siosi/usage-banner';
 import { UploadZone } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -40,6 +41,8 @@ const PROGRESS_MESSAGE_KEYS = [
   'upload.progress.highlights',
   'upload.progress.angles',
 ] as const;
+
+const ANONYMOUS_LIMIT = 3;
 
 export default function AnalyzePage() {
   const params = useParams();
@@ -116,6 +119,20 @@ export default function AnalyzePage() {
     );
   };
 
+  const checkAnonymousLimit = (): boolean => {
+    const key = 'anonymous_analyses';
+    const stored = localStorage.getItem(key);
+    const count = stored ? parseInt(stored, 10) : 0;
+    return count < ANONYMOUS_LIMIT;
+  };
+
+  const incrementAnonymousCount = (): void => {
+    const key = 'anonymous_analyses';
+    const stored = localStorage.getItem(key);
+    const count = stored ? parseInt(stored, 10) : 0;
+    localStorage.setItem(key, String(count + 1));
+  };
+
   async function handleAnalyze() {
     try {
       setIsAnalyzing(true);
@@ -128,6 +145,22 @@ export default function AnalyzePage() {
       }
       if (!selectedFile) {
         throw new Error('No file selected for upload.');
+      }
+
+      // Check if user is authenticated
+      let userId: string | undefined = undefined;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        userId = user?.id;
+      } catch {
+        // Not authenticated
+      }
+
+      // Check anonymous limit if not logged in
+      if (!userId && !checkAnonymousLimit()) {
+        setError(`Anonymous users can only perform ${ANONYMOUS_LIMIT} analyses. Please sign up for unlimited access.`);
+        setIsAnalyzing(false);
+        return;
       }
 
       const fileName = `${Date.now()}.jpg`;
@@ -200,7 +233,6 @@ export default function AnalyzePage() {
       
       // 4. Save to database via server API
       // Get userId (already fetched earlier for profile)
-      let userId: string | undefined = undefined;
       try {
         const { data: { user } } = await supabase.auth.getUser();
         userId = user?.id;
@@ -241,6 +273,11 @@ export default function AnalyzePage() {
       }
 
       const session = await createRes.json();
+
+      // Increment anonymous counter if not logged in
+      if (!userId) {
+        incrementAnonymousCount();
+      }
 
       // 4. Navigate to results
       router.push(`/${locale}/session/${session.id}`);
@@ -285,6 +322,8 @@ export default function AnalyzePage() {
               Analyze Makeup
             </h1>
           </div>
+
+          <UsageBanner locale={locale} />
 
           <div className="space-y-8">
             {/* Error Banner */}

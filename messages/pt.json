@@ -41,7 +41,7 @@
     "hero_title": "Confia e brilha",
     "hero_subtitle": "Análise instantânea de maquiagem por IA com pontuações de confiança",
     "upload_cta": "Ou tire uma foto agora",
-    "supported_formats": "Formatos suportados: JPG, PNG, HEIC (máx. 10 MB)",
+    "supported_formats": "Formatos suportados: JPG, PNG, HEIC, WEBP, AVIF (máx. 10 MB)",
     "what_analyzed_title": "O que é analisado",
     "labs": {
       "flashback": "Lab de flashback",

@@ -41,7 +41,7 @@
     "hero_title": "Ose et rayonne",
     "hero_subtitle": "Analyse de maquillage IA instantanée avec scores de confiance",
     "upload_cta": "Ou prenez une photo maintenant",
-    "supported_formats": "Formats pris en charge : JPG, PNG, HEIC (max 10 Mo)",
+    "supported_formats": "Formats pris en charge : JPG, PNG, HEIC, WEBP, AVIF (max 10 Mo)",
     "what_analyzed_title": "Ce qui est analysé",
     "labs": {
       "flashback": "Lab flashback",

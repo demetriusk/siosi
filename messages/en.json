@@ -41,7 +41,7 @@
     "hero_title": "Know Before You Glow",
     "hero_subtitle": "Get instant AI makeup analysis with confidence scores. Tested on 50k+ makeup photos.",
     "upload_cta": "Or take photo now",
-    "supported_formats": "Supported formats: JPG, PNG, HEIC (max 10MB)",
+    "supported_formats": "Supported formats: JPG, PNG, HEIC, WEBP, AVIF (max 10MB)",
     "what_analyzed_title": "What gets analyzed",
     "labs": {
       "flashback": "Flashback Lab",
