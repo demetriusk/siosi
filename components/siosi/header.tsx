@@ -21,6 +21,7 @@ export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const user = useSupabaseUser();
+  const hideOnDesktop = user !== null;
 
   // Basic navigation items. Keep these simple and locale-aware.
   const navigation = [
@@ -38,7 +39,7 @@ export function Header({ locale }: HeaderProps) {
     <header
       className={cn(
         'bg-white/75 backdrop-blur-sm border-b border-[#E5E7EB] md:sticky md:top-0 z-50',
-        user ? 'md:hidden' : undefined
+        hideOnDesktop ? 'md:hidden' : undefined
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
