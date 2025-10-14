@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutGrid, Plus, UserRound } from 'lucide-react';
@@ -26,12 +26,31 @@ interface NavItem {
 export function AppSidebar({ locale, user }: AppSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
-  const [logoBurst, setLogoBurst] = useState(false);
+  const logoRef = useRef<HTMLSpanElement | null>(null);
+  const animationTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    setLogoBurst(true);
-    const timeout = window.setTimeout(() => setLogoBurst(false), 950);
-    return () => window.clearTimeout(timeout);
+    const logoEl = logoRef.current;
+    if (!logoEl) return;
+
+    logoEl.classList.remove('is-logo-bursting');
+    void logoEl.offsetWidth;
+    logoEl.classList.add('is-logo-bursting');
+
+    if (animationTimeoutRef.current) {
+      window.clearTimeout(animationTimeoutRef.current);
+    }
+
+    animationTimeoutRef.current = window.setTimeout(() => {
+      logoEl.classList.remove('is-logo-bursting');
+    }, 1150);
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        window.clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+      }
+    };
   }, [pathname]);
 
   if (!user) {
@@ -71,7 +90,7 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
           href={`/${locale}`}
           className="flex h-11 w-11 items-center justify-center rounded-full border border-sidebar-border bg-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50"
         >
-          <span className={cn('logo-mask h-7 w-7', logoBurst && 'logo-burst')} aria-hidden />
+          <span ref={logoRef} className="logo-mask h-7 w-7" aria-hidden />
           <span className="sr-only">siOsi home</span>
         </Link>
 

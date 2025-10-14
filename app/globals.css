@@ -126,7 +126,7 @@
     }
   }
 
-  .logo-mask.logo-burst {
+  .logo-mask.is-logo-bursting {
     animation: logo-burst 1100ms ease-in-out forwards;
   }
 

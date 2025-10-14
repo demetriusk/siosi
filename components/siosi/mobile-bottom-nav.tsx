@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComponentType, SVGProps } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -15,12 +15,31 @@ interface MobileBottomNavProps {
 export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
-  const [logoBurst, setLogoBurst] = useState(false);
+  const logoRef = useRef<HTMLSpanElement | null>(null);
+  const animationTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    setLogoBurst(true);
-    const timeout = window.setTimeout(() => setLogoBurst(false), 950);
-    return () => window.clearTimeout(timeout);
+    const logoEl = logoRef.current;
+    if (!logoEl) return;
+
+    logoEl.classList.remove('is-logo-bursting');
+    void logoEl.offsetWidth;
+    logoEl.classList.add('is-logo-bursting');
+
+    if (animationTimeoutRef.current) {
+      window.clearTimeout(animationTimeoutRef.current);
+    }
+
+    animationTimeoutRef.current = window.setTimeout(() => {
+      logoEl.classList.remove('is-logo-bursting');
+    }, 1150);
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        window.clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+      }
+    };
   }, [pathname]);
 
   const navigation = [
@@ -63,7 +82,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
             isHomeActive ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
           )}
         >
-          <span className={cn('logo-mask h-5 w-5', logoBurst && 'logo-burst')} aria-hidden />
+          <span ref={logoRef} className="logo-mask h-5 w-5" aria-hidden />
           <span className="text-xs">siOsi</span>
         </Link>
 
