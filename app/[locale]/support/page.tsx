@@ -30,6 +30,8 @@ export default function SupportPage() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const captchaRequired = Boolean(turnstileSiteKey);
 
   useEffect(() => {
     let mounted = true;
@@ -84,7 +86,7 @@ export default function SupportPage() {
       return;
     }
 
-    if (!captchaToken) {
+    if (captchaRequired && !captchaToken) {
       toast.error('Please complete the security check');
       return;
     }
@@ -99,7 +101,7 @@ export default function SupportPage() {
           message: message.trim(),
           email: userId ? undefined : email.trim(),
           userId: userId || undefined,
-          captchaToken,
+          turnstileToken: captchaRequired ? captchaToken : undefined,
         }),
       });
 
@@ -111,7 +113,9 @@ export default function SupportPage() {
       toast.success('Message sent! siOsi will get back to you soon.');
       setMessage('');
       setEmail('');
-      setCaptchaToken(null);
+      if (captchaRequired) {
+        setCaptchaToken(null);
+      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to send message');
     } finally {
@@ -120,8 +124,6 @@ export default function SupportPage() {
   };
 
   if (checking) return null;
-
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -190,7 +192,7 @@ export default function SupportPage() {
 
               <Button
                 type="submit"
-                disabled={submitting || !captchaToken}
+                disabled={submitting || (captchaRequired && !captchaToken)}
                 className="bg-[#0A0A0A] text-white hover:bg-[#111827]"
               >
                 {submitting ? 'Sending...' : 'Send Message'}
