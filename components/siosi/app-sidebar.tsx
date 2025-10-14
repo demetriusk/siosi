@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutGrid, Plus, UserRound } from 'lucide-react';
@@ -25,6 +26,13 @@ interface NavItem {
 export function AppSidebar({ locale, user }: AppSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
+  const [logoBurst, setLogoBurst] = useState(false);
+
+  useEffect(() => {
+    setLogoBurst(true);
+    const timeout = window.setTimeout(() => setLogoBurst(false), 950);
+    return () => window.clearTimeout(timeout);
+  }, [pathname]);
 
   if (!user) {
     return null;
@@ -63,7 +71,7 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
           href={`/${locale}`}
           className="flex h-11 w-11 items-center justify-center rounded-full border border-sidebar-border bg-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50"
         >
-          <span className="logo-mask h-7 w-7" aria-hidden />
+          <span className={cn('logo-mask h-7 w-7', logoBurst && 'logo-burst')} aria-hidden />
           <span className="sr-only">siOsi home</span>
         </Link>
 

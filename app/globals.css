@@ -107,6 +107,25 @@
     background-position: 100% 0;
   }
 
+  @keyframes logo-burst {
+    0% {
+      filter: grayscale(100%) brightness(0%);
+      background-position: 0 0;
+    }
+    40% {
+      filter: none;
+      background-position: 100% 0;
+    }
+    100% {
+      filter: grayscale(100%) brightness(0%);
+      background-position: 0 0;
+    }
+  }
+
+  .logo-mask.logo-burst {
+    animation: logo-burst 900ms ease forwards;
+  }
+
   /* Also allow hovering the logo-mask itself to trigger the animation (covers footer case) */
   .logo-mask:hover,
   .logo-mask:focus {
