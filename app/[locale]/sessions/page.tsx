@@ -1,7 +1,7 @@
  'use client'
 
 import Link from 'next/link';
-import { Upload } from 'lucide-react';
+import { Upload, ScanFace } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { SessionCard } from '@/components/siosi/session-card';
@@ -89,16 +89,11 @@ export default function SessionsPage() {
               <h1 className="text-3xl font-bold text-[#0A0A0A] mb-2">
                 {t('sessions.title')}
               </h1>
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-[#E5E7EB] text-[#0A0A0A] text-sm font-medium rounded">
-                  {sessions.length} {sessions.length === 1 ? 'session' : 'sessions'}
-                </span>
-              </div>
             </div>
             <Link href={`/${locale}/analyze`}>
               <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload New Photo
+                <ScanFace className="w-4 h-4 mr-2" />
+                Analyze New Photo
               </Button>
             </Link>
           </div>
