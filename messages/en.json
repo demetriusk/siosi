@@ -12,6 +12,7 @@
     "profile": "My Profile",
     "about": "About",
     "new_photo": "New Look",
+    "saved_looks": "Saved looks",
     "support": "Support"
   },
   "auth": {
@@ -203,7 +204,8 @@
     "unsave_action": "Unsave session",
     "save_success": "Saved session",
     "unsave_success": "Removed save",
-    "save_error": "Couldn't update save"
+    "save_error": "Couldn't update save",
+    "save_self_error": "You can't save your own look"
   },
   "saved_sessions": {
     "title": "Saved looks",

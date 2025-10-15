@@ -39,6 +39,11 @@ export function Footer({ locale }: FooterProps) {
                   {t('about')}
                 </Link>
               </li>
+              <li>
+                <Link href={`/${locale}/support`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                  {t('support')}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -56,8 +61,8 @@ export function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/support`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
-                  {t('support')}
+                <Link href={`/${locale}/saved`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                  {t('saved_looks')}
                 </Link>
               </li>
             </ul>

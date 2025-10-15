@@ -12,6 +12,7 @@
     "profile": "Profilo",
     "about": "Informazioni",
     "new_photo": "Nuova foto",
+    "saved_looks": "Look salvati",
     "support": "Supporto"
   },
   "auth": {
@@ -198,7 +199,8 @@
     "delete": "Elimina",
     "deleting": "Eliminazione...",
     "confirm_delete_title": "Eliminare la sessione?",
-    "confirm_delete_desc": "Questo eliminerà definitivamente questa sessione. Questa azione non può essere annullata."
+    "confirm_delete_desc": "Questo eliminerà definitivamente questa sessione. Questa azione non può essere annullata.",
+    "save_self_error": "Non puoi salvare il tuo stesso look"
   },
   "saved_sessions": {
     "title": "Look salvati",

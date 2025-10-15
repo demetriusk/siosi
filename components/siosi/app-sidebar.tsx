@@ -4,7 +4,7 @@ import type { ComponentType, CSSProperties, SVGProps } from 'react';
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Plus, UserRound } from 'lucide-react';
+import { LayoutGrid, Plus, Star, UserRound } from 'lucide-react';
 import { Sidebar, SidebarSeparator } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -67,13 +67,18 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
       href: `/${locale}/analyze`,
       icon: Plus,
       label: t('new_photo')
+    },
+    {
+      href: `/${locale}/profile`,
+      icon: UserRound,
+      label: t('profile')
     }
   ];
 
   const bottomItem: NavItem = {
-    href: `/${locale}/profile`,
-    icon: UserRound,
-    label: t('profile')
+    href: `/${locale}/saved`,
+    icon: Star,
+    label: t('saved_looks')
   };
   const BottomIcon = bottomItem.icon;
 

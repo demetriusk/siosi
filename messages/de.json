@@ -12,6 +12,7 @@
     "profile": "Profil",
     "about": "Über",
     "new_photo": "Neues Foto",
+    "saved_looks": "Gespeicherte Looks",
     "support": "Support"
   },
   "auth": {
@@ -198,7 +199,8 @@
     "delete": "Löschen",
     "deleting": "Wird gelöscht...",
     "confirm_delete_title": "Sitzung löschen?",
-    "confirm_delete_desc": "Dies wird diese Sitzung dauerhaft löschen. Dieser Vorgang kann nicht rückgängig gemacht werden."
+    "confirm_delete_desc": "Dies wird diese Sitzung dauerhaft löschen. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+    "save_self_error": "Du kannst deinen eigenen Look nicht speichern"
   },
   "saved_sessions": {
     "title": "Gespeicherte Looks",

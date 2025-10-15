@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,15 +14,19 @@ interface SessionSaveButtonProps {
   sessionId: string;
   locale: string;
   className?: string;
+  ownerId?: string | null;
+  viewerId?: string | null;
 }
 
-export function SessionSaveButton({ sessionId, locale, className }: SessionSaveButtonProps) {
+export function SessionSaveButton({ sessionId, locale, className, ownerId, viewerId }: SessionSaveButtonProps) {
   const router = useRouter();
   const pathname = usePathname();
   const user = useSupabaseUser<any>();
   const t = useTranslations('sessions');
   const [saved, setSaved] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const resolvedUserId = useMemo(() => viewerId ?? (user as any)?.id ?? null, [viewerId, user]);
+  const isOwner = useMemo(() => Boolean(ownerId && resolvedUserId && ownerId === resolvedUserId), [ownerId, resolvedUserId]);
 
   const redirectToAuth = useCallback(() => {
     const redirectPath = pathname ?? `/${locale}/session/${sessionId}`;
@@ -61,7 +65,7 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
   }, []);
 
   const fetchSavedState = useCallback(async () => {
-    if (!user) {
+    if (!user || isOwner) {
       setSaved(false);
       return;
     }
@@ -91,7 +95,7 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
     } catch (error) {
       logger.warn('Failed to fetch saved state for session', error);
     }
-  }, [resolveAccessToken, sessionId, user]);
+  }, [resolveAccessToken, sessionId, user, isOwner]);
 
   useEffect(() => {
     if (user === undefined) return; // still resolving auth
@@ -99,8 +103,12 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
       setSaved(false);
       return;
     }
+    if (isOwner) {
+      setSaved(false);
+      return;
+    }
     void fetchSavedState();
-  }, [user, fetchSavedState]);
+  }, [user, fetchSavedState, isOwner]);
 
   const handleToggle = useCallback(async () => {
     if (!user) {
@@ -145,7 +153,11 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
     } finally {
       setLoading(false);
     }
-  }, [user, saved, redirectToAuth, resolveAccessToken, sessionId, loading]);
+  }, [user, saved, redirectToAuth, resolveAccessToken, sessionId, loading, t]);
+
+  if (isOwner) {
+    return null;
+  }
 
   const ariaLabel = saved ? t('unsave_action') : t('save_action');
 
@@ -160,7 +172,7 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
         className,
       )}
       onClick={handleToggle}
-      disabled={loading}
+  disabled={loading}
       aria-pressed={saved}
       aria-label={ariaLabel}
     >

@@ -12,6 +12,7 @@
     "profile": "Meu perfil",
     "about": "Sobre",
     "new_photo": "Nova foto",
+    "saved_looks": "Looks salvos",
     "support": "Suporte"
   },
   "auth": {
@@ -198,7 +199,8 @@
     "delete": "Excluir",
     "deleting": "Excluindo...",
     "confirm_delete_title": "Excluir sessão?",
-    "confirm_delete_desc": "Isso excluirá a sessão permanentemente. Essa ação não pode ser desfeita."
+    "confirm_delete_desc": "Isso excluirá a sessão permanentemente. Essa ação não pode ser desfeita.",
+    "save_self_error": "Você não pode salvar o seu próprio look"
   },
   "saved_sessions": {
     "title": "Looks salvos",

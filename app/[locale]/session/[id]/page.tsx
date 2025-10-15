@@ -211,7 +211,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
                     </Link>
                   </Button>
                   <div className="flex items-center gap-2">
-                    <SessionSaveButton sessionId={id} locale={locale} />
+                    <SessionSaveButton sessionId={id} locale={locale} ownerId={session?.user_id ?? null} />
                     <SessionActionsClient
                       locale={locale}
                       sessionId={id}

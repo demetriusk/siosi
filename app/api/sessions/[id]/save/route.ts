@@ -87,7 +87,7 @@ export async function GET(req: NextRequest, { params }: { params: any }) {
 
     const { data: session, error: sessionError } = await supabase
       .from('sessions')
-      .select('id')
+      .select('id, user_id')
       .eq('id', id)
       .maybeSingle();
 
@@ -150,6 +150,12 @@ export async function POST(req: NextRequest, { params }: { params: any }) {
 
     if (!session) {
       return Response.json({ error: 'Session not found' }, { status: 404 });
+    }
+
+    const sessionUserId = (session as { user_id?: string | null } | null)?.user_id;
+
+    if (sessionUserId && sessionUserId === userId) {
+      return Response.json({ error: 'Cannot save your own session' }, { status: 403 });
     }
 
     const { error: insertError } = await supabase

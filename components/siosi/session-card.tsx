@@ -9,9 +9,10 @@ import { SessionSaveButton } from './session-save-button';
 interface SessionCardProps {
   session: Session;
   locale: string;
+  viewerId?: string | null;
 }
 
-export function SessionCard({ session, locale }: SessionCardProps) {
+export function SessionCard({ session, locale, viewerId }: SessionCardProps) {
   const t = useTranslations('sessions');
 
   const getScoreBadgeClass = (score: number) => {
@@ -31,11 +32,15 @@ export function SessionCard({ session, locale }: SessionCardProps) {
   return (
     <div className="break-inside-avoid mb-4">
       <article className="relative overflow-hidden rounded-lg bg-[#111827] group">
-        <SessionSaveButton
-          sessionId={session.id}
-          locale={locale}
-          className="absolute right-3 top-3 z-10 shadow-sm"
-        />
+        {session.user_id && viewerId && session.user_id === viewerId ? null : (
+          <SessionSaveButton
+            sessionId={session.id}
+            locale={locale}
+            ownerId={session.user_id ?? null}
+            viewerId={viewerId}
+            className="absolute right-3 top-3 z-10 shadow-sm"
+          />
+        )}
         <Link href={`/${locale}/session/${session.id}`} className="block">
           <div className="relative aspect-[9/16]">
             {session.photo_url ? (

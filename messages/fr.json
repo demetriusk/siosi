@@ -12,6 +12,7 @@
     "profile": "Profil",
     "about": "À propos",
     "new_photo": "Nouvelle photo",
+    "saved_looks": "Looks enregistrés",
     "support": "Assistance"
   },
   "auth": {
@@ -198,7 +199,8 @@
     "delete": "Supprimer",
     "deleting": "Suppression...",
     "confirm_delete_title": "Supprimer la session ?",
-    "confirm_delete_desc": "Cela supprimera définitivement cette session. Cette action est irréversible."
+    "confirm_delete_desc": "Cela supprimera définitivement cette session. Cette action est irréversible.",
+    "save_self_error": "Vous ne pouvez pas enregistrer votre propre look"
   },
   "saved_sessions": {
     "title": "Looks enregistrés",
