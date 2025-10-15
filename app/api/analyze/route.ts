@@ -158,8 +158,8 @@ Context-aware scoring reminders:
 - ${lidType || 'standard'} eyes influence creasing risk
 - ${occasion || 'general'} sets expectations for coverage intensity
 
-STEP 3: Build the colorimetry guide (separate from the lab verdicts).
-- Colorimetry ignores concerns, occasion, indoor/outdoor, and climate; base it only on the makeup in the photo plus the optional profile (skin_type, skin_tone, lid_type).
+STEP 3: Perform colorimetry analysis (SEPARATE from lab analysis above):
+- Analyze color theory for makeup colors visible in this photo. This analysis is INDEPENDENT of concerns, occasion, indoor/outdoor, and climate; base it only on the makeup in the photo plus the optional profile (skin_type, skin_tone, lid_type).
 - Output a 'colorimetry' object with:
   {
     "photo": {
