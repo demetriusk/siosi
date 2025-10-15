@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { LayoutGrid, Plus, UserRound } from 'lucide-react';
+import { LayoutGrid, Plus, UserRound, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MobileBottomNavProps {
@@ -52,6 +52,11 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
       href: `/${locale}/profile`,
       label: t('profile'),
       icon: UserRound
+    },
+    {
+      href: `/${locale}/profile`,
+      label: t('saved_looks'),
+      icon: Star
     }
   ];
 
