@@ -26,6 +26,7 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
   const [saved, setSaved] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const resolvedUserId = useMemo(() => viewerId ?? (user as any)?.id ?? null, [viewerId, user]);
+  const authContextResolved = useMemo(() => viewerId !== undefined || user !== undefined, [viewerId, user]);
   const isOwner = useMemo(() => Boolean(ownerId && resolvedUserId && ownerId === resolvedUserId), [ownerId, resolvedUserId]);
 
   const redirectToAuth = useCallback(() => {
@@ -154,6 +155,10 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
       setLoading(false);
     }
   }, [user, saved, redirectToAuth, resolveAccessToken, sessionId, loading, t]);
+
+  if (!authContextResolved) {
+    return null;
+  }
 
   if (isOwner) {
     return null;
