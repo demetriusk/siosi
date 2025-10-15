@@ -128,17 +128,18 @@ function normalizeSwatchArray(value: unknown, { max = 6 }: { max?: number } = {}
 function normalizePhotoSection(value: unknown): NormalizedColorimetry['photo'] | null {
   if (!value || typeof value !== 'object') return null;
 
-  const undertone = normalizeUndertone((value as any).undertone ?? (value as any).tone ?? null) ?? 'neutral';
+  const rawUndertone = normalizeUndertone((value as any).undertone ?? (value as any).tone ?? null);
+  const undertone = rawUndertone ?? 'neutral';
 
   const detected = normalizeSwatchArray((value as any).detected ?? (value as any).observed);
   const recommended = normalizeSwatchArray((value as any).recommended);
   const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip);
 
-  if (detected.length === 0 && recommended.length === 0 && avoid.length === 0) {
+  const notes = normalizeOptionalString((value as any).notes ?? (value as any).summary ?? null);
+
+  if (detected.length === 0 && recommended.length === 0 && avoid.length === 0 && !notes && !rawUndertone) {
     return null;
   }
-
-  const notes = normalizeOptionalString((value as any).notes ?? (value as any).summary ?? null);
 
   return {
     undertone,
@@ -155,12 +156,12 @@ function normalizeProfileSection(value: unknown): NormalizedColorimetry['profile
   const recommended = normalizeSwatchArray((value as any).recommended);
   const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip);
 
-  if (recommended.length === 0 && avoid.length === 0) {
-    return null;
-  }
-
   const notes = normalizeOptionalString((value as any).notes ?? (value as any).summary ?? null);
   const undertone = normalizeUndertone((value as any).undertone ?? null);
+
+  if (recommended.length === 0 && avoid.length === 0 && !notes && !undertone) {
+    return null;
+  }
 
   return {
     undertone: undertone ?? null,

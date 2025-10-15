@@ -11,6 +11,12 @@ export async function POST(req: NextRequest) {
   const supabase = getSupabase();
 
   const normalizedColorimetry = normalizeColorimetryPayload(body.colorimetry);
+  if (!normalizedColorimetry && body?.colorimetry) {
+    logger.debug('Colorimetry payload skipped by normalization', {
+      hasPhoto: Boolean(body.colorimetry?.photo),
+      hasProfile: Boolean(body.colorimetry?.profile),
+    });
+  }
 
     // Authorization header is optional. If present, validate the token and
     // resolve a user id. If absent, proceed with anonymous session creation.
