@@ -156,7 +156,7 @@ export function SessionSaveButton({ sessionId, locale, className }: SessionSaveB
       size="icon"
       className={cn(
         'h-9 w-9 border-[#E5E7EB]',
-        saved ? 'bg-[#F59E0B] hover:bg-[#D97706] text-white' : 'text-[#0A0A0A]',
+        saved ? 'bg-[#0A0A0A] hover:bg-[#1F1F1F] text-white' : 'text-[#0A0A0A]',
         className,
       )}
       onClick={handleToggle}

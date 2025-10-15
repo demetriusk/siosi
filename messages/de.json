@@ -60,15 +60,6 @@
       "more": "Unterton-Wahrheit"
     },
     "how_it_works": "Wie es funktioniert",
-  "saved_sessions": {
-    "title": "Gespeicherte Looks",
-    "loading": "Lädt...",
-    "login_prompt": "Melde dich an, um deine gespeicherten Looks zu sehen.",
-    "login_cta": "Anmelden",
-    "empty_title": "Noch keine gespeicherten Looks",
-    "empty_subtitle": "Sobald du einen Look speicherst, erscheint er hier für den schnellen Zugriff.",
-    "browse_sessions": "Meine Looks ansehen"
-  },
     "step1": "Laden Sie Ihr Make-up-Foto hoch",
     "step2": "Die KI analysiert 4–9 verschiedene Aspekte",
     "step3": "Erhalten Sie einen Bewertungsbericht mit Empfehlungen",
@@ -208,6 +199,15 @@
     "deleting": "Wird gelöscht...",
     "confirm_delete_title": "Sitzung löschen?",
     "confirm_delete_desc": "Dies wird diese Sitzung dauerhaft löschen. Dieser Vorgang kann nicht rückgängig gemacht werden."
+  },
+  "saved_sessions": {
+    "title": "Gespeicherte Looks",
+    "loading": "Lädt...",
+    "login_prompt": "Melde dich an, um deine gespeicherten Looks zu sehen.",
+    "login_cta": "Anmelden",
+    "empty_title": "Noch keine gespeicherten Looks",
+    "empty_subtitle": "Sobald du einen Look speicherst, erscheint er hier für den schnellen Zugriff.",
+    "browse_sessions": "Meine Looks ansehen"
   },
   "profile": {
     "confirm_delete_title": "Sind Sie sicher?",

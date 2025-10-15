@@ -60,15 +60,6 @@
       "more": "Verità sottotono"
     },
     "how_it_works": "Come funziona",
-  "saved_sessions": {
-    "title": "Look salvati",
-    "loading": "Caricamento...",
-    "login_prompt": "Accedi per vedere i tuoi look salvati.",
-    "login_cta": "Accedi",
-    "empty_title": "Nessun look salvato",
-    "empty_subtitle": "Quando salvi un look, lo troverai qui per un accesso rapido.",
-    "browse_sessions": "Vai ai miei look"
-  },
     "step1": "Carica la tua foto del trucco",
     "step2": "L'IA analizza 4-9 aspetti diversi",
     "step3": "Ricevi un rapporto valutato con raccomandazioni",
@@ -208,6 +199,15 @@
     "deleting": "Eliminazione...",
     "confirm_delete_title": "Eliminare la sessione?",
     "confirm_delete_desc": "Questo eliminerà definitivamente questa sessione. Questa azione non può essere annullata."
+  },
+  "saved_sessions": {
+    "title": "Look salvati",
+    "loading": "Caricamento...",
+    "login_prompt": "Accedi per vedere i tuoi look salvati.",
+    "login_cta": "Accedi",
+    "empty_title": "Nessun look salvato",
+    "empty_subtitle": "Quando salvi un look, lo troverai qui per un accesso rapido.",
+    "browse_sessions": "Vai ai miei look"
   },
   "profile": {
     "confirm_delete_title": "Sei sicuro?",

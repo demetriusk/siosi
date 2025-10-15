@@ -93,7 +93,7 @@ export default function SessionsPage() {
             <Link href={`/${locale}/analyze`}>
               <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
                 <ScanFace className="w-4 h-4 mr-2" />
-                Analyze New Photo
+                Analyze New Look
               </Button>
             </Link>
           </div>

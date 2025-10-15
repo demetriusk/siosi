@@ -1,5 +1,5 @@
 import '../globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { BotIdClient } from 'botid/client';
@@ -67,15 +67,18 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico'
   },
   manifest: '/site.webmanifest',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' }
-  ],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'síOsí'
   }
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' }
+  ]
 };
 
 export function generateStaticParams() {

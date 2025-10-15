@@ -3,8 +3,6 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import logger from '@/lib/logger';
 
-export const runtime = 'edge';
-
 export async function GET(req: NextRequest, context: any) {
   try {
     // Next's generated types sometimes provide params as a Promise in the context.
