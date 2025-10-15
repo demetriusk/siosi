@@ -60,6 +60,15 @@
       "more": "Verità sottotono"
     },
     "how_it_works": "Come funziona",
+  "saved_sessions": {
+    "title": "Look salvati",
+    "loading": "Caricamento...",
+    "login_prompt": "Accedi per vedere i tuoi look salvati.",
+    "login_cta": "Accedi",
+    "empty_title": "Nessun look salvato",
+    "empty_subtitle": "Quando salvi un look, lo troverai qui per un accesso rapido.",
+    "browse_sessions": "Vai ai miei look"
+  },
     "step1": "Carica la tua foto del trucco",
     "step2": "L'IA analizza 4-9 aspetti diversi",
     "step3": "Ricevi un rapporto valutato con raccomandazioni",

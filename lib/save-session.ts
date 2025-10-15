@@ -29,6 +29,7 @@ export async function saveSession(input: SaveSessionInput): Promise<Session> {
     overall_score: input.overall_score,
     confidence_avg: input.confidence_avg,
     critical_count: input.critical_count,
+    save_count: 0,
   };
 
   if (input.occasion) insertPayload.occasion = input.occasion;

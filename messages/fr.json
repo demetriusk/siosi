@@ -60,6 +60,15 @@
       "more": "Vérité du sous-ton"
     },
     "how_it_works": "Comment ça marche",
+  "saved_sessions": {
+    "title": "Looks enregistrés",
+    "loading": "Chargement...",
+    "login_prompt": "Connecte-toi pour voir tes looks enregistrés.",
+    "login_cta": "Se connecter",
+    "empty_title": "Aucun look enregistré",
+    "empty_subtitle": "Lorsque tu enregistres un look, il apparaîtra ici pour un accès rapide.",
+    "browse_sessions": "Voir mes looks"
+  },
     "step1": "Téléversez votre photo de maquillage",
     "step2": "L'IA analyse 4 à 9 aspects différents",
     "step3": "Obtenez un rapport noté avec des recommandations",

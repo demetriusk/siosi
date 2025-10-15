@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
       overall_score: body.overall_score ?? 0,
       confidence_avg: body.confidence_avg ?? 0,
       critical_count: body.critical_count ?? 0,
+      save_count: 0,
     }
 
     if (body.occasion) insertPayload.occasion = body.occasion

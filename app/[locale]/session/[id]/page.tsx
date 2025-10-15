@@ -13,6 +13,7 @@ import { getTranslations } from 'next-intl/server';
 // Client actions wrapper (renders client-only buttons)
 import SessionActionsClient from '@/components/siosi/session-actions-client';
 import { SessionPhotoPreview } from '@/components/siosi/session-photo-preview';
+import { SessionSaveButton } from '@/components/siosi/session-save-button';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
@@ -209,14 +210,17 @@ export default async function SessionPage({ params }: SessionPageProps) {
                       <ChevronLeft className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <SessionActionsClient
-                    locale={locale}
-                    sessionId={id}
-                    createdAtIso={createdAt}
-                    profileSummary={profileSummary}
-                    contextSummary={contextSummary}
-                    labels={actionLabels}
-                  />
+                  <div className="flex items-center gap-2">
+                    <SessionSaveButton sessionId={id} locale={locale} />
+                    <SessionActionsClient
+                      locale={locale}
+                      sessionId={id}
+                      createdAtIso={createdAt}
+                      profileSummary={profileSummary}
+                      contextSummary={contextSummary}
+                      labels={actionLabels}
+                    />
+                  </div>
                 </div>
           
                 {/* Overall score */}

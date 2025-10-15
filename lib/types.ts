@@ -74,6 +74,7 @@ export interface Session {
   id: string;
   created_at: string;
   photo_url: string;
+  user_id?: string;
   occasion?: Occasion;
   concerns?: Concern[];
   indoor_outdoor?: IndoorOutdoor;
@@ -84,6 +85,7 @@ export interface Session {
   overall_score: number;
   critical_count: number;
   confidence_avg: number;
+  save_count?: number;
 }
 
 export interface SessionWithAnalyses extends Session {

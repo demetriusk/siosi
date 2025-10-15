@@ -17,7 +17,10 @@ export async function saveSession(data: {
 
   const { data: session, error } = await supabase
     .from('sessions')
-    .insert(data)
+    .insert({
+      ...data,
+      save_count: 0,
+    })
     .select()
     .single()
   

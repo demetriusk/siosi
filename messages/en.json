@@ -198,7 +198,21 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "confirm_delete_title": "Delete look?",
-    "confirm_delete_desc": "This will permanently delete this look. This action cannot be undone."
+    "confirm_delete_desc": "This will permanently delete this look. This action cannot be undone.",
+    "save_action": "Save session",
+    "unsave_action": "Unsave session",
+    "save_success": "Saved session",
+    "unsave_success": "Removed save",
+    "save_error": "Couldn't update save"
+  },
+  "saved_sessions": {
+    "title": "Saved looks",
+    "loading": "Loading...",
+    "login_prompt": "Log in to see your saved looks.",
+    "login_cta": "Log in",
+    "empty_title": "No saved looks yet",
+    "empty_subtitle": "When you save a look, you'll see it here for quick access.",
+    "browse_sessions": "Browse my looks"
   },
   "profile": {
     "confirm_delete_title": "Are you sure?",
