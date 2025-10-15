@@ -210,6 +210,7 @@ export default function AnalyzePage() {
       });
       
   const analysis = await analysisRes.json();
+  const colorimetryPayload = analysis?.colorimetry ?? null;
 
   const analysesArray = normalizeAnalysesPayload(analysis?.analyses);
 
@@ -265,6 +266,7 @@ export default function AnalyzePage() {
           confidence_avg: analysis?.confidence_avg ?? 0,
           critical_count: analysis?.critical_count ?? calculateCriticalCountFromArray(analysesArray),
           user_id: userId,
+          colorimetry: colorimetryPayload,
         })
       });
 

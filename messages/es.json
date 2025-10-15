@@ -184,6 +184,19 @@
       "title": "Detalles de la sesión"
     }
   },
+  "colorimetry": {
+    "title": "Tu guía de colores",
+    "photo_analysis": "Persona en la foto",
+    "detected": "1. Detectado en la foto",
+    "recommended_photo": "2. Colores recomendados",
+    "avoid_photo": "3. Colores a evitar",
+    "personalized_for_you": "Personalizado para ti",
+    "based_on_profile": "Basado en tu perfil: tipo de piel, tono y forma de ojos",
+    "your_analysis": "Tus colores personales",
+    "recommended_user": "4. Recomendado para ti",
+    "avoid_user": "5. Deberías evitar",
+    "disclaimer": "Las recomendaciones de color se basan en la teoría del color y el análisis de subtonos. Tus preferencias personales y la experimentación siempre mandan. La iluminación puede cambiar cómo se ven los tonos en la vida real."
+  },
   "sessions": {
     "title": "Mis sesiones",
     "empty_title": "Aún no hay sesiones",

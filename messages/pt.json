@@ -184,6 +184,19 @@
       "title": "Detalhes da sessão"
     }
   },
+  "colorimetry": {
+    "title": "Seu guia de cores",
+    "photo_analysis": "Pessoa na foto",
+    "detected": "1. Detectado na foto",
+    "recommended_photo": "2. Cores recomendadas",
+    "avoid_photo": "3. Cores a evitar",
+    "personalized_for_you": "Personalizado para você",
+    "based_on_profile": "Com base no seu perfil: tipo de pele, tom e formato dos olhos",
+    "your_analysis": "Suas cores pessoais",
+    "recommended_user": "4. Recomendado para você",
+    "avoid_user": "5. Você deve evitar",
+    "disclaimer": "As recomendações de cor se baseiam na teoria das cores e na análise de subtom. Suas preferências pessoais e experimentações sempre prevalecem. A iluminação pode alterar como as tonalidades aparecem na vida real."
+  },
   "sessions": {
     "title": "Minhas sessões",
     "empty_title": "Nenhuma sessão ainda",

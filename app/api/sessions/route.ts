@@ -2,12 +2,15 @@ import { NextRequest } from 'next/server'
 import logger from '@/lib/logger'
 import { getSupabase } from '@/lib/supabase'
 import { normalizeAnalysesPayload } from '@/lib/normalize-analyses'
+import { normalizeColorimetryPayload, buildColorimetryInsert, mapColorimetryRow } from '@/lib/normalize-colorimetry'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
 
-    const supabase = getSupabase();
+  const supabase = getSupabase();
+
+  const normalizedColorimetry = normalizeColorimetryPayload(body.colorimetry);
 
     // Authorization header is optional. If present, validate the token and
     // resolve a user id. If absent, proceed with anonymous session creation.
@@ -102,6 +105,28 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: error.message || 'Insert failed' }, { status: 500 })
     }
 
+    let colorimetryRecord = null;
+    const sessionId = (data as any)?.id as string | undefined;
+
+    if (sessionId && normalizedColorimetry) {
+      try {
+        const upsertPayload = buildColorimetryInsert(sessionId, normalizedColorimetry);
+        const { data: colorimetryData, error: colorimetryError } = await supabase
+          .from('colorimetry')
+          .upsert({ ...upsertPayload, updated_at: new Date().toISOString() }, { onConflict: 'session_id' })
+          .select()
+          .single();
+
+        if (colorimetryError) {
+          logger.warn('Failed to upsert colorimetry row', colorimetryError);
+        } else {
+          colorimetryRecord = mapColorimetryRow(colorimetryData) ?? null;
+        }
+      } catch (colorimetryInsertError) {
+        logger.warn('Unexpected error while saving colorimetry row', colorimetryInsertError);
+      }
+    }
+
     // If analyses were provided inline, attempt to persist them into the
     // legacy `analyses` table as individual rows (keeps backward compatibility
     // with older UI code that reads from the separate table).
@@ -140,6 +165,10 @@ export async function POST(req: NextRequest) {
       }
     } catch (e) {
       logger.warn('Unexpected error while saving analyses rows', e);
+    }
+
+    if (sessionId) {
+      (data as any).colorimetry = colorimetryRecord ?? null;
     }
 
     return Response.json(data)

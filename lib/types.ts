@@ -33,6 +33,42 @@ export interface LabAnalysis {
   created_at?: string;
 }
 
+export type Undertone = 'warm' | 'cool' | 'neutral';
+
+export interface ColorimetrySwatch {
+  id?: string;
+  hex: string;
+  name: string;
+  category: string;
+  reason?: string | null;
+  finish?: string | null;
+  confidence?: number | null;
+}
+
+export interface ColorimetryPhotoPalette {
+  undertone: Undertone;
+  detected: ColorimetrySwatch[];
+  recommended: ColorimetrySwatch[];
+  avoid: ColorimetrySwatch[];
+  notes?: string | null;
+}
+
+export interface ColorimetryProfilePalette {
+  undertone?: Undertone | null;
+  recommended: ColorimetrySwatch[];
+  avoid: ColorimetrySwatch[];
+  notes?: string | null;
+}
+
+export interface ColorimetryRecord {
+  id?: string;
+  session_id: string;
+  photo: ColorimetryPhotoPalette;
+  profile?: ColorimetryProfilePalette | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export type LegacySkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';
 export type SkinType = LegacySkinType | SkinTypeCode;
 export type SkinTone = 'fair' | 'light' | 'medium' | 'tan' | 'deep' | 'dark';
@@ -86,6 +122,7 @@ export interface Session {
   critical_count: number;
   confidence_avg: number;
   save_count?: number;
+  colorimetry?: ColorimetryRecord | null;
 }
 
 export interface SessionWithAnalyses extends Session {

@@ -36,6 +36,19 @@
       "error": "Échec de l'envoi du lien magique",
       "resend_error": "Échec de la nouvelle tentative",
       "description": "Utilisez Google ou demandez un lien magique. Si vous choisissez un lien magique, nous vous enverrons un lien sécurisé par e-mail — veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam.",
+    "colorimetry": {
+      "title": "Votre guide couleur",
+      "photo_analysis": "Personne sur la photo",
+      "detected": "1. Détecté sur la photo",
+      "recommended_photo": "2. Couleurs recommandées",
+      "avoid_photo": "3. Couleurs à éviter",
+      "personalized_for_you": "Personnalisé pour vous",
+      "based_on_profile": "Selon votre profil : type de peau, ton et forme des yeux",
+      "your_analysis": "Vos couleurs personnelles",
+      "recommended_user": "4. Recommandé pour vous",
+      "avoid_user": "5. À éviter pour vous",
+      "disclaimer": "Les recommandations de couleur s'appuient sur la théorie des couleurs et l'analyse des sous-tons. Vos préférences personnelles et vos essais priment toujours. L'éclairage peut modifier la perception réelle des teintes."
+    },
       "resent_badge": "Renvoyé"
     }
   },

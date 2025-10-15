@@ -184,6 +184,19 @@
       "title": "Sitzungsdetails"
     }
   },
+  "colorimetry": {
+    "title": "Dein Farbleitfaden",
+    "photo_analysis": "Person im Foto",
+    "detected": "1. Im Foto erkannt",
+    "recommended_photo": "2. Empfohlene Farben",
+    "avoid_photo": "3. Zu vermeidende Farben",
+    "personalized_for_you": "Personalisiert für dich",
+    "based_on_profile": "Basierend auf deinem Profil: Hauttyp, Ton und Augenform",
+    "your_analysis": "Deine persönlichen Farben",
+    "recommended_user": "4. Für dich empfohlen",
+    "avoid_user": "5. Du solltest vermeiden",
+    "disclaimer": "Farbempfehlungen basieren auf Farbtheorie und Unterton-Analyse. Eigene Vorlieben und Ausprobieren sind ausdrücklich willkommen. Lichtverhältnisse können beeinflussen, wie Farben im Alltag wirken."
+  },
   "sessions": {
     "title": "Meine Sitzungen",
     "empty_title": "Noch keine Sitzungen",

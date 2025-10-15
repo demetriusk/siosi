@@ -14,6 +14,9 @@ import { getTranslations } from 'next-intl/server';
 import SessionActionsClient from '@/components/siosi/session-actions-client';
 import { SessionPhotoPreview } from '@/components/siosi/session-photo-preview';
 import { SessionSaveButton } from '@/components/siosi/session-save-button';
+import ColorimetryDisplay from '@/components/siosi/colorimetry-display';
+import { mapColorimetryRow } from '@/lib/normalize-colorimetry';
+import logger from '@/lib/logger';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
@@ -32,28 +35,40 @@ async function getSession(id: string): Promise<SessionWithAnalyses | null> {
     return null;
   }
 
-  // Some flows save analyses inline on the sessions row (JSON column `analyses`).
-  // Prefer the inline analyses when present; otherwise fall back to the separate
-  // `analyses` table (legacy shape).
+  let analyses: LabAnalysis[] = [];
+
   if (session.analyses && Array.isArray(session.analyses)) {
-    return {
-      ...session,
-      analyses: session.analyses as LabAnalysis[],
-    };
+    analyses = session.analyses as LabAnalysis[];
+  } else {
+    const { data: analysesRows, error: analysesError } = await supabase
+      .from('analyses')
+      .select('*')
+      .eq('session_id', id);
+
+    if (!analysesError && Array.isArray(analysesRows)) {
+      analyses = analysesRows as LabAnalysis[];
+    }
   }
 
-  const { data: analyses, error: analysesError } = await supabase
-    .from('analyses')
-    .select('*')
-    .eq('session_id', id);
+  let colorimetry = null;
+  try {
+    const { data: colorimetryRow } = await supabase
+      .from('colorimetry')
+      .select('*')
+      .eq('session_id', id)
+      .maybeSingle();
 
-  if (analysesError) {
-    return null;
+    if (colorimetryRow) {
+      colorimetry = mapColorimetryRow(colorimetryRow);
+    }
+  } catch (error) {
+    logger.warn('Failed to fetch colorimetry for session', { sessionId: id, error });
   }
 
   return {
     ...session,
-    analyses: analyses as LabAnalysis[],
+    analyses,
+    colorimetry,
   };
 }
 
@@ -76,6 +91,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
   const createdAt = session?.created_at ?? new Date().toISOString();
   const overallScore = session?.overall_score ?? 0;
   const analyses = session?.analyses ?? [];
+  const colorimetry = session?.colorimetry ?? null;
   const occasion = session?.occasion;
   const concerns = session?.concerns ?? [];
   const where = session?.indoor_outdoor ?? 'both';
@@ -252,6 +268,12 @@ export default async function SessionPage({ params }: SessionPageProps) {
               </div>
             </div>
           </Card>
+
+          {colorimetry && (
+            <div className="mb-8">
+              <ColorimetryDisplay colorimetry={colorimetry} />
+            </div>
+          )}
 
           {criticalAnalyses.length > 0 && (
             <div className="mb-8">

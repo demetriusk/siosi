@@ -83,17 +83,17 @@ export async function POST(req: NextRequest) {
 
     logger.debug('Analysis context:', { occasion, indoor_outdoor, climate, concerns, hasProfile });
 
-  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       {
-        role: "system",
+        role: 'system',
         content:
           "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind."
       },
       {
-        role: "user",
+        role: 'user',
         content: [
           {
-            type: "text",
+            type: 'text',
             text: `STEP 1 (LENIENT): Validate the image.
 Accept as valid in these cases:
 - At least one real human face is visible even partially (allow hats, hoods, hair, hands, microphones, phones, props).
@@ -158,15 +158,41 @@ Context-aware scoring reminders:
 - ${lidType || 'standard'} eyes influence creasing risk
 - ${occasion || 'general'} sets expectations for coverage intensity
 
-Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "flashback": {...}, "pores": {...}, ... all 12 labs }`
+STEP 3: Build the colorimetry guide (separate from the lab verdicts).
+- Colorimetry ignores concerns, occasion, indoor/outdoor, and climate; base it only on the makeup in the photo plus the optional profile (skin_type, skin_tone, lid_type).
+- Output a 'colorimetry' object with:
+  {
+    "photo": {
+      "undertone": "warm" | "cool" | "neutral",
+      "detected": [
+        { "hex": "#RRGGBB", "name": "Shade name", "category": "EYES" | "LIPS" | "CHEEKS" | "FACE" | "HIGHLIGHT" | "BROWS" | "LINER" | "GENERAL", "reason": "1 sentence why it was observed" },
+        ... 2-5 swatches total
+      ],
+      "recommended": [ same swatch shape, reasons focused on why it flatters the look ],
+      "avoid": [ same swatch shape, reasons focused on why to skip ],
+      "notes": "optional 1 sentence summary"
+    },
+    "profile": {
+      "undertone": "warm" | "cool" | "neutral" | null,
+      "recommended": [ swatches tailored to the user's profile (if provided) ],
+      "avoid": [ swatches the user should skip based on profile ],
+      "notes": "optional 1 sentence"
+    }
+  }
+- Omit the 'profile' block entirely when profile fields were not provided or you lack confidence.
+- Keep tone warm, inclusive, and never address the reader directly.
+- Category labels must be uppercase strings; keep 'hex' values in #RRGGBB format.
+- Each palette (detected/recommended/avoid) should surface 2–5 colors. Reasons stay within a single sentence each.
+
+Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "colorimetry": {...}, "flashback": {...}, "pores": {...}, ... all 12 labs }`
           },
           {
-            type: "image_url",
+            type: 'image_url',
             image_url: { url: photoUrl }
           }
         ]
       }
-  ]
+    ];
 
   const maxAttempts = 3
     let result: any | null = null
@@ -226,11 +252,17 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
       }, { status: 400 })
     }
     
+    const colorimetry = result.colorimetry ?? null;
+    if (colorimetry) {
+      delete result.colorimetry;
+    }
+
     // Remove the valid flag before returning analyses
     delete result.valid
 
     return Response.json({
       analyses: result,
+      colorimetry,
       overall_score: calculateOverallScore(result),
       confidence_avg: calculateAvgConfidence(result),
       critical_count: calculateCriticalCount(result)
