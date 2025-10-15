@@ -34,7 +34,18 @@ function normalizeOptionalString(value: unknown): string | null {
 function normalizeUndertone(value: unknown): Undertone | null {
   if (typeof value !== 'string') return null;
   const lowered = value.trim().toLowerCase();
-  return (VALID_UNDERTONES as string[]).includes(lowered) ? (lowered as Undertone) : null;
+
+  if ((VALID_UNDERTONES as string[]).includes(lowered)) {
+    return lowered as Undertone;
+  }
+
+  if (lowered.includes('warm')) return 'warm';
+  if (lowered.includes('cool')) return 'cool';
+  if (lowered.includes('neutral') || lowered.includes('olive') || lowered.includes('balanced')) {
+    return 'neutral';
+  }
+
+  return null;
 }
 
 const HEX_PATTERN = /^#?[0-9a-fA-F]{6}$/;
@@ -99,7 +110,7 @@ function normalizeSwatch(entry: unknown): ColorimetrySwatch | null {
   return swatch;
 }
 
-function normalizeSwatchArray(value: unknown, { min = 0, max = 6 }: { min?: number; max?: number } = {}): ColorimetrySwatch[] {
+function normalizeSwatchArray(value: unknown, { max = 6 }: { max?: number } = {}): ColorimetrySwatch[] {
   if (!value) return [];
   const source = Array.isArray(value) ? value : [value];
   const swatches: ColorimetrySwatch[] = [];
@@ -111,24 +122,17 @@ function normalizeSwatchArray(value: unknown, { min = 0, max = 6 }: { min?: numb
     if (max > 0 && swatches.length >= max) break;
   }
 
-  if (swatches.length < min) {
-    return [];
-  }
-
   return swatches;
 }
 
 function normalizePhotoSection(value: unknown): NormalizedColorimetry['photo'] | null {
   if (!value || typeof value !== 'object') return null;
 
-  const undertone = normalizeUndertone((value as any).undertone ?? (value as any).tone ?? null);
-  if (!undertone) {
-    return null;
-  }
+  const undertone = normalizeUndertone((value as any).undertone ?? (value as any).tone ?? null) ?? 'neutral';
 
-  const detected = normalizeSwatchArray((value as any).detected ?? (value as any).observed, { min: 1 });
-  const recommended = normalizeSwatchArray((value as any).recommended, { min: 1 });
-  const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip, { min: 1 });
+  const detected = normalizeSwatchArray((value as any).detected ?? (value as any).observed);
+  const recommended = normalizeSwatchArray((value as any).recommended);
+  const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip);
 
   if (detected.length === 0 && recommended.length === 0 && avoid.length === 0) {
     return null;
@@ -148,8 +152,8 @@ function normalizePhotoSection(value: unknown): NormalizedColorimetry['photo'] |
 function normalizeProfileSection(value: unknown): NormalizedColorimetry['profile'] | null {
   if (!value || typeof value !== 'object') return null;
 
-  const recommended = normalizeSwatchArray((value as any).recommended, { min: 1 });
-  const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip, { min: 1 });
+  const recommended = normalizeSwatchArray((value as any).recommended);
+  const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip);
 
   if (recommended.length === 0 && avoid.length === 0) {
     return null;
