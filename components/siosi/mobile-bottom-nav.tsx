@@ -54,7 +54,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
       icon: UserRound
     },
     {
-      href: `/${locale}/profile`,
+      href: `/${locale}/saved`,
       label: t('saved_looks'),
       icon: Star
     }
