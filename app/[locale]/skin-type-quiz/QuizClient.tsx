@@ -173,7 +173,7 @@ function QuizShell({ locale }: QuizClientProps) {
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-[#0A0A0A]">Find Your Perfect Skin Type Match</h1>
+              <h1 className="text-3xl text-[#0A0A0A]">Find Your Perfect Skin Type Match</h1>
               <p className="mt-2 text-sm text-[#4B5563]">
                 We use your answers across oil levels, skin concerns, and undertone to build a 36-type profile tailored to your routine.
               </p>
