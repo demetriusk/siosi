@@ -187,9 +187,9 @@
   "colorimetry": {
     "title": "Гид по цвету",
     "photo_analysis": "Человек на фото",
-    "detected": "1. Обнаружено на фото",
-    "recommended_photo": "2. Рекомендованные оттенки",
-  "avoid_photo": "3. Оттенки, которых лучше избегать",
+    "detected": "Обнаружено на фото",
+    "recommended_photo": "Рекомендованные оттенки",
+  "avoid_photo": "Оттенки, которых лучше избегать",
   "confidence_badge": "{value}% уверенности",
   "season_badge": "Сезон {season}",
   "season_confidence_badge": "{value}% совпадение по сезону",

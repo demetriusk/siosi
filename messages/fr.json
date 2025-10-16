@@ -39,9 +39,9 @@
     "colorimetry": {
       "title": "Guide couleur",
       "photo_analysis": "Personne sur la photo",
-      "detected": "1. Détecté sur la photo",
-      "recommended_photo": "2. Couleurs recommandées",
-  "avoid_photo": "3. Couleurs à éviter",
+      "detected": "Détecté sur la photo",
+      "recommended_photo": "Couleurs recommandées",
+  "avoid_photo": "Couleurs à éviter",
   "confidence_badge": "{value}% de confiance",
   "season_badge": "Saison {season}",
   "season_confidence_badge": "{value}% de correspondance saisonnière",

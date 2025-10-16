@@ -187,9 +187,9 @@
   "colorimetry": {
     "title": "Farbleitfaden",
     "photo_analysis": "Person im Foto",
-    "detected": "1. Im Foto erkannt",
-    "recommended_photo": "2. Empfohlene Farben",
-  "avoid_photo": "3. Zu vermeidende Farben",
+    "detected": "Im Foto erkannt",
+    "recommended_photo": "Empfohlene Farben",
+  "avoid_photo": "Zu vermeidende Farben",
   "confidence_badge": "{value}% Sicherheit",
   "season_badge": "{season}-Saison",
   "season_confidence_badge": "{value}% Saison-Treffer",

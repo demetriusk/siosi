@@ -187,9 +187,9 @@
   "colorimetry": {
     "title": "Guia de cores",
     "photo_analysis": "Pessoa na foto",
-    "detected": "1. Detectado na foto",
-    "recommended_photo": "2. Cores recomendadas",
-  "avoid_photo": "3. Cores a evitar",
+    "detected": "Detectado na foto",
+    "recommended_photo": "Cores recomendadas",
+  "avoid_photo": "Cores a evitar",
   "confidence_badge": "{value}% de confiança",
   "season_badge": "Temporada {season}",
   "season_confidence_badge": "{value}% de compatibilidade de temporada",
