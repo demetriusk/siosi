@@ -231,7 +231,7 @@ export default function LookHeroClient({
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
         <DialogContent
           hideCloseButton
-          className="relative max-h-[90vh] max-w-[min(90vw,calc(90vh*0.5625))] overflow-hidden border-none bg-black/95 p-0 text-white shadow-2xl focus:outline-none md:max-w-[min(70vw,calc(90vh*0.5625))]"
+          className="inset-0 left-auto top-auto flex h-full w-full items-center justify-center translate-x-0 translate-y-0 border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
         >
           <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
           <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>
@@ -243,12 +243,12 @@ export default function LookHeroClient({
             <X className="h-5 w-5" />
           </DialogClose>
 
-          <div className="flex items-center justify-center p-4">
+          <div className="flex w-full items-center justify-center">
             <DialogClose asChild>
               <button
                 type="button"
                 aria-label={zoomCloseLabel}
-                className="relative flex aspect-[9/16] w-full max-w-[min(80vw,calc(85vh*0.5625))] items-center justify-center overflow-hidden rounded-[1.5rem] bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:max-w-[min(70vw,calc(85vh*0.5625))]"
+                className="relative flex aspect-[9/16] w-full max-w-[min(90vw,calc(90vh*0.5625))] items-center justify-center overflow-hidden rounded-[1.5rem] bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:max-w-[min(70vw,calc(85vh*0.5625))]"
               >
                 {src ? (
                   <Image src={src} alt={alt} fill className="object-contain" />
