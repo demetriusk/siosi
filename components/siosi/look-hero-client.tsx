@@ -102,7 +102,7 @@ export default function LookHeroClient({
       }
 
       const drawerButton = document.querySelector<HTMLButtonElement>(
-        `[data-season-source="${seasonBadgeSource}"]`
+        `[data-season-source="${seasonBadgeSource}"]:not([data-season-badge])`
       );
 
       if (drawerButton) {

@@ -392,7 +392,7 @@ export default async function LookPage({ params }: LookPageProps) {
                   )}
                 </TabsContent>
 
-                <TabsContent value="color" className="mt-6">
+                <TabsContent value="color" className="mt-6" forceMount>
                   {colorimetry ? (
                     <div className="space-y-6">
                       <ColorimetryDisplay colorimetry={colorimetry} />
