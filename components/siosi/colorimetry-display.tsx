@@ -104,8 +104,6 @@ function PaletteCard({
             <div className="flex flex-col gap-1">
               <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-slate-500">
                 <span>{formatCategory(swatch.category)}</span>
-                <span className="text-slate-300">•</span>
-                <span>{formatHex(swatch.hex)}</span>
                 {swatch.finish && (
                   <>
                     <span className="text-slate-300">•</span>
