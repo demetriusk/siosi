@@ -400,7 +400,7 @@ export default function SessionActionsClient({
             tabIndex={-1}
             className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
           >
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-5 gap-4">
               {shareTiles.map(({ key, label, icon, action }) => (
                 <button
                   key={key}
