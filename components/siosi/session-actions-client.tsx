@@ -91,6 +91,13 @@ export default function SessionActionsClient({
 
   const shareFocusRef = useRef<HTMLDivElement>(null);
   const detailsFocusRef = useRef<HTMLDivElement>(null);
+  const deleteDialogTriggerRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    if (!authChecked || !isAuthenticated) {
+      deleteDialogTriggerRef.current = null;
+    }
+  }, [authChecked, isAuthenticated]);
 
   const formattedCreatedAt = useMemo(() => {
     try {
@@ -549,22 +556,16 @@ export default function SessionActionsClient({
               </div>
               <Separator />
               {authChecked && isAuthenticated && (
-                <DeleteSessionButton
-                  locale={locale}
-                  sessionId={sessionId}
-                  renderTriggerAction={({ openDialog }) => (
-                    <Button
-                      variant="outline"
-                      className="w-full justify-center border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
-                      onClick={() => {
-                        setDetailsOpen(false);
-                        openDialog();
-                      }}
-                    >
-                      {labels.deleteLabel}
-                    </Button>
-                  )}
-                />
+                <Button
+                  variant="outline"
+                  className="w-full justify-center border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+                  onClick={() => {
+                    deleteDialogTriggerRef.current?.();
+                    requestAnimationFrame(() => setDetailsOpen(false));
+                  }}
+                >
+                  {labels.deleteLabel}
+                </Button>
               )}
             </div>
             <DrawerClose asChild>
@@ -575,6 +576,16 @@ export default function SessionActionsClient({
           </div>
         </DrawerContent>
       </Drawer>
+      {authChecked && isAuthenticated && (
+        <DeleteSessionButton
+          locale={locale}
+          sessionId={sessionId}
+          renderTriggerAction={({ openDialog }) => {
+            deleteDialogTriggerRef.current = openDialog;
+            return null;
+          }}
+        />
+      )}
     </div>
   );
 }
