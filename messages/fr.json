@@ -37,7 +37,7 @@
       "resend_error": "Échec de la nouvelle tentative",
       "description": "Utilisez Google ou demandez un lien magique. Si vous choisissez un lien magique, nous vous enverrons un lien sécurisé par e-mail — veuillez cliquer sur ce lien pour terminer la connexion. Si vous ne le voyez pas, vérifiez votre dossier spam.",
     "colorimetry": {
-      "title": "Votre guide couleur",
+      "title": "Guide couleur",
       "photo_analysis": "Personne sur la photo",
       "detected": "1. Détecté sur la photo",
       "recommended_photo": "2. Couleurs recommandées",

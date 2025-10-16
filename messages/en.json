@@ -185,7 +185,7 @@
     }
   },
   "colorimetry": {
-    "title": "Your Color Guide",
+    "title": "Color Guide",
     "photo_analysis": "Person in Photo",
     "detected": "1. Detected in Photo",
     "recommended_photo": "2. Recommended Colors",
