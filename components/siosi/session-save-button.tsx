@@ -30,7 +30,7 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
   const isOwner = useMemo(() => Boolean(ownerId && resolvedUserId && ownerId === resolvedUserId), [ownerId, resolvedUserId]);
 
   const redirectToAuth = useCallback(() => {
-    const redirectPath = pathname ?? `/${locale}/session/${sessionId}`;
+    const redirectPath = pathname ?? `/${locale}/look/${sessionId}`;
     router.push(`/${locale}/auth?redirect=${encodeURIComponent(redirectPath)}`);
   }, [router, pathname, locale, sessionId]);
 
@@ -176,8 +176,8 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
         saved ? 'bg-[#0A0A0A] hover:bg-[#1F1F1F] text-white' : 'text-[#0A0A0A]',
         className,
       )}
-      onClick={handleToggle}
-  disabled={loading}
+    onClick={handleToggle}
+    disabled={loading}
       aria-pressed={saved}
       aria-label={ariaLabel}
     >

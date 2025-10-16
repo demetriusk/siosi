@@ -72,7 +72,7 @@ export default function DeleteSessionButton({ locale, sessionId, renderTriggerAc
 
       toast(t('sessions.deleted_toast') || 'Session deleted');
       // navigate back to sessions list
-      router.push(`/${locale}/sessions`);
+  router.push(`/${locale}/looks`);
     } catch (error) {
       logger.error('Delete session flow failed', error);
       toast.error('Failed to delete session');

@@ -51,7 +51,7 @@ export function Footer({ locale }: FooterProps) {
             <h3 className="text-sm font-semibold text-[#0A0A0A] mb-3">Account</h3>
             <ul className="space-y-2">
               <li>
-                <Link href={`/${locale}/sessions`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
+                <Link href={`/${locale}/looks`} className="text-sm text-[#6B7280] hover:text-[#0A0A0A] transition-colors">
                   {t('sessions')}
                 </Link>
               </li>

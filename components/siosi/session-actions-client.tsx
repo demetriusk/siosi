@@ -80,8 +80,8 @@ export default function SessionActionsClient({
   labels,
 }: Props) {
   const sessionUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/${locale}/session/${sessionId}`
-    : `/${locale}/session/${sessionId}`;
+    ? `${window.location.origin}/${locale}/look/${sessionId}`
+    : `/${locale}/look/${sessionId}`;
 
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
   const [authChecked, setAuthChecked] = useState(false);
@@ -142,7 +142,7 @@ export default function SessionActionsClient({
           setAuthChecked(true);
         });
       } catch (error) {
-        logger.debug('Session actions auth check failed', error);
+        logger.debug('Look actions auth check failed', error);
         if (mounted) setAuthChecked(true);
       }
     }
@@ -186,7 +186,7 @@ export default function SessionActionsClient({
     }
     navigator.clipboard.writeText(sessionUrl)
       .then(() => {
-        toast.success('Link copied', { description: 'Session link copied to clipboard' });
+        toast.success('Link copied', { description: 'Link copied to clipboard' });
       })
       .catch((error) => {
         logger.warn('Clipboard write failed', error);
@@ -255,11 +255,11 @@ export default function SessionActionsClient({
 
       if (!blob) {
         const sessionRes = await fetch(`/api/sessions/${sessionId}`);
-        if (!sessionRes.ok) throw new Error('Failed to fetch session');
+        if (!sessionRes.ok) throw new Error('Failed to fetch look');
         const sessionData = await sessionRes.json();
         const photoUrl: string | undefined = sessionData?.photo_url;
         if (!photoUrl) {
-          toast.error('No photo', { description: 'This session has no photo to download' });
+          toast.error('No photo', { description: 'This look has no photo to download' });
           return;
         }
 
@@ -357,7 +357,7 @@ export default function SessionActionsClient({
             variant="outline"
             size="icon"
             className="h-9 w-9 border-[#E5E7EB]"
-            aria-label="Share session"
+            aria-label="Share look"
           >
             <Share className="h-4 w-4" />
           </Button>
@@ -449,7 +449,7 @@ export default function SessionActionsClient({
             variant="outline"
             size="icon"
             className="h-9 w-9 border-[#E5E7EB]"
-            aria-label="Session options"
+            aria-label="Look options"
           >
             <EllipsisVertical className="h-4 w-4" />
           </Button>

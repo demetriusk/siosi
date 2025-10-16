@@ -283,7 +283,7 @@ export default function AnalyzePage() {
       }
 
       // 4. Navigate to results
-      router.push(`/${locale}/session/${session.id}`);
+  router.push(`/${locale}/look/${session.id}`);
       
     } catch (err: any) {
       logger.error('Analysis error:', err);

@@ -59,7 +59,7 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
 
   const navItems: NavItem[] = [
     {
-      href: `/${locale}/sessions`,
+      href: `/${locale}/looks`,
       icon: LayoutGrid,
       label: t('sessions')
     },

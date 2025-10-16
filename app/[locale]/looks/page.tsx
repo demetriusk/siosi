@@ -1,4 +1,4 @@
- 'use client'
+'use client'
 
 import Link from 'next/link';
 import { Upload, ScanFace } from 'lucide-react';
@@ -14,7 +14,7 @@ import { Session } from '@/lib/types';
 import { useTranslations } from 'next-intl';
 import logger from '@/lib/logger';
 
-export default function SessionsPage() {
+export default function LooksPage() {
   const params = useParams();
   const locale = (params as any)?.locale as string;
   const t = useTranslations();

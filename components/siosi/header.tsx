@@ -31,7 +31,7 @@ export function Header({ locale }: HeaderProps) {
   ];
 
   const privateNav = [
-    { name: t('sessions'), href: `/${locale}/sessions` },
+    { name: t('sessions'), href: `/${locale}/looks` },
     { name: t('profile'), href: `/${locale}/profile` }
   ];
 

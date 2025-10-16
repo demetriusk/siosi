@@ -44,7 +44,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
 
   const navigation = [
     {
-      href: `/${locale}/sessions`,
+      href: `/${locale}/looks`,
       label: t('sessions'),
       icon: LayoutGrid
     },

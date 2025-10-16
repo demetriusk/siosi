@@ -41,7 +41,7 @@ export function SessionCard({ session, locale, viewerId }: SessionCardProps) {
             className="absolute right-3 top-3 z-10 shadow-sm"
           />
         )}
-        <Link href={`/${locale}/session/${session.id}`} className="block">
+  <Link href={`/${locale}/look/${session.id}`} className="block">
           <div className="relative aspect-[9/16]">
             {session.photo_url ? (
               <Image

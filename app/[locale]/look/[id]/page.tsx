@@ -20,7 +20,7 @@ import logger from '@/lib/logger';
 
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 
-interface SessionPageProps extends ParamsWithLocaleAndId {}
+interface LookPageProps extends ParamsWithLocaleAndId {}
 
 async function getSession(id: string): Promise<SessionWithAnalyses | null> {
   const supabase = getSupabase();
@@ -72,7 +72,7 @@ async function getSession(id: string): Promise<SessionWithAnalyses | null> {
   };
 }
 
-export default async function SessionPage({ params }: SessionPageProps) {
+export default async function LookPage({ params }: LookPageProps) {
   const { locale, id } = await params!;
   const session = await getSession(id);
   const t = await getTranslations({ locale });
@@ -222,7 +222,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
 
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
                   <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
-                    <Link href={`/${locale}/sessions`}>
+                    <Link href={`/${locale}/looks`}>
                       <ChevronLeft className="h-4 w-4" />
                     </Link>
                   </Button>

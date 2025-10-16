@@ -111,7 +111,7 @@ export default function SavedSessionsPage() {
                 {t('title')}
               </h1>
             </div>
-            <Link href={`/${locale}/sessions`}>
+            <Link href={`/${locale}/looks`}>
               <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
                 {t('browse_sessions')}
               </Button>
@@ -137,7 +137,7 @@ export default function SavedSessionsPage() {
               <p className="text-[#6B7280] mb-6">
                 {t('empty_subtitle')}
               </p>
-              <Link href={`/${locale}/sessions`}>
+              <Link href={`/${locale}/looks`}>
                 <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
                   {t('browse_sessions')}
                 </Button>
