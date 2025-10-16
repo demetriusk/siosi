@@ -92,14 +92,6 @@ function PaletteCard({
           <h4 className="text-sm font-semibold text-slate-900">{title}</h4>
           {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
         </div>
-        <span
-          className={clsx(
-            'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide',
-            VARIANT_BADGE_STYLES[variant]
-          )}
-        >
-          {badgeLabel}
-        </span>
       </div>
 
       <ul className="space-y-4">
@@ -221,7 +213,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             {t('photo_analysis')}
           </p>
-          <h2 className="text-2xl font-semibold text-slate-900">{t('title')}</h2>
+          <h2 className="text-2xl text-slate-900">{t('title')}</h2>
           <p className="text-sm text-slate-600">{t('your_analysis')}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -252,7 +244,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
         <p className="mb-6 text-sm text-slate-600 leading-relaxed">{colorimetry.photo.notes}</p>
       )}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4">
         {photoPalettes.map((palette) => (
           <PaletteCard
             key={palette.title}
