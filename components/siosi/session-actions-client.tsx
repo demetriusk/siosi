@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import DeleteSessionButton from './delete-session-button';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
-import { SiWhatsapp } from '@icons-pack/react-simple-icons';
+import { SiWhatsapp, SiPinterest } from '@icons-pack/react-simple-icons';
 import {
   Drawer,
   DrawerTrigger,
@@ -224,6 +224,11 @@ export default function SessionActionsClient({
     window.open(href, '_blank', 'noopener');
   }
 
+  function onSharePinterest() {
+    const href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(sessionUrl)}&description=${encodeURIComponent('Check out síOsí makeup analysis')}`;
+    window.open(href, '_blank', 'noopener');
+  }
+
   async function downloadImage() {
     try {
       let blob: Blob | null = null;
@@ -345,6 +350,12 @@ export default function SessionActionsClient({
       label: 'Facebook',
       icon: <Facebook className="h-6 w-6 text-[#1877F2]" />,
       action: onShareFacebook,
+    },
+    {
+      key: 'pinterest',
+      label: 'Pinterest',
+      icon: <SiPinterest className="h-6 w-6" role="img" aria-hidden />,
+      action: onSharePinterest,
     },
   ];
 
