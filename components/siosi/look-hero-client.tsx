@@ -92,14 +92,23 @@ export default function LookHeroClient({
   const handleSeasonBadgeClick = () => {
     if (!seasonBadgeSource || typeof window === 'undefined') return;
 
-    const triggerDrawer = () => {
+    const dispatchOrFallback = (attempts = 8) => {
       const detail = { source: seasonBadgeSource } as const;
       const event = new CustomEvent('siosi:season-drawer', { detail, cancelable: true });
       window.dispatchEvent(event);
 
-      if (!event.defaultPrevented) {
-        const drawerButton = document.querySelector<HTMLButtonElement>(`[data-season-source="${seasonBadgeSource}"]`);
-        drawerButton?.click();
+      if (event.defaultPrevented) {
+        return;
+      }
+
+      const drawerButton = document.querySelector<HTMLButtonElement>(
+        `[data-season-source="${seasonBadgeSource}"]`
+      );
+
+      if (drawerButton) {
+        drawerButton.click();
+      } else if (attempts > 0) {
+        window.setTimeout(() => dispatchOrFallback(attempts - 1), 75);
       }
     };
 
@@ -109,10 +118,10 @@ export default function LookHeroClient({
     if (!isActive && colorTab) {
       colorTab.click();
       window.requestAnimationFrame(() => {
-        window.setTimeout(triggerDrawer, 50);
+        window.setTimeout(() => dispatchOrFallback(), 100);
       });
     } else {
-      triggerDrawer();
+      dispatchOrFallback();
     }
   };
 
@@ -259,12 +268,12 @@ export default function LookHeroClient({
             <X className="h-5 w-5" />
           </DialogClose>
 
-          <div className="flex w-full items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <DialogClose asChild>
               <button
                 type="button"
                 aria-label={zoomCloseLabel}
-                className="relative flex aspect-[9/16] w-full max-w-[min(90vw,calc(90vh*0.5625))] items-center justify-center overflow-hidden rounded-[1.5rem] bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:max-w-[min(70vw,calc(85vh*0.5625))]"
+                className="relative flex aspect-[9/16] w-full max-h-[90vh] max-w-[min(90vw,calc(90vh*0.5625))] items-center justify-center overflow-hidden rounded-[1.5rem] bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:max-w-[min(70vw,calc(85vh*0.5625))]"
               >
                 {src ? (
                   <Image src={src} alt={alt} fill className="object-contain" />
