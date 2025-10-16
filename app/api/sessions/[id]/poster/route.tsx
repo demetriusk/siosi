@@ -15,6 +15,9 @@ type FontCache = Record<string, ArrayBuffer>;
 type OgFontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 type OgFont = { name: string; data: ArrayBuffer; weight: OgFontWeight; style: 'normal' | 'italic' };
 
+const PLACEHOLDER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3f4f6"/><stop offset="100%" stop-color="#e5e7eb"/></linearGradient></defs><rect width="600" height="600" fill="url(#g)"/><text x="50%" y="52%" text-anchor="middle" fill="#9ca3af" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="500">síOsí</text></svg>`;
+const PLACEHOLDER_IMAGE = `data:image/svg+xml;base64,${typeof btoa === 'function' ? btoa(PLACEHOLDER_SVG) : Buffer.from(PLACEHOLDER_SVG).toString('base64')}`;
+
 declare global {
   // eslint-disable-next-line no-var
   var __posterFontCache: FontCache | undefined;
@@ -60,6 +63,39 @@ async function loadFonts(req: NextRequest) {
   if (interRegular) fonts.push({ name: 'Inter', data: interRegular, weight: 400, style: 'normal' });
 
   return fonts;
+}
+
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    let chunkStr = '';
+    for (let j = 0; j < chunk.length; j += 1) {
+      chunkStr += String.fromCharCode(chunk[j]);
+    }
+    binary += chunkStr;
+  }
+  return typeof btoa === 'function' ? btoa(binary) : Buffer.from(binary, 'binary').toString('base64');
+}
+
+async function resolvePhotoDataUrl(url: string | null | undefined) {
+  if (!url) return null;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      logger.warn('Poster photo fetch failed', { status: res.status, statusText: res.statusText, url });
+      return null;
+    }
+    const contentType = res.headers.get('content-type') || 'image/jpeg';
+    const arrayBuffer = await res.arrayBuffer();
+    const base64 = arrayBufferToBase64(arrayBuffer);
+    return `data:${contentType};base64,${base64}`;
+  } catch (error) {
+    logger.warn('Poster photo fetch threw', { url, error });
+    return null;
+  }
 }
 
 function encodeStoragePath(path: string) {
@@ -148,7 +184,8 @@ export async function GET(req: NextRequest, context: any) {
       return new Response('Session not found', { status: 404 });
     }
 
-    const photoUrl = session.photo_url || '';
+  const photoUrl = session.photo_url || '';
+  const photoDataUrl = await resolvePhotoDataUrl(photoUrl);
     const overall = typeof session.overall_score === 'number' ? session.overall_score.toFixed(1) : '';
 
     const width = 1200;
@@ -205,7 +242,11 @@ export async function GET(req: NextRequest, context: any) {
               background: '#f3f4f6',
             }}
           >
-            <img src={photoUrl} alt="photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img
+              src={photoDataUrl ?? (photoUrl || PLACEHOLDER_IMAGE)}
+              alt="síOsí look"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
         </div>
 
