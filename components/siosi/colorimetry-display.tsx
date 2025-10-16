@@ -14,6 +14,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { SEASON_PALETTES } from '@/lib/season-palettes';
+import { SwatchBook } from 'lucide-react';
 
 interface ColorimetryDisplayProps {
   colorimetry: ColorimetryRecord;
@@ -70,11 +71,6 @@ function formatCategory(category?: ColorimetrySwatch['category']) {
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
-}
-
-function formatHex(hex: string) {
-  if (!hex) return '';
-  return hex.startsWith('#') ? hex.toUpperCase() : `#${hex.toUpperCase()}`;
 }
 
 function PaletteCard({
@@ -269,12 +265,13 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           {photoSeasonLabel && (
             <button
               type="button"
-              className={`${badgeVariants({ variant: 'outline' })} border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
+              className={`${badgeVariants({ variant: 'outline' })} gap-2 border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
               aria-controls="season-palette-drawer"
               aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'photo'}
               onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
             >
-              {t('season_badge', { season: photoSeasonLabel })}
+              <SwatchBook className="h-3.5 w-3.5" aria-hidden />
+              <span>{t('season_badge', { season: photoSeasonLabel })}</span>
             </button>
           )}
           {photoConfidence && (
@@ -327,12 +324,13 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
               {profileSeasonLabel && (
                 <button
                   type="button"
-                  className={`${badgeVariants({ variant: 'outline' })} border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
+                  className={`${badgeVariants({ variant: 'outline' })} gap-2 border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
                   aria-controls="season-palette-drawer"
                   aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'profile'}
                   onClick={() => openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile')}
                 >
-                  {t('season_badge', { season: profileSeasonLabel })}
+                  <SwatchBook className="h-3.5 w-3.5" aria-hidden />
+                  <span>{t('season_badge', { season: profileSeasonLabel })}</span>
                 </button>
               )}
               {profileConfidence && (
@@ -363,13 +361,23 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
       )}
       </section>
       <DrawerContent id="season-palette-drawer" className="px-4 pb-6">
-        <DrawerHeader className="text-center">
+        <DrawerHeader className="space-y-2 text-center">
           <DrawerTitle>
             {activeSeasonContext.label ?? t('season_palette_title')}
           </DrawerTitle>
           <DrawerDescription>
             {activeSeasonPalette?.name ?? activeSeasonContext.label ?? t('season_palette_empty')}
           </DrawerDescription>
+          {activeSeasonContext.source === 'photo' && colorimetry.photo.notes && (
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {colorimetry.photo.notes}
+            </p>
+          )}
+          {activeSeasonContext.source === 'profile' && (
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Shades best suitable for you
+            </p>
+          )}
         </DrawerHeader>
         {activeSeasonPalette ? (
           <div className="px-2 pb-4">
@@ -384,7 +392,6 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                   <span className="mt-2 text-xs font-medium text-slate-900">
                     {swatch.name}
                   </span>
-                  <span className="text-[11px] text-slate-500">{formatHex(swatch.hex)}</span>
                 </li>
               ))}
             </ul>
