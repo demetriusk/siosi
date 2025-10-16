@@ -256,18 +256,22 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
 
       if (preferredSource === 'photo' && photoSeasonLabel) {
         openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo');
+        customEvent.preventDefault();
         return;
       }
 
       if (preferredSource === 'profile' && profileSeasonLabel) {
         openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile');
+        customEvent.preventDefault();
         return;
       }
 
       if (photoSeasonLabel) {
         openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo');
+        customEvent.preventDefault();
       } else if (profileSeasonLabel) {
         openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile');
+        customEvent.preventDefault();
       }
     };
 

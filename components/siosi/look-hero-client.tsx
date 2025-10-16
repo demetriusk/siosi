@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronLeft, MoreHorizontal, Share2, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, MoreHorizontal, Share2, SwatchBook, X, ZoomIn } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -92,7 +92,13 @@ export default function LookHeroClient({
   const handleSeasonBadgeClick = () => {
     if (!seasonBadgeSource || typeof window === 'undefined') return;
     const detail = { source: seasonBadgeSource } as const;
-    window.dispatchEvent(new CustomEvent('siosi:season-drawer', { detail }));
+    const event = new CustomEvent('siosi:season-drawer', { detail });
+    window.dispatchEvent(event);
+
+    if (!event.defaultPrevented) {
+      const drawerButton = document.querySelector<HTMLButtonElement>(`[data-season-source="${seasonBadgeSource}"]`);
+      drawerButton?.click();
+    }
   };
 
   return (
@@ -196,10 +202,12 @@ export default function LookHeroClient({
                         key={`${badge.label}-${index}`}
                         type="button"
                         onClick={handleSeasonBadgeClick}
-                        className={`${baseClass} ${neutralClass} transition hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80`}
+                        className={`${baseClass} ${neutralClass} gap-1.5 transition hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80`}
                         data-season-badge
+                        data-season-source={seasonBadgeSource}
                         aria-label={seasonPaletteLabel}
                       >
+                        <SwatchBook className="h-3.5 w-3.5" aria-hidden />
                         {badge.label}
                       </button>
                     );
