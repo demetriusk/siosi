@@ -256,19 +256,19 @@ export default function LookHeroClient({
         <DialogContent
           hideCloseButton
           layout="fullscreen"
-          className="relative border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
+          className="border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
         >
           <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
           <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>
 
-          <DialogClose
-            className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            aria-label={zoomCloseLabel}
-          >
-            <X className="h-5 w-5" />
-          </DialogClose>
+          <div className="relative flex h-full w-full items-center justify-center">
+            <DialogClose
+              className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              aria-label={zoomCloseLabel}
+            >
+              <X className="h-5 w-5" />
+            </DialogClose>
 
-          <div className="flex h-full w-full items-center justify-center">
             <DialogClose asChild>
               <button
                 type="button"
