@@ -11,7 +11,7 @@ import {
   MessageSquare,
   Copy,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/ui/button';
 import DeleteSessionButton from './delete-session-button';
 import { toast } from 'sonner';
 import logger from '@/lib/logger';
@@ -69,6 +69,16 @@ type Props = {
   profileSummary: ProfileSummary;
   contextSummary: ContextSummary;
   labels: Labels;
+  shareButtonVariant?: ButtonProps['variant'];
+  shareButtonSize?: ButtonProps['size'];
+  shareButtonClassName?: string;
+  shareIcon?: ReactNode;
+  shareAriaLabel?: string;
+  optionsButtonVariant?: ButtonProps['variant'];
+  optionsButtonSize?: ButtonProps['size'];
+  optionsButtonClassName?: string;
+  optionsIcon?: ReactNode;
+  optionsAriaLabel?: string;
 };
 
 export default function SessionActionsClient({
@@ -78,6 +88,16 @@ export default function SessionActionsClient({
   profileSummary,
   contextSummary,
   labels,
+  shareButtonVariant = 'outline',
+  shareButtonSize = 'icon',
+  shareButtonClassName = 'h-9 w-9 border-[#E5E7EB]',
+  shareIcon = <Share className="h-4 w-4" />,
+  shareAriaLabel = 'Share look',
+  optionsButtonVariant = 'outline',
+  optionsButtonSize = 'icon',
+  optionsButtonClassName = 'h-9 w-9 border-[#E5E7EB]',
+  optionsIcon = <EllipsisVertical className="h-4 w-4" />,
+  optionsAriaLabel = 'Look options',
 }: Props) {
   const sessionUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/${locale}/look/${sessionId}`
@@ -372,12 +392,12 @@ export default function SessionActionsClient({
       <Drawer open={shareOpen} onOpenChange={setShareOpen}>
         <DrawerTrigger asChild>
           <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 border-[#E5E7EB]"
-            aria-label="Share look"
+            variant={shareButtonVariant}
+            size={shareButtonSize}
+            className={shareButtonClassName}
+            aria-label={shareAriaLabel}
           >
-            <Share className="h-4 w-4" />
+            {shareIcon}
           </Button>
         </DrawerTrigger>
         <DrawerContent
@@ -464,12 +484,12 @@ export default function SessionActionsClient({
       <Drawer open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DrawerTrigger asChild>
           <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 border-[#E5E7EB]"
-            aria-label="Look options"
+            variant={optionsButtonVariant}
+            size={optionsButtonSize}
+            className={optionsButtonClassName}
+            aria-label={optionsAriaLabel}
           >
-            <EllipsisVertical className="h-4 w-4" />
+            {optionsIcon}
           </Button>
         </DrawerTrigger>
         <DrawerContent

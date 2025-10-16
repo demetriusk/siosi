@@ -1,24 +1,19 @@
 export const dynamic = 'force-dynamic';
 
-import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
 import { LabResultCard } from '@/components/siosi/lab-result-card';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
 import { getTranslations } from 'next-intl/server';
-// Client actions wrapper (renders client-only buttons)
-import SessionActionsClient from '@/components/siosi/session-actions-client';
-import { SessionPhotoPreview } from '@/components/siosi/session-photo-preview';
-import { SessionSaveButton } from '@/components/siosi/session-save-button';
 import ColorimetryDisplay from '@/components/siosi/colorimetry-display';
 import { mapColorimetryRow } from '@/lib/normalize-colorimetry';
 import logger from '@/lib/logger';
-
 import type { ParamsWithLocaleAndId } from '@/lib/types';
+import LookHeroClient from '@/components/siosi/look-hero-client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SessionSaveButton } from '@/components/siosi/session-save-button';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
 
@@ -77,7 +72,6 @@ export default async function LookPage({ params }: LookPageProps) {
   const session = await getSession(id);
   const t = await getTranslations({ locale });
 
-  // Safe translation helper: if a message key is missing, return a sensible fallback
   const safeT = (key: string, fallback?: string) => {
     try {
       return t(key);
@@ -86,8 +80,6 @@ export default async function LookPage({ params }: LookPageProps) {
     }
   };
 
-  // If session is missing, render a friendly empty state instead of a 404.
-  // Provide safe defaults so the rest of the page can render deterministically.
   const createdAt = session?.created_at ?? new Date().toISOString();
   const overallScore = session?.overall_score ?? 0;
   const analyses = session?.analyses ?? [];
@@ -125,14 +117,13 @@ export default async function LookPage({ params }: LookPageProps) {
   const lidTypeLabel = formatLidType(session?.lid_type);
 
   const criticalAnalyses = analyses.filter(
-    a => a.verdict === 'NAY' && a.confidence >= 80
+    (a) => a.verdict === 'NAY' && a.confidence >= 80,
   );
   const watchAnalyses = analyses.filter(
-    a => (a.verdict === 'MAYBE' && a.confidence >= 50) ||
-       (a.verdict === 'NAY' && a.confidence < 80)
+    (a) => (a.verdict === 'MAYBE' && a.confidence >= 50) || (a.verdict === 'NAY' && a.confidence < 80),
   );
   const goodAnalyses = analyses.filter(
-    a => a.verdict === 'YAY' && a.confidence >= 70
+    (a) => a.verdict === 'YAY' && a.confidence >= 70,
   );
 
   const categorizedCount = criticalAnalyses.length + watchAnalyses.length + goodAnalyses.length;
@@ -182,7 +173,10 @@ export default async function LookPage({ params }: LookPageProps) {
       title: safeT('upload.concerns_title', 'Concerns'),
       items: concernLabels,
     },
-    emptyMessage: safeT('results.context.empty', 'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.'),
+    emptyMessage: safeT(
+      'results.context.empty',
+      'No extra context was selected this time. Results may be a tiny bit less precise. Adding a few quick details next time helps the labs aim better.',
+    ),
     hasAny: contextHasAny,
   };
 
@@ -196,184 +190,215 @@ export default async function LookPage({ params }: LookPageProps) {
     deleteLabel: safeT('sessions.delete', 'Delete'),
   };
 
+  const toTitleCase = (value: string) =>
+    value
+      .split(/[_\s]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+
+  const formatUndertoneBadge = (value?: string | null) => {
+    if (!value) return null;
+    const pretty = `${toTitleCase(value)} ${safeT('colorimetry.undertone_suffix', 'undertone')}`.trim();
+    return pretty;
+  };
+
+  const formatSeasonBadge = (value?: string | null) => {
+    if (!value) return null;
+    const pretty = `${toTitleCase(value)} ${safeT('colorimetry.season_suffix', 'season')}`.trim();
+    return pretty;
+  };
+
+  const formatSeasonMatch = (confidence: number) => {
+    const rounded = Math.round(confidence);
+    const template = safeT('colorimetry.season_confidence_badge', '{value}% season match');
+    if (template.includes('{value}')) {
+      return template.replace('{value}', String(rounded));
+    }
+    return `${rounded}% ${template}`.trim();
+  };
+
+  const undertoneBadge = formatUndertoneBadge(colorimetry?.photo?.undertone ?? colorimetry?.profile?.undertone ?? null);
+
+  const seasonBadge = formatSeasonBadge(
+    colorimetry?.photo?.season ?? colorimetry?.profile?.season ?? colorimetry?.user_season ?? null,
+  );
+
+  const seasonMatchPct =
+    typeof colorimetry?.photo?.seasonConfidence === 'number'
+      ? colorimetry.photo.seasonConfidence
+      : typeof colorimetry?.profile?.seasonConfidence === 'number'
+        ? colorimetry.profile.seasonConfidence
+        : null;
+
+  const seasonMatchLabel =
+    typeof seasonMatchPct === 'number'
+      ? formatSeasonMatch(seasonMatchPct)
+      : null;
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Header locale={locale} />
 
-      <main className="flex-1 bg-[#F9FAFB] py-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 bg-[#F9FAFB]">
+        <div className="mx-auto flex w-full max-w-6xl flex-col lg:grid lg:grid-cols-5 lg:gap-8">
+          <aside className="lg:sticky lg:top-0 lg:col-span-2 lg:h-screen">
+            <div className="relative aspect-[9/16] w-full lg:h-screen">
+              <LookHeroClient
+                src={session?.photo_url ?? null}
+                alt={safeT('common.photo', 'Photo')}
+                locale={locale}
+                sessionId={id}
+                createdAtIso={createdAt}
+                profileSummary={profileSummary}
+                contextSummary={contextSummary}
+                actionLabels={actionLabels}
+                overallScore={overallScore}
+                undertoneBadge={undertoneBadge}
+                seasonBadge={seasonBadge}
+                seasonMatchLabel={seasonMatchLabel}
+              />
+            </div>
+          </aside>
 
-          <Card className="mb-8 bg-transparent border-0 shadow-none">
-            <div className="flex flex-col md:flex-row items-start gap-6">
-              <div className="w-full md:w-1/3">
-                {session?.photo_url ? (
-                  <SessionPhotoPreview
-                    src={session.photo_url}
-                    alt={safeT('common.photo', 'Photo')}
+          <section className="lg:col-span-3">
+            <Tabs defaultValue="analysis" className="w-full">
+              <div className="sticky top-0 z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6">
+                <div className="flex items-center justify-between gap-3">
+                  <TabsList className="rounded-full bg-gray-100 p-1">
+                    <TabsTrigger
+                      value="analysis"
+                      className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
+                    >
+                      {safeT('results.tab.analysis', 'Analysis')}
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="color"
+                      className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
+                    >
+                      {safeT('results.tab.color_guide', 'Color Guide')}
+                    </TabsTrigger>
+                  </TabsList>
+                  <SessionSaveButton
+                    sessionId={id}
+                    locale={locale}
+                    ownerId={session?.user_id ?? null}
+                    className="h-11 w-11 bg-white/80 text-[#0A0A0A] backdrop-blur hover:bg-white"
                   />
-                ) : (
-                  <div className="aspect-square w-full bg-[#F9FAFB] rounded-sm flex items-center justify-center text-[#D1D5DB]">
-                    <span className="text-sm">{safeT('common.no_image', 'No image')}</span>
-                  </div>
-                )}
+                </div>
               </div>
 
-              <div className="flex-1 flex flex-col gap-6">
-
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-                  <Button asChild variant="ghost" className="gap-2 px-0 text-[#0A0A0A]">
-                    <Link href={`/${locale}/looks`}>
-                      <ChevronLeft className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <div className="flex items-center gap-2">
-                    <SessionSaveButton sessionId={id} locale={locale} ownerId={session?.user_id ?? null} />
-                    <SessionActionsClient
-                      locale={locale}
-                      sessionId={id}
-                      createdAtIso={createdAt}
-                      profileSummary={profileSummary}
-                      contextSummary={contextSummary}
-                      labels={actionLabels}
-                    />
-                  </div>
-                </div>
-          
-                {/* Overall score */}
-                <div className="flex items-center gap-4">
-                  <div className="relative inline-block">
-                    <svg className="w-28 h-28 transform -rotate-90">
-                      <circle cx="56" cy="56" r="48" stroke="#E5E7EB" strokeWidth="8" fill="none" />
-                      <circle
-                        cx="56"
-                        cy="56"
-                        r="48"
-                        stroke="#0A0A0A"
-                        strokeWidth="8"
-                        fill="none"
-                        strokeDasharray={`${(overallScore / 10) * 301.59} 301.59`}
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-3xl font-bold text-[#0A0A0A]">{overallScore.toFixed(1)}</span>
+              <div className="px-4 pb-16 sm:px-6">
+                <TabsContent value="analysis" className="mt-6 space-y-12">
+                  {criticalAnalyses.length > 0 && (
+                    <div>
+                      <div className="mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">
+                          {safeT('results.critical', 'Critical')}
+                        </h3>
+                        <span className="rounded-full bg-[#EF4444] px-2.5 py-0.5 text-xs font-semibold text-white">
+                          {criticalAnalyses.length}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {criticalAnalyses.map((analysis) => (
+                          <LabResultCard key={analysis.id} analysis={analysis} defaultExpanded />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-[#0A0A0A]">
-                      {safeT('results.overall_score', 'Overall score')}
-                    </h2>
-                  </div>
-                </div>
+                  )}
+
+                  {watchAnalyses.length > 0 && (
+                    <div>
+                      <div className="mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">
+                          {safeT('results.watch_these', 'Watch these')}
+                        </h3>
+                        <span className="rounded-full bg-[#F59E0B] px-2.5 py-0.5 text-xs font-semibold text-white">
+                          {watchAnalyses.length}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {watchAnalyses.map((analysis) => (
+                          <LabResultCard key={analysis.id} analysis={analysis} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {goodAnalyses.length > 0 && (
+                    <div>
+                      <div className="mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">
+                          {safeT('results.looking_good', 'Looking good')}
+                        </h3>
+                        <span className="rounded-full bg-[#10B981] px-2.5 py-0.5 text-xs font-semibold text-white">
+                          {goodAnalyses.length}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {goodAnalyses.map((analysis) => (
+                          <LabResultCard key={analysis.id} analysis={analysis} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {analyses.length === 0 && (
+                    <Card className="p-6 text-center">
+                      <h3 className="mb-2 text-lg font-semibold text-[#0A0A0A]">
+                        {safeT('results.no_analyses_title', 'No analyses yet')}
+                      </h3>
+                      <p className="text-sm text-[#6B7280]">
+                        {safeT(
+                          'results.no_analyses_body',
+                          "We couldn't find any lab results for this session. Try analyzing another photo.",
+                        )}
+                      </p>
+                    </Card>
+                  )}
+
+                  {analyses.length > 0 && categorizedCount === 0 && (
+                    <div>
+                      <div className="mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-[#0A0A0A]">
+                          {safeT('results.all_results', 'All results')}
+                        </h3>
+                        <span className="rounded-full bg-[#6B7280] px-2.5 py-0.5 text-xs font-semibold text-white">
+                          {analyses.length}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {analyses.map((analysis) => (
+                          <LabResultCard key={analysis.id ?? analysis.lab_name} analysis={analysis} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="color" className="mt-6">
+                  {colorimetry ? (
+                    <div className="space-y-6">
+                      <ColorimetryDisplay colorimetry={colorimetry} />
+                      <p className="text-xs leading-relaxed text-[#4B5563]">
+                        {safeT(
+                          'colorimetry.disclaimer',
+                          'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.',
+                        )}
+                      </p>
+                    </div>
+                  ) : (
+                    <Card className="p-6 text-center">
+                      <p className="text-sm text-[#6B7280]">
+                        {safeT('colorimetry.empty', 'No color guidance available for this session.')}
+                      </p>
+                    </Card>
+                  )}
+                </TabsContent>
               </div>
-            </div>
-          </Card>
-
-          {colorimetry && (
-            <div className="mb-8">
-              <ColorimetryDisplay colorimetry={colorimetry} />
-            </div>
-          )}
-
-          {criticalAnalyses.length > 0 && (
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {safeT('results.critical', 'Critical')}
-                </h3>
-                <span className="px-2.5 py-0.5 bg-[#EF4444] text-white text-xs font-semibold rounded-full">
-                  {criticalAnalyses.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {criticalAnalyses.map((analysis) => (
-                  <LabResultCard key={analysis.id} analysis={analysis} defaultExpanded />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {watchAnalyses.length > 0 && (
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {safeT('results.watch_these', 'Watch these')}
-                </h3>
-                <span className="px-2.5 py-0.5 bg-[#F59E0B] text-white text-xs font-semibold rounded-full">
-                  {watchAnalyses.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {watchAnalyses.map((analysis) => (
-                  <LabResultCard key={analysis.id} analysis={analysis} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {goodAnalyses.length > 0 && (
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {safeT('results.looking_good', 'Looking good')}
-                </h3>
-                <span className="px-2.5 py-0.5 bg-[#10B981] text-white text-xs font-semibold rounded-full">
-                  {goodAnalyses.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {goodAnalyses.map((analysis) => (
-                  <LabResultCard key={analysis.id} analysis={analysis} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Empty state when no analyses present */}
-          {analyses.length === 0 && (
-            <Card className="p-6 text-center">
-              <h3 className="text-lg font-semibold text-[#0A0A0A] mb-2">
-                {safeT('results.no_analyses_title', 'No analyses yet')}
-              </h3>
-              <p className="text-sm text-[#6B7280]">
-                {safeT('results.no_analyses_body', 'We couldn\'t find any lab results for this session. Try analyzing another photo.')}
-              </p>
-            </Card>
-          )}
-
-          {/* If there are analyses but none matched thresholds, show them all */}
-          {analyses.length > 0 && categorizedCount === 0 && (
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-xl font-bold text-[#0A0A0A]">
-                  {safeT('results.all_results', 'All results')}
-                </h3>
-                <span className="px-2.5 py-0.5 bg-[#6B7280] text-white text-xs font-semibold rounded-full">
-                  {analyses.length}
-                </span>
-              </div>
-              <div className="space-y-4">
-                {analyses.map((analysis) => (
-                  <LabResultCard key={analysis.id ?? analysis.lab_name} analysis={analysis} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {colorimetry && (
-            <p className="mt-12 text-xs leading-relaxed text-[#4B5563]">
-              {safeT(
-                'colorimetry.disclaimer',
-                'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.'
-              )}
-            </p>
-          )}
-
-          
-
-          {/* Actions are rendered via the client-side SessionActionsClient component above */}
-
-          {/* Removed the saved confirmation block per request */}
+            </Tabs>
+          </section>
         </div>
       </main>
 
