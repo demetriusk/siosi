@@ -18,6 +18,26 @@ const VARIANT_BADGE_STYLES: Record<PaletteVariant, string> = {
   avoid: 'bg-rose-100 text-rose-800 border border-rose-200',
 };
 
+function getSeasonDisplayName(season?: string | null): string | null {
+  if (!season) return null;
+  const names: Record<string, string> = {
+    bright_winter: 'Bright Winter',
+    cool_winter: 'Cool Winter',
+    deep_winter: 'Deep Winter',
+    bright_spring: 'Bright Spring',
+    warm_spring: 'Warm Spring',
+    light_spring: 'Light Spring',
+    light_summer: 'Light Summer',
+    cool_summer: 'Cool Summer',
+    soft_summer: 'Soft Summer',
+    soft_autumn: 'Soft Autumn',
+    warm_autumn: 'Warm Autumn',
+    deep_autumn: 'Deep Autumn',
+  };
+
+  return names[season] ?? season.split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+}
+
 function formatUndertone(value?: Undertone | null) {
   if (!value) return null;
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -148,11 +168,13 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     ];
   }, [colorimetry.profile?.avoid, colorimetry.profile?.recommended, t]);
 
-  const hasProfilePalettes = (colorimetry.profile?.recommended?.length ?? 0) > 0 ||
-    (colorimetry.profile?.avoid?.length ?? 0) > 0;
-
   const photoUndertone = formatUndertone(colorimetry.photo.undertone);
   const profileUndertone = formatUndertone(colorimetry.profile?.undertone);
+  const photoSeasonLabel = getSeasonDisplayName(colorimetry.photo.season ?? colorimetry.photo_season ?? null);
+  const profileSeasonLabel = getSeasonDisplayName(colorimetry.profile?.season ?? colorimetry.user_season ?? null);
+  const hasProfilePalettes = (colorimetry.profile?.recommended?.length ?? 0) > 0 ||
+    (colorimetry.profile?.avoid?.length ?? 0) > 0;
+  const shouldShowProfileSection = hasProfilePalettes || Boolean(colorimetry.profile?.notes) || Boolean(profileUndertone) || Boolean(profileSeasonLabel);
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -168,6 +190,11 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           {photoUndertone && (
             <Badge variant="secondary" className="bg-amber-100 text-amber-700">
               {photoUndertone} undertone
+            </Badge>
+          )}
+          {photoSeasonLabel && (
+            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+              {photoSeasonLabel} season
             </Badge>
           )}
         </div>
@@ -189,7 +216,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
         ))}
       </div>
 
-      {hasProfilePalettes && (
+      {shouldShowProfileSection && (
         <div className="mt-10 border-t border-slate-200 pt-8">
           <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -205,6 +232,11 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
               {profileUndertone && (
                 <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
                   {profileUndertone} undertone
+                </Badge>
+              )}
+              {profileSeasonLabel && (
+                <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+                  {profileSeasonLabel} season
                 </Badge>
               )}
             </div>

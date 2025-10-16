@@ -158,31 +158,61 @@ Context-aware scoring reminders:
 - ${lidType || 'standard'} eyes influence creasing risk
 - ${occasion || 'general'} sets expectations for coverage intensity
 
-STEP 3: Perform colorimetry analysis (SEPARATE from lab analysis above):
-- Analyze color theory for makeup colors visible in this photo. This analysis is INDEPENDENT of concerns, occasion, indoor/outdoor, and climate; base it only on the makeup in the photo plus the optional profile (skin_type, skin_tone, lid_type).
-- Output a 'colorimetry' object with:
-  {
-    "photo": {
+STEP 3: Perform colorimetry analysis with seasonal classification:
+
+Analyze color theory for makeup colors visible in this photo. This analysis is INDEPENDENT of occasion, concerns, location, or climate context.
+
+First, determine the 12-season classification:
+1. Undertone: warm/cool/neutral
+2. Depth: light (fair skin, light hair) / medium / deep (dark skin/hair, high contrast)
+3. Clarity: bright (clear, saturated colors) / soft (muted, dusty colors)
+4. Contrast: high (stark difference between features) / low (features blend)
+
+Map to one of 12 seasons:
+WINTER (cool, high contrast):
+- bright_winter: cool + bright + medium-high contrast
+- cool_winter: cool + clear + very high contrast
+- deep_winter: cool + deep + high contrast
+
+SPRING (warm, clear):
+- bright_spring: warm + bright + medium contrast
+- warm_spring: warm + clear + medium-low contrast
+- light_spring: warm + light + low contrast
+
+SUMMER (cool, soft):
+- light_summer: cool + light + low contrast
+- cool_summer: cool + soft + medium contrast
+- soft_summer: cool + muted + low-medium contrast
+
+AUTUMN (warm, muted):
+- soft_autumn: warm + muted + low contrast
+- warm_autumn: warm + rich + medium contrast
+- deep_autumn: warm + deep + high contrast
+
+Return colorimetry object with this EXACT structure:
+{
+  "colorimetry": {
+    "photo_person": {
       "undertone": "warm" | "cool" | "neutral",
-      "detected": [
-        { "hex": "#RRGGBB", "name": "Shade name", "category": "EYES" | "LIPS" | "CHEEKS" | "FACE" | "HIGHLIGHT" | "BROWS" | "LINER" | "GENERAL", "reason": "1 sentence why it was observed" },
-        ... 2-5 swatches total
-      ],
-      "recommended": [ same swatch shape, reasons focused on why it flatters the look ],
-      "avoid": [ same swatch shape, reasons focused on why to skip ],
-      "notes": "optional 1 sentence summary"
-    },
-    "profile": {
-      "undertone": "warm" | "cool" | "neutral" | null,
-      "recommended": [ swatches tailored to the user's profile (if provided) ],
-      "avoid": [ swatches the user should skip based on profile ],
-      "notes": "optional 1 sentence"
-    }
+      "confidence": 0-100,
+      "season": "bright_winter" | "cool_winter" | "deep_winter" | "bright_spring" | "warm_spring" | "light_spring" | "light_summer" | "cool_summer" | "soft_summer" | "soft_autumn" | "warm_autumn" | "deep_autumn",
+      "season_confidence": 0-100,
+      "detected": [...],
+      "recommended": [...],
+      "avoid": [...]
+    }${hasProfile ? `,
+    "user": {
+      "undertone": "warm" | "cool" | "neutral",
+      "confidence": 0-100,
+      "season": "bright_winter" | "cool_winter" | "deep_winter" | "bright_spring" | "warm_spring" | "light_spring" | "light_summer" | "cool_summer" | "soft_summer" | "soft_autumn" | "warm_autumn" | "deep_autumn",
+      "season_confidence": 0-100,
+      "recommended": [...],
+      "avoid": [...]
+    }` : ''}
   }
-- Omit the 'profile' block entirely when profile fields were not provided or you lack confidence.
-- Keep tone warm, inclusive, and never address the reader directly.
-- Category labels must be uppercase strings; keep 'hex' values in #RRGGBB format.
-- Each palette (detected/recommended/avoid) should surface 2–5 colors. Reasons stay within a single sentence each.
+}
+
+Ensure colors in "recommended" and "avoid" arrays align with the detected season palette. Keep tone warm and inclusive; never address the viewer directly. Palette entries should stay in #RRGGBB format with uppercase category labels. Provide 2–5 swatches per array with one-sentence reasons.
 
 Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "colorimetry": {...}, "flashback": {...}, "pores": {...}, ... all 12 labs }`
           },

@@ -1,6 +1,12 @@
-import type { ColorimetryRecord, ColorimetrySwatch, Undertone } from './types';
+import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from './types';
 
 const VALID_UNDERTONES: Undertone[] = ['warm', 'cool', 'neutral'];
+const VALID_SEASONS: Season[] = [
+  'bright_winter', 'cool_winter', 'deep_winter',
+  'bright_spring', 'warm_spring', 'light_spring',
+  'light_summer', 'cool_summer', 'soft_summer',
+  'soft_autumn', 'warm_autumn', 'deep_autumn'
+];
 
 export interface NormalizedColorimetry {
   photo: {
@@ -8,12 +14,16 @@ export interface NormalizedColorimetry {
     detected: ColorimetrySwatch[];
     recommended: ColorimetrySwatch[];
     avoid: ColorimetrySwatch[];
+    season?: Season | null;
+    season_confidence?: number | null;
     notes?: string | null;
   };
   profile?: {
     undertone?: Undertone | null;
     recommended: ColorimetrySwatch[];
     avoid: ColorimetrySwatch[];
+    season?: Season | null;
+    season_confidence?: number | null;
     notes?: string | null;
   } | null;
 }
@@ -43,6 +53,17 @@ function normalizeUndertone(value: unknown): Undertone | null {
   if (lowered.includes('cool')) return 'cool';
   if (lowered.includes('neutral') || lowered.includes('olive') || lowered.includes('balanced')) {
     return 'neutral';
+  }
+
+  return null;
+}
+
+function normalizeSeason(value: unknown): Season | null {
+  if (typeof value !== 'string') return null;
+  const lowered = value.trim().toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
+
+  if ((VALID_SEASONS as string[]).includes(lowered)) {
+    return lowered as Season;
   }
 
   return null;
@@ -136,6 +157,8 @@ function normalizePhotoSection(value: unknown): NormalizedColorimetry['photo'] |
   const avoid = normalizeSwatchArray((value as any).avoid ?? (value as any).skip);
 
   const notes = normalizeOptionalString((value as any).notes ?? (value as any).summary ?? null);
+  const season = normalizeSeason((value as any).season ?? (value as any).photo_season ?? null);
+  const seasonConfidence = normalizeConfidence((value as any).season_confidence ?? null);
 
   if (detected.length === 0 && recommended.length === 0 && avoid.length === 0 && !notes && !rawUndertone) {
     return null;
@@ -146,6 +169,8 @@ function normalizePhotoSection(value: unknown): NormalizedColorimetry['photo'] |
     detected,
     recommended,
     avoid,
+    season: season ?? null,
+    season_confidence: seasonConfidence,
     notes,
   };
 }
@@ -158,8 +183,10 @@ function normalizeProfileSection(value: unknown): NormalizedColorimetry['profile
 
   const notes = normalizeOptionalString((value as any).notes ?? (value as any).summary ?? null);
   const undertone = normalizeUndertone((value as any).undertone ?? null);
+  const season = normalizeSeason((value as any).season ?? (value as any).profile_season ?? (value as any).user_season ?? null);
+  const seasonConfidence = normalizeConfidence((value as any).season_confidence ?? null);
 
-  if (recommended.length === 0 && avoid.length === 0 && !notes && !undertone) {
+  if (recommended.length === 0 && avoid.length === 0 && !notes && !undertone && !season) {
     return null;
   }
 
@@ -167,6 +194,8 @@ function normalizeProfileSection(value: unknown): NormalizedColorimetry['profile
     undertone: undertone ?? null,
     recommended,
     avoid,
+    season: season ?? null,
+    season_confidence: seasonConfidence,
     notes,
   };
 }
@@ -174,12 +203,14 @@ function normalizeProfileSection(value: unknown): NormalizedColorimetry['profile
 export function normalizeColorimetryPayload(raw: unknown): NormalizedColorimetry | null {
   if (!raw || typeof raw !== 'object') return null;
 
-  const photo = normalizePhotoSection((raw as any).photo ?? (raw as any).image ?? null);
+  const photo = normalizePhotoSection(
+    (raw as any).photo_person ?? (raw as any).photo ?? (raw as any).image ?? null
+  );
   if (!photo) {
     return null;
   }
 
-  const profile = normalizeProfileSection((raw as any).profile ?? (raw as any).user ?? null);
+  const profile = normalizeProfileSection((raw as any).user ?? (raw as any).profile ?? null);
 
   return {
     photo,
@@ -195,9 +226,11 @@ export function buildColorimetryInsert(sessionId: string, normalized: Normalized
     photo_recommended: normalized.photo.recommended,
     photo_avoid: normalized.photo.avoid,
     photo_notes: normalized.photo.notes ?? null,
+    photo_season: normalized.photo.season ?? null,
     profile_undertone: normalized.profile?.undertone ?? null,
     profile_recommended: normalized.profile?.recommended ?? null,
     profile_avoid: normalized.profile?.avoid ?? null,
+    user_season: normalized.profile?.season ?? null,
     profile_notes: normalized.profile?.notes ?? null,
   };
 }
@@ -209,6 +242,7 @@ export function mapColorimetryRow(row: any): ColorimetryRecord | null {
   const photoDetected = Array.isArray(row.photo_detected) ? row.photo_detected : [];
   const photoRecommended = Array.isArray(row.photo_recommended) ? row.photo_recommended : [];
   const photoAvoid = Array.isArray(row.photo_avoid) ? row.photo_avoid : [];
+  const photoSeason = normalizeSeason(row.photo_season);
 
   const record: ColorimetryRecord = {
     id: typeof row.id === 'string' ? row.id : undefined,
@@ -218,24 +252,39 @@ export function mapColorimetryRow(row: any): ColorimetryRecord | null {
       detected: photoDetected,
       recommended: photoRecommended,
       avoid: photoAvoid,
+      season: photoSeason ?? null,
       notes: normalizeOptionalString(row.photo_notes),
     },
+    photo_season: photoSeason ?? undefined,
     created_at: normalizeOptionalString(row.created_at) ?? undefined,
     updated_at: normalizeOptionalString(row.updated_at) ?? undefined,
   };
 
   const profileRecommended = Array.isArray(row.profile_recommended) ? row.profile_recommended : [];
   const profileAvoid = Array.isArray(row.profile_avoid) ? row.profile_avoid : [];
+  const userSeason = normalizeSeason(row.user_season);
 
-  if (profileRecommended.length > 0 || profileAvoid.length > 0 || row.profile_undertone || row.profile_notes) {
+  if (profileRecommended.length > 0 || profileAvoid.length > 0 || row.profile_undertone || row.profile_notes || userSeason) {
     record.profile = {
       undertone: normalizeUndertone(row.profile_undertone) ?? null,
       recommended: profileRecommended,
       avoid: profileAvoid,
+      season: userSeason ?? null,
       notes: normalizeOptionalString(row.profile_notes),
     };
+    record.user_season = userSeason ?? undefined;
   } else {
     record.profile = null;
+    if (userSeason) {
+      record.profile = {
+        undertone: null,
+        recommended: [],
+        avoid: [],
+        season: userSeason,
+        notes: null,
+      };
+      record.user_season = userSeason;
+    }
   }
 
   return record;

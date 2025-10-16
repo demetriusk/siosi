@@ -20,6 +20,27 @@ create table if not exists public.colorimetry (
   unique (session_id)
 );
 
+-- Ensure legacy tables have the same defaults/constraints
+alter table public.colorimetry
+  alter column id set default gen_random_uuid(),
+  alter column photo_detected set default '[]'::jsonb,
+  alter column photo_recommended set default '[]'::jsonb,
+  alter column photo_avoid set default '[]'::jsonb,
+  alter column created_at set default now(),
+  alter column updated_at set default now();
+
+update public.colorimetry
+set photo_detected = '[]'::jsonb
+where photo_detected is null;
+
+update public.colorimetry
+set photo_recommended = '[]'::jsonb
+where photo_recommended is null;
+
+update public.colorimetry
+set photo_avoid = '[]'::jsonb
+where photo_avoid is null;
+
 create index if not exists idx_colorimetry_session_id on public.colorimetry(session_id);
 
 create or replace function public.touch_colorimetry_updated_at()

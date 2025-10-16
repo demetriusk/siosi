@@ -35,6 +35,12 @@ export interface LabAnalysis {
 
 export type Undertone = 'warm' | 'cool' | 'neutral';
 
+export type Season =
+  | 'bright_winter' | 'cool_winter' | 'deep_winter'
+  | 'bright_spring' | 'warm_spring' | 'light_spring'
+  | 'light_summer' | 'cool_summer' | 'soft_summer'
+  | 'soft_autumn' | 'warm_autumn' | 'deep_autumn';
+
 export interface ColorimetrySwatch {
   id?: string;
   hex: string;
@@ -50,6 +56,8 @@ export interface ColorimetryPhotoPalette {
   detected: ColorimetrySwatch[];
   recommended: ColorimetrySwatch[];
   avoid: ColorimetrySwatch[];
+  season?: Season | null;
+  season_confidence?: number | null;
   notes?: string | null;
 }
 
@@ -57,6 +65,8 @@ export interface ColorimetryProfilePalette {
   undertone?: Undertone | null;
   recommended: ColorimetrySwatch[];
   avoid: ColorimetrySwatch[];
+  season?: Season | null;
+  season_confidence?: number | null;
   notes?: string | null;
 }
 
@@ -65,8 +75,27 @@ export interface ColorimetryRecord {
   session_id: string;
   photo: ColorimetryPhotoPalette;
   profile?: ColorimetryProfilePalette | null;
+  photo_season?: Season | null;
+  user_season?: Season | null;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface Colorimetry {
+  id: string;
+  session_id: string;
+  photo_undertone: Undertone;
+  photo_undertone_confidence: number;
+  photo_season?: Season;
+  detected_colors: ColorimetrySwatch[];
+  recommended_colors: ColorimetrySwatch[];
+  avoid_colors: ColorimetrySwatch[];
+  user_undertone?: Undertone;
+  user_undertone_confidence?: number;
+  user_season?: Season;
+  user_recommended_colors?: ColorimetrySwatch[];
+  user_avoid_colors?: ColorimetrySwatch[];
+  created_at: string;
 }
 
 export type LegacySkinType = 'oily' | 'dry' | 'combination' | 'normal' | 'sensitive';
