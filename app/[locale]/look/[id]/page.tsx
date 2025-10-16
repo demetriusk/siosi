@@ -203,7 +203,7 @@ export default async function LookPage({ params }: LookPageProps) {
       <main className="flex-1 bg-[#F9FAFB] py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <Card className="mb-8 p-6 md:p-8">
+          <Card className="mb-8 bg-transparent border-0 shadow-none">
             <div className="flex flex-col md:flex-row items-start gap-6">
               <div className="w-full md:w-1/3">
                 {session?.photo_url ? (

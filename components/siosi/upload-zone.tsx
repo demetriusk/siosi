@@ -272,6 +272,8 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
         `}
         >
           <input
+            id="siosi-upload-photo"
+            name="siosi-upload-photo"
             ref={fileInputRef}
             type="file"
             className="sr-only"
@@ -280,6 +282,8 @@ export const UploadZone = forwardRef<UploadZoneHandle, UploadZoneProps>(function
             disabled={!modelsReady || isValidating}
           />
           <input
+            id="siosi-upload-photo-camera"
+            name="siosi-upload-photo-camera"
             ref={cameraInputRef}
             type="file"
             className="hidden"

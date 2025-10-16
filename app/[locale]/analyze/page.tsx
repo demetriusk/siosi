@@ -10,7 +10,6 @@ import { Footer } from '@/components/siosi/footer';
 import { UsageBanner } from '@/components/siosi/usage-banner';
 import { UploadZone } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import ChipList from '@/components/ui/chip-list';
 import { getSupabase } from '@/lib/supabase';
 import { normalizeAnalysesPayload, calculateCriticalCountFromArray } from '@/lib/normalize-analyses';
@@ -364,12 +363,12 @@ export default function AnalyzePage() {
               {/* What's this for? */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-base font-semibold text-[#0A0A0A]">
+                  <div className="text-base font-semibold text-[#0A0A0A]">
                     {t('upload.occasion_title')} {' '}
                     <span className="text-sm text-[#6B7280] font-normal">
                       {t('upload.occasion_optional')}
                     </span>
-                  </Label>
+                  </div>
                   {occasion && (
                     <Button
                       variant="ghost"
@@ -398,10 +397,10 @@ export default function AnalyzePage() {
               {/* Where will you be? */}
               <div className="border-t border-[#E5E7EB] pt-6">
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-base font-semibold text-[#0A0A0A]">
+                  <div className="text-base font-semibold text-[#0A0A0A]">
                     {t('upload.where_title')}
                     <span className="text-sm text-[#6B7280] font-normal"> {t('upload.where_optional')}</span>
-                  </Label>
+                  </div>
                   {where !== 'both' && (
                     <Button
                       variant="ghost"
@@ -427,7 +426,7 @@ export default function AnalyzePage() {
               {/* Climate */}
               <div className="mt-4">
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-sm text-[#374151] block">{t('upload.climate_title')}</Label>
+                  <p className="text-sm text-[#374151]">{t('upload.climate_title')}</p>
                   {climate && (
                     <Button
                       variant="ghost"
@@ -454,12 +453,12 @@ export default function AnalyzePage() {
               {/* Concerns */}
               <div className="border-t border-[#E5E7EB] pt-6">
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-base font-semibold text-[#0A0A0A]">
+                  <div className="text-base font-semibold text-[#0A0A0A]">
                     {t('upload.concerns_title')} {' '}
                     <span className="text-sm text-[#6B7280] font-normal">
                       {t('upload.occasion_optional')}
                     </span>
-                  </Label>
+                  </div>
                   {concerns.length > 0 && (
                     <Button
                       variant="ghost"
