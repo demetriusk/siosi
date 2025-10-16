@@ -156,8 +156,7 @@ export async function GET(req: NextRequest, context: any) {
 
     const fonts = await loadFonts(req);
     if (!fonts.length) {
-      logger.error('Poster fonts unavailable after fallback attempts');
-      return new Response('Poster fonts unavailable', { status: 500 });
+      logger.warn('Poster fonts unavailable, using default renderer fonts');
     }
 
     const titleText = `síOsí score: ${overall}`;
@@ -221,7 +220,11 @@ export async function GET(req: NextRequest, context: any) {
     );
 
     // Generate image via @vercel/og
-    const imageResponse = new ImageResponse(image as any, { width, height, fonts });
+    const imageInit: ConstructorParameters<typeof ImageResponse>[1] = fonts.length
+      ? { width, height, fonts }
+      : { width, height };
+
+    const imageResponse = new ImageResponse(image as any, imageInit);
 
     try {
       const pngBuffer = await imageResponse.arrayBuffer();
@@ -257,11 +260,7 @@ export async function GET(req: NextRequest, context: any) {
       });
     } catch (error) {
       logger.error('Poster generation upload failed', error);
-      return new ImageResponse(image as any, {
-        width,
-        height,
-        fonts,
-      });
+      return new ImageResponse(image as any, imageInit);
     }
   } catch (error) {
     logger.error('Poster generation failed', error);
