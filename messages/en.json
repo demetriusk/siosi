@@ -189,7 +189,10 @@
     "photo_analysis": "Person in Photo",
     "detected": "1. Detected in Photo",
     "recommended_photo": "2. Recommended Colors",
-    "avoid_photo": "3. Colors to Avoid",
+  "avoid_photo": "3. Colors to Avoid",
+  "confidence_badge": "{value}% confidence",
+  "season_badge": "{season} season",
+  "season_confidence_badge": "{value}% season match",
     "personalized_for_you": "Personalized for You",
     "based_on_profile": "Based on your profile: skin type, tone, and eye shape",
     "your_analysis": "Your Personal Colors",
@@ -221,7 +224,7 @@
     "save_self_error": "You can't save your own look"
   },
   "saved_sessions": {
-    "title": "Saved looks",
+    "title": "Saved",
     "loading": "Loading...",
     "login_prompt": "Log in to see your saved looks.",
     "login_cta": "Log in",

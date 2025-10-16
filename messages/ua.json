@@ -189,7 +189,10 @@
     "photo_analysis": "Особа на фото",
     "detected": "1. Виявлено на фото",
     "recommended_photo": "2. Рекомендовані кольори",
-    "avoid_photo": "3. Кольори, яких варто уникати",
+  "avoid_photo": "3. Кольори, яких варто уникати",
+  "confidence_badge": "{value}% впевненості",
+  "season_badge": "Сезон {season}",
+  "season_confidence_badge": "{value}% збіг сезону",
     "personalized_for_you": "Персоналізовано для тебе",
     "based_on_profile": "На основі твого профілю: тип шкіри, тон та форма очей",
     "your_analysis": "Твої особисті кольори",
@@ -216,7 +219,7 @@
     "save_self_error": "Ви не можете зберегти власний образ"
   },
   "saved_sessions": {
-    "title": "Збережені образи",
+    "title": "Збережені",
     "loading": "Завантаження...",
     "login_prompt": "Увійди, щоб побачити збережені образи.",
   "login_cta": "Увійти",

@@ -205,7 +205,8 @@ export default function AnalyzePage() {
           climate,
           skinType: profile.skinType,
           skinTone: profile.skinTone,
-          lidType: profile.lidType
+          lidType: profile.lidType,
+          locale
         })
       });
       

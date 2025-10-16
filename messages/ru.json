@@ -189,7 +189,10 @@
     "photo_analysis": "Человек на фото",
     "detected": "1. Обнаружено на фото",
     "recommended_photo": "2. Рекомендованные оттенки",
-    "avoid_photo": "3. Оттенки, которых лучше избегать",
+  "avoid_photo": "3. Оттенки, которых лучше избегать",
+  "confidence_badge": "{value}% уверенности",
+  "season_badge": "Сезон {season}",
+  "season_confidence_badge": "{value}% совпадение по сезону",
     "personalized_for_you": "Персонально для тебя",
     "based_on_profile": "На основе твоего профиля: тип кожи, тон и форма глаз",
     "your_analysis": "Твои персональные цвета",
@@ -216,7 +219,7 @@
     "save_self_error": "Вы не можете сохранить свой собственный лук"
   },
   "saved_sessions": {
-    "title": "Сохранённые луки",
+    "title": "Сохранёнки",
     "loading": "Загрузка...",
     "login_prompt": "Войдите, чтобы увидеть сохранённые луки.",
     "login_cta": "Войти",

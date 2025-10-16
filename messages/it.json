@@ -56,7 +56,10 @@
       "photo_analysis": "Persona nella foto",
       "detected": "1. Rilevato nella foto",
       "recommended_photo": "2. Colori consigliati",
-      "avoid_photo": "3. Colori da evitare",
+  "avoid_photo": "3. Colori da evitare",
+  "confidence_badge": "{value}% di sicurezza",
+  "season_badge": "Stagione {season}",
+  "season_confidence_badge": "{value}% corrispondenza stagione",
       "personalized_for_you": "Personalizzato per te",
       "based_on_profile": "Basato sul tuo profilo: tipo di pelle, tono e forma degli occhi",
       "your_analysis": "I tuoi colori personali",
@@ -216,7 +219,7 @@
     "save_self_error": "Non puoi salvare il tuo stesso look"
   },
   "saved_sessions": {
-    "title": "Look salvati",
+    "title": "Salvati",
     "loading": "Caricamento...",
     "login_prompt": "Accedi per vedere i tuoi look salvati.",
     "login_cta": "Accedi",

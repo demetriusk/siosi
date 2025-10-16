@@ -13,14 +13,15 @@ export async function POST(req: NextRequest) {
 
     const openai = new OpenAI({ apiKey })
     const { 
-      photoUrl, 
-      skinType, 
-      skinTone, 
+      photoUrl,
+      skinType,
+      skinTone,
       lidType,
       occasion,
       concerns,
       indoor_outdoor,
-      climate 
+      climate,
+      locale
     } = await req.json()
 
     // Validate photoUrl exists
@@ -86,8 +87,9 @@ export async function POST(req: NextRequest) {
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content:
-          "You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind."
+        content: `You are siOsi's makeup analyst. Be lenient when validating photos: if at least one real human face is reasonably visible, proceed with analysis. When uncertain, analyze with lower confidence instead of rejecting. Output strictly JSON. Style guide for text fields: warm, beauty-community voice, friendly and encouraging, optionally a light wink of humor, zero technical jargon. Refer to the subject as 'this makeup', 'the look', or 'this application'—never address the viewer directly (avoid 'you', 'your'). No shaming; keep tips practical and kind.
+
+        IMPORTANT: All text content in "detected", "recommendations", "reason", and "notes" fields MUST be in ${getLanguageName(locale || 'en')}. Do not mix languages. The entire response text should be in ${getLanguageName(locale || 'en')}.`
       },
       {
         role: 'user',
@@ -158,61 +160,97 @@ Context-aware scoring reminders:
 - ${lidType || 'standard'} eyes influence creasing risk
 - ${occasion || 'general'} sets expectations for coverage intensity
 
-STEP 3: Perform colorimetry analysis with seasonal classification:
+STEP 3: Perform seasonal colorimetry analysis (SEPARATE from lab analysis above):
 
-Analyze color theory for makeup colors visible in this photo. This analysis is INDEPENDENT of occasion, concerns, location, or climate context.
+This analysis is INDEPENDENT of concerns, occasion, indoor/outdoor, and climate. Base it only on the visible makeup + skin/hair/eye coloring in the photo, plus optional profile (skin_type, skin_tone, lid_type).
 
-First, determine the 12-season classification:
-1. Undertone: warm/cool/neutral
-2. Depth: light (fair skin, light hair) / medium / deep (dark skin/hair, high contrast)
-3. Clarity: bright (clear, saturated colors) / soft (muted, dusty colors)
-4. Contrast: high (stark difference between features) / low (features blend)
+SEASONAL COLOR ANALYSIS SYSTEM:
+Classify the person into 1 of 12 color seasons based on 4 factors:
 
-Map to one of 12 seasons:
-WINTER (cool, high contrast):
-- bright_winter: cool + bright + medium-high contrast
-- cool_winter: cool + clear + very high contrast
-- deep_winter: cool + deep + high contrast
+1. UNDERTONE: warm (golden/yellow), cool (pink/blue), or neutral (balanced)
+2. DEPTH: light (fair skin, light hair, delicate features), medium, or deep (dark skin/hair, high contrast)
+3. CLARITY: bright (clear, saturated colors look best) vs soft (muted, dusty colors look best)
+4. CONTRAST: high (stark difference between skin/hair/eyes) vs low (features blend harmoniously)
 
-SPRING (warm, clear):
-- bright_spring: warm + bright + medium contrast
-- warm_spring: warm + clear + medium-low contrast
-- light_spring: warm + light + low contrast
+12 SEASONS MAPPING:
 
-SUMMER (cool, soft):
-- light_summer: cool + light + low contrast
-- cool_summer: cool + soft + medium contrast
-- soft_summer: cool + muted + low-medium contrast
+WINTER (cool undertone, high contrast):
+- "bright_winter": cool + bright/clear colors + medium-high contrast
+- "cool_winter": cool + icy/jewel tones + very high contrast (think Snow White)
+- "deep_winter": cool + deep/rich colors + high contrast (dark hair, fair or deep skin)
 
-AUTUMN (warm, muted):
-- soft_autumn: warm + muted + low contrast
-- warm_autumn: warm + rich + medium contrast
-- deep_autumn: warm + deep + high contrast
+SPRING (warm undertone, clear/bright):
+- "bright_spring": warm + bright/clear colors + medium contrast
+- "warm_spring": warm + peachy/coral tones + medium-low contrast (think golden hour)
+- "light_spring": warm + light/delicate colors + low contrast (soft blonde, light eyes)
 
-Return colorimetry object with this EXACT structure:
+SUMMER (cool undertone, soft/muted):
+- "light_summer": cool + light/pastel colors + low contrast (ash blonde, soft features)
+- "cool_summer": cool + soft/dusty colors + medium contrast
+- "soft_summer": cool + muted/grayed colors + low-medium contrast (blend of features)
+
+AUTUMN (warm undertone, muted/earthy):
+- "soft_autumn": warm + muted/dusty colors + low contrast (soft features, hazel eyes)
+- "warm_autumn": warm + rich/earthy colors + medium contrast (think fall leaves)
+- "deep_autumn": warm + deep/intense colors + high contrast (dark hair, rich coloring)
+
+CLASSIFICATION GUIDELINES:
+- Look at natural coloring: skin depth, hair color, eye color, contrast level
+- Consider which makeup colors are already flattering in the photo
+- If person has dyed hair, try to infer natural coloring from roots, brows, lashes, skin
+- When uncertain between 2 seasons, pick the one that better matches contrast level
+- Confidence should be 70-95% (reserve 95%+ for very obvious cases)
+
+OUTPUT STRUCTURE:
 {
   "colorimetry": {
-    "photo_person": {
+    "photo": {
       "undertone": "warm" | "cool" | "neutral",
-      "confidence": 0-100,
       "season": "bright_winter" | "cool_winter" | "deep_winter" | "bright_spring" | "warm_spring" | "light_spring" | "light_summer" | "cool_summer" | "soft_summer" | "soft_autumn" | "warm_autumn" | "deep_autumn",
-      "season_confidence": 0-100,
-      "detected": [...],
-      "recommended": [...],
-      "avoid": [...]
-    }${hasProfile ? `,
-    "user": {
-      "undertone": "warm" | "cool" | "neutral",
-      "confidence": 0-100,
-      "season": "bright_winter" | "cool_winter" | "deep_winter" | "bright_spring" | "warm_spring" | "light_spring" | "light_summer" | "cool_summer" | "soft_summer" | "soft_autumn" | "warm_autumn" | "deep_autumn",
-      "season_confidence": 0-100,
-      "recommended": [...],
-      "avoid": [...]
-    }` : ''}
+      "season_confidence": 70-100,
+      "detected": [
+        { 
+          "hex": "#RRGGBB", 
+          "name": "Shade name", 
+          "category": "EYES" | "LIPS" | "CHEEKS" | "FACE" | "HIGHLIGHT" | "BROWS" | "LINER" | "GENERAL", 
+          "reason": "1 sentence why it was observed" 
+        }
+        // 2-5 swatches total
+      ],
+      "recommended": [
+        // Same swatch shape, 6-10 colors that align with detected season
+        // Reasons focused on why it flatters the season (e.g., "Peachy coral complements Warm Spring's golden undertone")
+      ],
+      "avoid": [
+        // Same swatch shape, 4-8 colors to skip
+        // Reasons focused on season mismatch (e.g., "Icy blue clashes with Warm Autumn's earthy palette")
+      ],
+      "notes": "optional 1 sentence summary of the season (e.g., 'Bright Winter thrives in bold jewel tones')"
+    },
+    "profile": {
+      "undertone": "warm" | "cool" | "neutral" | null,
+      "season": "bright_winter" | ... (same 12 options) | null,
+      "season_confidence": 70-100 | null,
+      "recommended": [ 
+        // Swatches tailored to user's profile (if provided)
+        // Consider their skin_tone, skin_type, lid_type when recommending
+      ],
+      "avoid": [ 
+        // Swatches the user should skip based on their profile season
+      ],
+      "notes": "optional 1 sentence"
+    }
   }
 }
 
-Ensure colors in "recommended" and "avoid" arrays align with the detected season palette. Keep tone warm and inclusive; never address the viewer directly. Palette entries should stay in #RRGGBB format with uppercase category labels. Provide 2–5 swatches per array with one-sentence reasons.
+IMPORTANT:
+- Omit the 'profile' block entirely when profile fields (skin_type, skin_tone, lid_type) were not provided or you lack confidence
+- If profile IS provided, classify the user into their own season based on profile data
+- Keep tone warm, inclusive, never address the reader directly
+- Category labels must be uppercase strings
+- Keep 'hex' values in #RRGGBB format (makeup-appropriate shades, not pure colors)
+- Each palette should have 2-10 colors depending on type (detected: 2-5, recommended: 6-10, avoid: 4-8)
+- Reasons stay within one sentence each
 
 Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid": true, "colorimetry": {...}, "flashback": {...}, "pores": {...}, ... all 12 labs }`
           },
@@ -224,7 +262,7 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
       }
     ];
 
-  const maxAttempts = 3
+    const maxAttempts = 3
     let result: any | null = null
     let lastContent: string | undefined
     let lastParseError: unknown
@@ -235,7 +273,7 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
         temperature: 0.1,
         messages,
         response_format: { type: 'json_object' },
-        max_tokens: 4096
+        max_tokens: 6000
       })
 
       const content = completion.choices?.[0]?.message?.content
@@ -304,6 +342,20 @@ Return ONLY valid JSON. Either { "valid": false, "reason": "..." } or { "valid":
       error: err.message || 'Analysis failed' 
     }, { status: 500 })
   }
+}
+
+function getLanguageName(locale: string): string {
+  const languages: Record<string, string> = {
+    en: 'English',
+    de: 'German',
+    es: 'Spanish',
+    fr: 'French',
+    it: 'Italian',
+    pt: 'Portuguese',
+    ru: 'Russian',
+    ua: 'Ukrainian'
+  };
+  return languages[locale] || 'English';
 }
 
 function calculateOverallScore(analyses: any): number {

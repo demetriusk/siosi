@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import clsx from 'clsx';
 import { useTranslations } from 'next-intl';
-import type { ColorimetryRecord, ColorimetrySwatch, Undertone } from '@/lib/types';
+import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 
 interface ColorimetryDisplayProps {
@@ -18,29 +18,49 @@ const VARIANT_BADGE_STYLES: Record<PaletteVariant, string> = {
   avoid: 'bg-rose-100 text-rose-800 border border-rose-200',
 };
 
-function getSeasonDisplayName(season?: string | null): string | null {
-  if (!season) return null;
-  const names: Record<string, string> = {
-    bright_winter: 'Bright Winter',
-    cool_winter: 'Cool Winter',
-    deep_winter: 'Deep Winter',
-    bright_spring: 'Bright Spring',
-    warm_spring: 'Warm Spring',
-    light_spring: 'Light Spring',
-    light_summer: 'Light Summer',
-    cool_summer: 'Cool Summer',
-    soft_summer: 'Soft Summer',
-    soft_autumn: 'Soft Autumn',
-    warm_autumn: 'Warm Autumn',
-    deep_autumn: 'Deep Autumn',
-  };
-
-  return names[season] ?? season.split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
-}
+const SEASON_DISPLAY_NAMES: Record<Season, string> = {
+  bright_winter: 'Bright Winter',
+  cool_winter: 'Cool Winter',
+  deep_winter: 'Deep Winter',
+  bright_spring: 'Bright Spring',
+  warm_spring: 'Warm Spring',
+  light_spring: 'Light Spring',
+  light_summer: 'Light Summer',
+  cool_summer: 'Cool Summer',
+  soft_summer: 'Soft Summer',
+  soft_autumn: 'Soft Autumn',
+  warm_autumn: 'Warm Autumn',
+  deep_autumn: 'Deep Autumn',
+};
 
 function formatUndertone(value?: Undertone | null) {
   if (!value) return null;
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getSeasonDisplayName(value?: Season | string | null) {
+  if (!value) return null;
+  const key = value as Season;
+  if (key in SEASON_DISPLAY_NAMES) {
+    return SEASON_DISPLAY_NAMES[key];
+  }
+
+  return value
+    .toString()
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function formatCategory(category?: ColorimetrySwatch['category']) {
+  if (!category) return '';
+  return category
+    .toString()
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 function formatHex(hex: string) {
@@ -91,7 +111,7 @@ function PaletteCard({
             />
             <div className="flex flex-col gap-1">
               <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-slate-500">
-                <span>{swatch.category?.toUpperCase?.() ?? ''}</span>
+                <span>{formatCategory(swatch.category)}</span>
                 <span className="text-slate-300">•</span>
                 <span>{formatHex(swatch.hex)}</span>
                 {swatch.finish && (
@@ -172,9 +192,27 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
   const profileUndertone = formatUndertone(colorimetry.profile?.undertone);
   const photoSeasonLabel = getSeasonDisplayName(colorimetry.photo.season ?? colorimetry.photo_season ?? null);
   const profileSeasonLabel = getSeasonDisplayName(colorimetry.profile?.season ?? colorimetry.user_season ?? null);
+  const photoConfidence = typeof colorimetry.photo.confidence === 'number'
+    ? t('confidence_badge', { value: colorimetry.photo.confidence })
+    : null;
+  const profileConfidence = typeof colorimetry.profile?.confidence === 'number'
+    ? t('confidence_badge', { value: colorimetry.profile.confidence })
+    : null;
+  const photoSeasonConfidence = typeof colorimetry.photo.seasonConfidence === 'number'
+    ? t('season_confidence_badge', { value: colorimetry.photo.seasonConfidence })
+    : null;
+  const profileSeasonConfidence = typeof colorimetry.profile?.seasonConfidence === 'number'
+    ? t('season_confidence_badge', { value: colorimetry.profile.seasonConfidence })
+    : null;
   const hasProfilePalettes = (colorimetry.profile?.recommended?.length ?? 0) > 0 ||
     (colorimetry.profile?.avoid?.length ?? 0) > 0;
-  const shouldShowProfileSection = hasProfilePalettes || Boolean(colorimetry.profile?.notes) || Boolean(profileUndertone) || Boolean(profileSeasonLabel);
+  const shouldShowProfileSection =
+    hasProfilePalettes ||
+    Boolean(colorimetry.profile?.notes) ||
+    Boolean(profileUndertone) ||
+    Boolean(profileConfidence) ||
+    Boolean(profileSeasonLabel) ||
+    Boolean(profileSeasonConfidence);
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -194,7 +232,17 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           )}
           {photoSeasonLabel && (
             <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-              {photoSeasonLabel} season
+              {t('season_badge', { season: photoSeasonLabel })}
+            </Badge>
+          )}
+          {photoConfidence && (
+            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+              {photoConfidence}
+            </Badge>
+          )}
+          {photoSeasonConfidence && (
+            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+              {photoSeasonConfidence}
             </Badge>
           )}
         </div>
@@ -236,7 +284,17 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
               )}
               {profileSeasonLabel && (
                 <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-                  {profileSeasonLabel} season
+                  {t('season_badge', { season: profileSeasonLabel })}
+                </Badge>
+              )}
+              {profileConfidence && (
+                <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+                  {profileConfidence}
+                </Badge>
+              )}
+              {profileSeasonConfidence && (
+                <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+                  {profileSeasonConfidence}
                 </Badge>
               )}
             </div>
