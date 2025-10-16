@@ -1,10 +1,20 @@
 'use client';
 
-import { useMemo } from 'react';
-import clsx from 'clsx';
+import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { SEASON_PALETTES } from '@/lib/season-palettes';
 
 interface ColorimetryDisplayProps {
   colorimetry: ColorimetryRecord;
@@ -133,6 +143,7 @@ function PaletteCard({
 
 export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayProps) {
   const t = useTranslations('colorimetry');
+  const [isPaletteDrawerOpen, setIsPaletteDrawerOpen] = useState(false);
 
   const photoPalettes = useMemo(
     () => [
@@ -181,7 +192,13 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
   const photoUndertone = formatUndertone(colorimetry.photo.undertone);
   const profileUndertone = formatUndertone(colorimetry.profile?.undertone);
   const photoSeasonLabel = getSeasonDisplayName(colorimetry.photo.season ?? colorimetry.photo_season ?? null);
-  const profileSeasonLabel = getSeasonDisplayName(colorimetry.profile?.season ?? colorimetry.user_season ?? null);
+  const rawProfileSeason = colorimetry.profile?.season ?? colorimetry.user_season ?? null;
+  const profileSeasonLabel = getSeasonDisplayName(rawProfileSeason);
+  const profileSeasonKey =
+    typeof rawProfileSeason === 'string' && rawProfileSeason in SEASON_PALETTES
+      ? (rawProfileSeason as Season)
+      : null;
+  const profileSeasonPalette = profileSeasonKey ? SEASON_PALETTES[profileSeasonKey] : null;
   const photoConfidence = typeof colorimetry.photo.confidence === 'number'
     ? t('confidence_badge', { value: colorimetry.photo.confidence })
     : null;
@@ -205,7 +222,8 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     Boolean(profileSeasonConfidence);
 
   return (
-    <section>
+    <Drawer open={isPaletteDrawerOpen} onOpenChange={setIsPaletteDrawerOpen}>
+      <section>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -272,10 +290,21 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                   {profileUndertone} undertone
                 </Badge>
               )}
-              {profileSeasonLabel && (
-                <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-                  {t('season_badge', { season: profileSeasonLabel })}
-                </Badge>
+              {profileSeasonLabel && profileSeasonPalette ? (
+                <DrawerTrigger asChild>
+                  <Badge
+                    variant="outline"
+                    className="border-slate-200 bg-slate-100 text-slate-800 cursor-pointer transition hover:bg-slate-200"
+                  >
+                    {t('season_badge', { season: profileSeasonLabel })}
+                  </Badge>
+                </DrawerTrigger>
+              ) : (
+                profileSeasonLabel && (
+                  <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+                    {t('season_badge', { season: profileSeasonLabel })}
+                  </Badge>
+                )
               )}
               {profileConfidence && (
                 <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
@@ -303,6 +332,50 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           </div>
         </div>
       )}
-    </section>
+      </section>
+      <DrawerContent className="px-4 pb-6">
+        <DrawerHeader className="text-center">
+          <DrawerTitle>
+            {profileSeasonLabel ? `${profileSeasonLabel} palette` : t('season_palette_title')}
+          </DrawerTitle>
+          <DrawerDescription>
+            {profileSeasonPalette?.name ?? t('season_palette_empty')}
+          </DrawerDescription>
+        </DrawerHeader>
+        {profileSeasonPalette ? (
+          <div className="px-2 pb-4">
+            <ul className="grid grid-cols-3 gap-4 sm:grid-cols-5 md:grid-cols-6">
+              {profileSeasonPalette.palette.map((swatch) => (
+                <li key={swatch.hex} className="flex flex-col items-center text-center">
+                  <span
+                    className="h-14 w-14 rounded-full border border-white/70 shadow-inner"
+                    style={{ backgroundColor: swatch.hex }}
+                    aria-hidden
+                  />
+                  <span className="mt-2 text-xs font-medium text-slate-900">
+                    {swatch.name}
+                  </span>
+                  <span className="text-[11px] text-slate-500">{formatHex(swatch.hex)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="px-4 pb-6 text-center text-sm text-slate-600">
+            {t('season_palette_unavailable')}
+          </p>
+        )}
+        <DrawerFooter className="items-center">
+          <DrawerClose asChild>
+            <button
+              type="button"
+              className="inline-flex w-full items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            >
+              {t('close')}
+            </button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
