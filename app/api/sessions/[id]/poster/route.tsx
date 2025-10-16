@@ -3,6 +3,44 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import logger from '@/lib/logger';
 
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
+const CACHE_CONTROL_HEADER = 'public, max-age=600, stale-while-revalidate=86400';
+const POSTER_BUCKET = 'posters';
+
+function encodeStoragePath(path: string) {
+  return path
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/');
+}
+
+async function fetchStoredPoster(url: string, headers?: Record<string, string>) {
+  try {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      headers,
+    });
+
+    if (!response.ok) return null;
+
+    const contentType = response.headers.get('content-type') || 'image/png';
+    const arrayBuffer = await response.arrayBuffer();
+
+    return new Response(arrayBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': contentType,
+        'Cache-Control': CACHE_CONTROL_HEADER,
+      },
+    });
+  } catch (error) {
+    logger.debug('Poster cached storage fetch failed', error);
+    return null;
+  }
+}
+
 export async function GET(req: NextRequest, context: any) {
   try {
     // Next's generated types sometimes provide params as a Promise in the context.
@@ -85,19 +123,22 @@ export async function GET(req: NextRequest, context: any) {
     // Supabase storage public URL for cached posters
     const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
     const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE;
-    const bucket = 'posters';
-    const publicPath = `${String(id)}.png`;
-    const publicUrl = SUPABASE_URL ? `${SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/${bucket}/${encodeURIComponent(publicPath)}` : null;
+    const storageBase = SUPABASE_URL?.replace(/\/$/, '') || null;
+    const storageKey = `${String(id)}.png`;
+    const encodedKey = encodeStoragePath(storageKey);
+    const privateStorageUrl = storageBase ? `${storageBase}/storage/v1/object/${POSTER_BUCKET}/${encodedKey}` : null;
+    const publicStorageUrl = storageBase ? `${storageBase}/storage/v1/object/public/${POSTER_BUCKET}/${encodedKey}` : null;
 
-    // If public URL exists and is reachable, redirect to it (fast path).
-    // Use a single GET request (simpler than HEAD) because posters are rare.
-    if (publicUrl) {
-      try {
-        const check = await fetch(publicUrl);
-        if (check.ok) return new Response(null, { status: 302, headers: { Location: publicUrl } });
-      } catch (error) {
-        logger.debug('Poster cached public URL fetch failed', error);
-      }
+    if (privateStorageUrl && SUPABASE_SERVICE_ROLE) {
+      const cached = await fetchStoredPoster(privateStorageUrl, {
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE}`,
+      });
+      if (cached) return cached;
+    }
+
+    if (publicStorageUrl) {
+      const cached = await fetchStoredPoster(publicStorageUrl);
+      if (cached) return cached;
     }
 
     const image = (
@@ -140,31 +181,45 @@ export async function GET(req: NextRequest, context: any) {
     // Generate image via @vercel/og
     const imageResponse = new ImageResponse(image as any, { width, height, fonts });
 
-    // Try to upload generated PNG to Supabase storage (service role required)
     try {
-      // Convert ImageResponse to ArrayBuffer (Edge Response supports arrayBuffer)
-      const buf = await imageResponse.arrayBuffer();
-      // If we have a Supabase service role, PUT the binary directly to the storage object endpoint
-      if (SUPABASE_URL && SUPABASE_SERVICE_ROLE) {
-        const uploadUrl = `${SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/${bucket}/${encodeURIComponent(publicPath)}`;
-        // Note: Supabase storage REST accepts PUT to this endpoint with Authorization: Bearer <service_role>
-        const uploadRes = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${SUPABASE_SERVICE_ROLE}`,
-            'Content-Type': 'image/png',
-          },
-          body: buf,
-        });
-        if (uploadRes.ok && publicUrl) {
-          return new Response(null, { status: 302, headers: { Location: publicUrl } });
+      const pngBuffer = await imageResponse.arrayBuffer();
+
+      if (storageBase && SUPABASE_SERVICE_ROLE) {
+        const uploadUrl = `${storageBase}/storage/v1/object/${POSTER_BUCKET}/${encodedKey}`;
+        try {
+          const uploadRes = await fetch(uploadUrl, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${SUPABASE_SERVICE_ROLE}`,
+              'Content-Type': 'image/png',
+            },
+            body: pngBuffer,
+          });
+          if (!uploadRes.ok) {
+            logger.warn('Poster upload failed', {
+              status: uploadRes.status,
+              statusText: uploadRes.statusText,
+            });
+          }
+        } catch (error) {
+          logger.warn('Poster upload threw', error);
         }
       }
-      // If upload not configured/failed, return the generated PNG directly
-      return new Response(buf, { status: 200, headers: { 'Content-Type': 'image/png' } });
+
+      return new Response(pngBuffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': CACHE_CONTROL_HEADER,
+        },
+      });
     } catch (error) {
       logger.error('Poster generation upload failed', error);
-      return imageResponse;
+      return new ImageResponse(image as any, {
+        width,
+        height,
+        fonts,
+      });
     }
   } catch (error) {
     logger.error('Poster generation failed', error);
