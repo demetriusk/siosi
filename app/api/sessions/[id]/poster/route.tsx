@@ -9,8 +9,7 @@ export const dynamic = 'force-dynamic';
 const CACHE_CONTROL_HEADER = 'public, max-age=600, stale-while-revalidate=86400';
 const POSTER_BUCKET = 'posters';
 
-const INTER_REGULAR_SRC = new URL('../../../../../public/fonts/Inter-Regular.ttf', import.meta.url);
-const INTER_BOLD_SRC = new URL('../../../../../public/fonts/Inter-Bold.ttf', import.meta.url);
+const INTER_REGULAR_CDN = 'https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.5/files/inter-latin-400-normal.woff';
 
 type FontCache = Record<string, ArrayBuffer>;
 type OgFontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
@@ -32,33 +31,19 @@ async function loadFont(key: string, loader: () => Promise<ArrayBuffer | null>) 
 
 async function loadFonts(req: NextRequest) {
   const fonts: OgFont[] = [];
-  const origin = (() => {
-    try {
-      return new URL(req.url).origin;
-    } catch {
-      return null;
-    }
-  })();
 
   const interRegular = await loadFont('inter-400', async () => {
-    const candidates: (URL | string)[] = [INTER_REGULAR_SRC];
-    if (origin) candidates.push(`${origin}/fonts/Inter-Regular.ttf`);
-
-    for (const candidate of candidates) {
-      try {
-        const res = await fetch(candidate);
-        if (!res.ok) continue;
-        return await res.arrayBuffer();
-      } catch (error) {
-        logger.debug('Poster font fetch candidate failed', { candidate: String(candidate), error });
-      }
+    const candidates: string[] = [];
+    try {
+      candidates.push(new URL('/fonts/Inter-Regular.ttf', req.url).toString());
+    } catch (error) {
+      logger.debug('Poster font local URL build failed', { font: 'Inter-Regular', error });
     }
-    return null;
-  });
-
-  const interBold = await loadFont('inter-700', async () => {
-    const candidates: (URL | string)[] = [INTER_BOLD_SRC];
-    if (origin) candidates.push(`${origin}/fonts/Inter-Bold.ttf`);
+    if (typeof process.env.NEXT_PUBLIC_SITE_URL === 'string') {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+      candidates.push(`${siteUrl}/fonts/Inter-Regular.ttf`);
+    }
+    candidates.push(INTER_REGULAR_CDN);
 
     for (const candidate of candidates) {
       try {
@@ -66,14 +51,13 @@ async function loadFonts(req: NextRequest) {
         if (!res.ok) continue;
         return await res.arrayBuffer();
       } catch (error) {
-        logger.debug('Poster font fetch candidate failed', { candidate: String(candidate), error });
+        logger.debug('Poster font fetch candidate failed', { candidate, error });
       }
     }
     return null;
   });
 
   if (interRegular) fonts.push({ name: 'Inter', data: interRegular, weight: 400, style: 'normal' });
-  if (interBold) fonts.push({ name: 'Inter', data: interBold, weight: 700, style: 'normal' });
 
   return fonts;
 }
@@ -227,7 +211,7 @@ export async function GET(req: NextRequest, context: any) {
         </div>
 
         <div style={{ padding: '36px 56px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ fontSize: 32, fontWeight: 700, color: '#0f172a' }}>{titleText}</div>
+          <div style={{ fontSize: 32, fontWeight: 600, color: '#0f172a' }}>{titleText}</div>
           <div style={{ fontSize: 18, color: '#475569', maxWidth: 980 }}>
             síOsí makeup analysis
           </div>
