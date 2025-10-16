@@ -30,8 +30,8 @@ export function SessionCard({ session, locale, viewerId }: SessionCardProps) {
   };
 
   return (
-    <div className="break-inside-avoid mb-4">
-      <article className="relative overflow-hidden rounded-lg bg-[#111827] group">
+    <div className="h-full">
+      <article className="relative flex h-full flex-col overflow-hidden rounded-lg bg-[#111827] group">
         {session.user_id && viewerId && session.user_id === viewerId ? null : (
           <SessionSaveButton
             sessionId={session.id}
@@ -41,7 +41,7 @@ export function SessionCard({ session, locale, viewerId }: SessionCardProps) {
             className="absolute right-3 top-3 z-10 shadow-sm"
           />
         )}
-  <Link href={`/${locale}/look/${session.id}`} className="block">
+        <Link href={`/${locale}/look/${session.id}`} className="block h-full">
           <div className="relative aspect-[9/16]">
             {session.photo_url ? (
               <Image
