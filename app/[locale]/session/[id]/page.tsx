@@ -360,6 +360,15 @@ export default async function SessionPage({ params }: SessionPageProps) {
             </div>
           )}
 
+          {colorimetry && (
+            <p className="mt-12 text-xs leading-relaxed text-[#4B5563]">
+              {safeT(
+                'colorimetry.disclaimer',
+                'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.'
+              )}
+            </p>
+          )}
+
           
 
           {/* Actions are rendered via the client-side SessionActionsClient component above */}

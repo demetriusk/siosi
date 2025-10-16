@@ -303,8 +303,6 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           </div>
         </div>
       )}
-
-      <p className="mt-8 text-xs text-slate-500 leading-relaxed">{t('disclaimer')}</p>
     </section>
   );
 }
