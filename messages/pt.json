@@ -198,7 +198,11 @@
     "your_analysis": "Suas cores pessoais",
     "recommended_user": "4. Recomendado para você",
     "avoid_user": "5. Você deve evitar",
-    "disclaimer": "As recomendações de cor se baseiam na teoria das cores e na análise de subtom. Suas preferências pessoais e experimentações sempre prevalecem. A iluminação pode alterar como as tonalidades aparecem na vida real."
+    "disclaimer": "As recomendações de cor se baseiam na teoria das cores e na análise de subtom. Suas preferências pessoais e experimentações sempre prevalecem. A iluminação pode alterar como as tonalidades aparecem na vida real.",
+    "season_palette_title": "Paleta da estação",
+    "season_palette_empty": "Detalhes da paleta em breve.",
+    "season_palette_unavailable": "Nenhuma paleta encontrada para esta estação.",
+    "close": "Fechar"
   },
   "sessions": {
     "title": "Minhas sessões",

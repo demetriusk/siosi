@@ -198,7 +198,11 @@
     "your_analysis": "Tus colores personales",
     "recommended_user": "4. Recomendado para ti",
     "avoid_user": "5. Deberías evitar",
-    "disclaimer": "Las recomendaciones de color se basan en la teoría del color y el análisis de subtonos. Tus preferencias personales y la experimentación siempre mandan. La iluminación puede cambiar cómo se ven los tonos en la vida real."
+    "disclaimer": "Las recomendaciones se basan en teoría del color y análisis de subtonos. Aun así, sigue tus gustos, experimenta y ten en cuenta la iluminación: puede cambiar cómo se ve todo en la vida real.",
+    "season_palette_title": "Paleta de temporada",
+    "season_palette_empty": "Los detalles de la paleta estarán disponibles pronto.",
+    "season_palette_unavailable": "No se encontró una paleta para esta temporada.",
+    "close": "Cerrar"
   },
   "sessions": {
     "title": "Mis sesiones",

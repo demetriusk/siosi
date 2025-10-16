@@ -198,7 +198,11 @@
     "your_analysis": "Your Personal Colors",
     "recommended_user": "4. Recommended for You",
     "avoid_user": "5. You Should Avoid",
-    "disclaimer": "Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life."
+    "disclaimer": "Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.",
+    "season_palette_title": "Season palette",
+    "season_palette_empty": "Palette details coming soon.",
+    "season_palette_unavailable": "No palette was found for this season.",
+    "close": "Close"
   },
   "sessions": {
     "title": "My looks",

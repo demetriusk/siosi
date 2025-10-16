@@ -65,7 +65,11 @@
       "your_analysis": "I tuoi colori personali",
       "recommended_user": "4. Consigliato per te",
       "avoid_user": "5. Da evitare per te",
-      "disclaimer": "Le raccomandazioni sui colori si basano sulla teoria del colore e sull'analisi dei sottotoni. Le tue preferenze personali e la sperimentazione hanno sempre la precedenza. L'illuminazione può modificare la percezione reale delle tonalità."
+      "disclaimer": "Le raccomandazioni cromatiche si basano sulla teoria del colore e l'analisi del sottotono. Segui sempre il tuo gusto e sperimenta. Anche la luce può cambiare il modo in cui percepi i colori nella vita reale.",
+      "season_palette_title": "Palette di stagione",
+      "season_palette_empty": "Dettagli della palette in arrivo.",
+      "season_palette_unavailable": "Nessuna palette trovata per questa stagione.",
+      "close": "Chiudi"
     },
       "longevity": "Misuratore durata",
       "oxidation": "Match ora dorata",

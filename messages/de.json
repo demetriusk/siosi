@@ -198,7 +198,11 @@
     "your_analysis": "Deine persönlichen Farben",
     "recommended_user": "4. Für dich empfohlen",
     "avoid_user": "5. Du solltest vermeiden",
-    "disclaimer": "Farbempfehlungen basieren auf Farbtheorie und Unterton-Analyse. Eigene Vorlieben und Ausprobieren sind ausdrücklich willkommen. Lichtverhältnisse können beeinflussen, wie Farben im Alltag wirken."
+    "disclaimer": "Farbempfehlungen basieren auf Farbtheorie und Untertonanalyse. Eigene Vorlieben und Experimente sind willkommen. Lichtverhältnisse können beeinflussen, wie Farben in der Realität wirken.",
+    "season_palette_title": "Saisonpalette",
+    "season_palette_empty": "Palettendetails folgen bald.",
+    "season_palette_unavailable": "Für diese Saison wurde keine Palette gefunden.",
+    "close": "Schließen"
   },
   "sessions": {
     "title": "Meine Sitzungen",

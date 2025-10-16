@@ -50,7 +50,11 @@
       "your_analysis": "Vos couleurs personnelles",
       "recommended_user": "4. Recommandé pour vous",
       "avoid_user": "5. À éviter pour vous",
-      "disclaimer": "Les recommandations de couleur s'appuient sur la théorie des couleurs et l'analyse des sous-tons. Vos préférences personnelles et vos essais priment toujours. L'éclairage peut modifier la perception réelle des teintes."
+      "disclaimer": "Ces recommandations reposent sur la théorie des couleurs et l'analyse de ton sous-ton. Suis tes envies, teste, et pense à la lumière : elle change la façon dont les teintes apparaissent en vrai.",
+      "season_palette_title": "Palette saisonnière",
+      "season_palette_empty": "Les détails de la palette seront bientôt disponibles.",
+      "season_palette_unavailable": "Aucune palette trouvée pour cette saison.",
+      "close": "Fermer"
     },
       "resent_badge": "Renvoyé"
     }

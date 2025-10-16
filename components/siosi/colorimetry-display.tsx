@@ -294,7 +294,18 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                 <DrawerTrigger asChild>
                   <Badge
                     variant="outline"
-                    className="border-slate-200 bg-slate-100 text-slate-800 cursor-pointer transition hover:bg-slate-200"
+                    className="border-slate-200 bg-slate-100 text-slate-800 cursor-pointer transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isPaletteDrawerOpen}
+                    aria-controls="profile-season-palette"
+                    onClick={() => setIsPaletteDrawerOpen(true)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setIsPaletteDrawerOpen(true);
+                      }
+                    }}
                   >
                     {t('season_badge', { season: profileSeasonLabel })}
                   </Badge>
@@ -333,7 +344,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
         </div>
       )}
       </section>
-      <DrawerContent className="px-4 pb-6">
+  <DrawerContent id="profile-season-palette" className="px-4 pb-6">
         <DrawerHeader className="text-center">
           <DrawerTitle>
             {profileSeasonLabel ? `${profileSeasonLabel} palette` : t('season_palette_title')}
