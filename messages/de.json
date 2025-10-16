@@ -237,6 +237,14 @@
     "empty_subtitle": "Sobald du einen Look speicherst, erscheint er hier für den schnellen Zugriff.",
     "browse_sessions": "Meine Looks ansehen"
   },
+  "look": {
+    "zoom": {
+      "title": "Look-Foto",
+      "description": "Vergrößerte Vorschau deines analysierten Look-Fotos.",
+      "hint": "Zum Schließen irgendwo tippen",
+      "close": "Zoom schließen"
+    }
+  },
   "profile": {
     "confirm_delete_title": "Sind Sie sicher?",
     "confirm_delete_desc": "Dadurch werden Ihr Profil und alle Sitzungen dauerhaft entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.",

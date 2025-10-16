@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from '@/lib/types';
 import { Badge, badgeVariants } from '@/components/ui/badge';
@@ -19,6 +19,10 @@ import { SwatchBook } from 'lucide-react';
 interface ColorimetryDisplayProps {
   colorimetry: ColorimetryRecord;
 }
+
+type SeasonDrawerEventDetail = {
+  source?: 'photo' | 'profile';
+};
 
 type PaletteVariant = 'detected' | 'recommended' | 'avoid';
 
@@ -245,6 +249,34 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     ? SEASON_PALETTES[activeSeasonContext.key]
     : null;
 
+  useEffect(() => {
+    const onSeasonDrawer = (event: Event) => {
+      const customEvent = event as CustomEvent<SeasonDrawerEventDetail>;
+      const preferredSource = customEvent.detail?.source;
+
+      if (preferredSource === 'photo' && photoSeasonLabel) {
+        openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo');
+        return;
+      }
+
+      if (preferredSource === 'profile' && profileSeasonLabel) {
+        openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile');
+        return;
+      }
+
+      if (photoSeasonLabel) {
+        openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo');
+      } else if (profileSeasonLabel) {
+        openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile');
+      }
+    };
+
+    window.addEventListener('siosi:season-drawer', onSeasonDrawer);
+    return () => {
+      window.removeEventListener('siosi:season-drawer', onSeasonDrawer);
+    };
+  }, [openSeasonDrawer, photoSeasonKey, photoSeasonLabel, profileSeasonKey, profileSeasonLabel]);
+
   return (
     <Drawer open={isPaletteDrawerOpen} onOpenChange={handleDrawerChange}>
       <section>
@@ -268,6 +300,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
               className={`${badgeVariants({ variant: 'outline' })} gap-2 border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
               aria-controls="season-palette-drawer"
               aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'photo'}
+              data-season-source="photo"
               onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
             >
               <SwatchBook className="h-3.5 w-3.5" aria-hidden />
@@ -327,6 +360,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                   className={`${badgeVariants({ variant: 'outline' })} gap-2 border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
                   aria-controls="season-palette-drawer"
                   aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'profile'}
+                  data-season-source="profile"
                   onClick={() => openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile')}
                 >
                   <SwatchBook className="h-3.5 w-3.5" aria-hidden />

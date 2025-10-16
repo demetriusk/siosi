@@ -3,9 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronLeft, MoreHorizontal, Share2, ZoomIn } from 'lucide-react';
+import { ChevronLeft, MoreHorizontal, Share2, X, ZoomIn } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import SessionActionsClient from '@/components/siosi/session-actions-client';
 
 type ProfileSummary = {
@@ -48,6 +49,7 @@ interface LookHeroClientProps {
   undertoneBadge?: string | null;
   seasonBadge?: string | null;
   seasonMatchLabel?: string | null;
+  seasonBadgeSource?: 'photo' | 'profile' | null;
 }
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 32;
@@ -65,12 +67,33 @@ export default function LookHeroClient({
   undertoneBadge,
   seasonBadge,
   seasonMatchLabel,
+  seasonBadgeSource = null,
 }: LookHeroClientProps) {
   const [zoomOpen, setZoomOpen] = useState(false);
+  const t = useTranslations('look.zoom');
+  const colorT = useTranslations('colorimetry');
 
-  const badges = [undertoneBadge, seasonBadge, seasonMatchLabel].filter(Boolean) as string[];
+  const zoomTitle = t('title');
+  const zoomDescription = t('description');
+  const zoomHint = t('hint');
+  const zoomCloseLabel = t('close');
+  const seasonPaletteLabel = colorT('season_palette_title');
+
+  const heroBadges = (
+    [
+      undertoneBadge ? { key: 'undertone' as const, label: undertoneBadge } : null,
+      seasonBadge ? { key: 'season' as const, label: seasonBadge } : null,
+      seasonMatchLabel ? { key: 'seasonMatch' as const, label: seasonMatchLabel } : null,
+    ].filter(Boolean) as Array<{ key: 'undertone' | 'season' | 'seasonMatch'; label: string }>
+  );
   const strokeDasharray = `${((overallScore ?? 0) / 10) * RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`;
   const formattedScore = Number.isFinite(overallScore) ? overallScore.toFixed(1) : '0.0';
+
+  const handleSeasonBadgeClick = () => {
+    if (!seasonBadgeSource || typeof window === 'undefined') return;
+    const detail = { source: seasonBadgeSource } as const;
+    window.dispatchEvent(new CustomEvent('siosi:season-drawer', { detail }));
+  };
 
   return (
     <div className="relative h-full w-full">
@@ -110,7 +133,7 @@ export default function LookHeroClient({
             variant="ghost"
             className="h-11 w-11 rounded-full bg-white/80 text-[#0A0A0A] backdrop-blur hover:bg-white"
             onClick={() => setZoomOpen(true)}
-            aria-label="Zoom"
+            aria-label={zoomTitle}
           >
             <ZoomIn className="h-5 w-5" />
           </Button>
@@ -160,18 +183,37 @@ export default function LookHeroClient({
               </div>
             </div>
 
-            {badges.length > 0 && (
+            {heroBadges.length > 0 && (
               <div className="pointer-events-auto mb-1 flex flex-wrap items-center gap-2">
-                {badges.map((badge, index) => (
-                  <span
-                    key={`${badge}-${index}`}
-                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-                      index === 0 ? 'bg-amber-100 text-amber-800' : 'bg-gray-200 text-gray-800'
-                    }`}
-                  >
-                    {badge}
-                  </span>
-                ))}
+                {heroBadges.map((badge, index) => {
+                  const baseClass = 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium';
+                  const highlightedClass = 'bg-amber-100 text-amber-800';
+                  const neutralClass = 'bg-gray-200 text-gray-800';
+
+                  if (badge.key === 'season' && seasonBadgeSource) {
+                    return (
+                      <button
+                        key={`${badge.label}-${index}`}
+                        type="button"
+                        onClick={handleSeasonBadgeClick}
+                        className={`${baseClass} ${neutralClass} transition hover:bg-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80`}
+                        data-season-badge
+                        aria-label={seasonPaletteLabel}
+                      >
+                        {badge.label}
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <span
+                      key={`${badge.label}-${index}`}
+                      className={`${baseClass} ${index === 0 ? highlightedClass : neutralClass}`}
+                    >
+                      {badge.label}
+                    </span>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -179,15 +221,36 @@ export default function LookHeroClient({
       </div>
 
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent className="max-w-[90vw] md:max-w-4xl overflow-hidden p-0">
-          <div className="relative h-[80vh] w-full bg-black">
-            {src ? (
-              <Image src={src} alt={alt} fill className="object-contain" />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-white">
-                {alt}
-              </div>
-            )}
+        <DialogContent className="relative max-h-[90vh] max-w-[min(90vw,calc(90vh*0.5625))] overflow-hidden border-none bg-black/95 p-0 text-white shadow-2xl focus:outline-none md:max-w-[min(70vw,calc(90vh*0.5625))] [&>button:last-child]:hidden">
+          <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
+          <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>
+
+          <DialogClose
+            className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            aria-label={zoomCloseLabel}
+          >
+            <X className="h-5 w-5" />
+          </DialogClose>
+
+          <div className="flex items-center justify-center p-4">
+            <DialogClose asChild>
+              <button
+                type="button"
+                aria-label={zoomCloseLabel}
+                className="relative flex aspect-[9/16] w-full max-w-[min(80vw,calc(85vh*0.5625))] items-center justify-center overflow-hidden rounded-[1.5rem] bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:max-w-[min(70vw,calc(85vh*0.5625))]"
+              >
+                {src ? (
+                  <Image src={src} alt={alt} fill className="object-contain" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-white/80">
+                    {alt}
+                  </div>
+                )}
+                <span className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-md">
+                  {zoomHint}
+                </span>
+              </button>
+            </DialogClose>
           </div>
         </DialogContent>
       </Dialog>

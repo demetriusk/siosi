@@ -237,6 +237,14 @@
     "empty_subtitle": "Lorsque tu enregistres un look, il apparaîtra ici pour un accès rapide.",
     "browse_sessions": "Voir mes looks"
   },
+  "look": {
+    "zoom": {
+      "title": "Photo du look",
+      "description": "Aperçu agrandi de ta photo analysée.",
+      "hint": "Touchez n'importe où pour fermer",
+      "close": "Fermer le zoom"
+    }
+  },
   "profile": {
     "confirm_delete_title": "Êtes-vous sûr ?",
     "confirm_delete_desc": "Cela supprimera définitivement votre profil et toutes les sessions. Cette action est irréversible.",

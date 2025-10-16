@@ -242,6 +242,14 @@
     "empty_subtitle": "When you save a look, you'll see it here.",
     "browse_sessions": "Browse my looks"
   },
+  "look": {
+    "zoom": {
+      "title": "Look photo",
+      "description": "Zoomed-in preview of your analyzed look photo.",
+      "hint": "Tap anywhere to close",
+      "close": "Close zoom"
+    }
+  },
   "profile": {
     "confirm_delete_title": "Are you sure?",
     "confirm_delete_desc": "This will permanently remove your profile and all looks. This action cannot be undone.",

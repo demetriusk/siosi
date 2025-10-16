@@ -237,6 +237,14 @@
     "empty_subtitle": "Quando você salvar um look, ele aparecerá aqui para acesso rápido.",
     "browse_sessions": "Ver meus looks"
   },
+  "look": {
+    "zoom": {
+      "title": "Foto do look",
+      "description": "Prévia ampliada da sua foto analisada.",
+      "hint": "Toque em qualquer lugar para fechar",
+      "close": "Fechar zoom"
+    }
+  },
   "profile": {
     "confirm_delete_title": "Tem certeza?",
     "confirm_delete_desc": "Isso removerá permanentemente seu perfil e todas as sessões. Essa ação não pode ser desfeita.",

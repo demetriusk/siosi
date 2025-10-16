@@ -240,6 +240,14 @@ export default async function LookPage({ params }: LookPageProps) {
       ? formatSeasonMatch(seasonMatchPct)
       : null;
 
+  const seasonBadgeSource: 'photo' | 'profile' | null = seasonBadge
+    ? (colorimetry?.photo?.season ?? colorimetry?.photo_season)
+      ? 'photo'
+      : (colorimetry?.profile?.season ?? colorimetry?.user_season)
+        ? 'profile'
+        : null
+    : null;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header locale={locale} />
@@ -261,6 +269,7 @@ export default async function LookPage({ params }: LookPageProps) {
                 undertoneBadge={undertoneBadge}
                 seasonBadge={seasonBadge}
                 seasonMatchLabel={seasonMatchLabel}
+                seasonBadgeSource={seasonBadgeSource}
               />
             </div>
           </aside>
