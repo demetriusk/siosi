@@ -221,7 +221,10 @@ export default function LookHeroClient({
       </div>
 
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
-        <DialogContent className="relative max-h-[90vh] max-w-[min(90vw,calc(90vh*0.5625))] overflow-hidden border-none bg-black/95 p-0 text-white shadow-2xl focus:outline-none md:max-w-[min(70vw,calc(90vh*0.5625))] [&>button:last-child]:hidden">
+        <DialogContent
+          hideCloseButton
+          className="relative max-h-[90vh] max-w-[min(90vw,calc(90vh*0.5625))] overflow-hidden border-none bg-black/95 p-0 text-white shadow-2xl focus:outline-none md:max-w-[min(70vw,calc(90vh*0.5625))]"
+        >
           <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
           <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>
 
