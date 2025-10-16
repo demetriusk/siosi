@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from '@/lib/types';
-import { Badge } from '@/components/ui/badge';
+import { Badge, badgeVariants } from '@/components/ui/badge';
 import {
   Drawer,
   DrawerContent,
@@ -12,7 +12,6 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerClose,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import { SEASON_PALETTES } from '@/lib/season-palettes';
 
@@ -144,6 +143,27 @@ function PaletteCard({
 export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayProps) {
   const t = useTranslations('colorimetry');
   const [isPaletteDrawerOpen, setIsPaletteDrawerOpen] = useState(false);
+  const [activeSeasonContext, setActiveSeasonContext] = useState<{
+    key: Season | null;
+    label: string | null;
+    source: 'photo' | 'profile' | null;
+  }>({ key: null, label: null, source: null });
+
+  const handleDrawerChange = (open: boolean) => {
+    setIsPaletteDrawerOpen(open);
+    if (!open) {
+      setActiveSeasonContext({ key: null, label: null, source: null });
+    }
+  };
+
+  const openSeasonDrawer = (
+    seasonKey: Season | null,
+    seasonLabel: string | null,
+    source: 'photo' | 'profile'
+  ) => {
+    setActiveSeasonContext({ key: seasonKey, label: seasonLabel, source });
+    setIsPaletteDrawerOpen(true);
+  };
 
   const photoPalettes = useMemo(
     () => [
@@ -191,14 +211,18 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
 
   const photoUndertone = formatUndertone(colorimetry.photo.undertone);
   const profileUndertone = formatUndertone(colorimetry.profile?.undertone);
-  const photoSeasonLabel = getSeasonDisplayName(colorimetry.photo.season ?? colorimetry.photo_season ?? null);
+  const rawPhotoSeason = colorimetry.photo.season ?? colorimetry.photo_season ?? null;
+  const photoSeasonLabel = getSeasonDisplayName(rawPhotoSeason);
+  const photoSeasonKey =
+    typeof rawPhotoSeason === 'string' && rawPhotoSeason in SEASON_PALETTES
+      ? (rawPhotoSeason as Season)
+      : null;
   const rawProfileSeason = colorimetry.profile?.season ?? colorimetry.user_season ?? null;
   const profileSeasonLabel = getSeasonDisplayName(rawProfileSeason);
   const profileSeasonKey =
     typeof rawProfileSeason === 'string' && rawProfileSeason in SEASON_PALETTES
       ? (rawProfileSeason as Season)
       : null;
-  const profileSeasonPalette = profileSeasonKey ? SEASON_PALETTES[profileSeasonKey] : null;
   const photoConfidence = typeof colorimetry.photo.confidence === 'number'
     ? t('confidence_badge', { value: colorimetry.photo.confidence })
     : null;
@@ -221,8 +245,12 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     Boolean(profileSeasonLabel) ||
     Boolean(profileSeasonConfidence);
 
+  const activeSeasonPalette = activeSeasonContext.key
+    ? SEASON_PALETTES[activeSeasonContext.key]
+    : null;
+
   return (
-    <Drawer open={isPaletteDrawerOpen} onOpenChange={setIsPaletteDrawerOpen}>
+    <Drawer open={isPaletteDrawerOpen} onOpenChange={handleDrawerChange}>
       <section>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -239,9 +267,15 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
             </Badge>
           )}
           {photoSeasonLabel && (
-            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
+            <button
+              type="button"
+              className={`${badgeVariants({ variant: 'outline' })} border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
+              aria-controls="season-palette-drawer"
+              aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'photo'}
+              onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
+            >
               {t('season_badge', { season: photoSeasonLabel })}
-            </Badge>
+            </button>
           )}
           {photoConfidence && (
             <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
@@ -290,32 +324,16 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                   {profileUndertone} undertone
                 </Badge>
               )}
-              {profileSeasonLabel && profileSeasonPalette ? (
-                <DrawerTrigger asChild>
-                  <Badge
-                    variant="outline"
-                    className="border-slate-200 bg-slate-100 text-slate-800 cursor-pointer transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={isPaletteDrawerOpen}
-                    aria-controls="profile-season-palette"
-                    onClick={() => setIsPaletteDrawerOpen(true)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        setIsPaletteDrawerOpen(true);
-                      }
-                    }}
-                  >
-                    {t('season_badge', { season: profileSeasonLabel })}
-                  </Badge>
-                </DrawerTrigger>
-              ) : (
-                profileSeasonLabel && (
-                  <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-                    {t('season_badge', { season: profileSeasonLabel })}
-                  </Badge>
-                )
+              {profileSeasonLabel && (
+                <button
+                  type="button"
+                  className={`${badgeVariants({ variant: 'outline' })} border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
+                  aria-controls="season-palette-drawer"
+                  aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'profile'}
+                  onClick={() => openSeasonDrawer(profileSeasonKey, profileSeasonLabel, 'profile')}
+                >
+                  {t('season_badge', { season: profileSeasonLabel })}
+                </button>
               )}
               {profileConfidence && (
                 <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
@@ -344,19 +362,19 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
         </div>
       )}
       </section>
-  <DrawerContent id="profile-season-palette" className="px-4 pb-6">
+      <DrawerContent id="season-palette-drawer" className="px-4 pb-6">
         <DrawerHeader className="text-center">
           <DrawerTitle>
-            {profileSeasonLabel ? `${profileSeasonLabel} palette` : t('season_palette_title')}
+            {activeSeasonContext.label ?? t('season_palette_title')}
           </DrawerTitle>
           <DrawerDescription>
-            {profileSeasonPalette?.name ?? t('season_palette_empty')}
+            {activeSeasonPalette?.name ?? activeSeasonContext.label ?? t('season_palette_empty')}
           </DrawerDescription>
         </DrawerHeader>
-        {profileSeasonPalette ? (
+        {activeSeasonPalette ? (
           <div className="px-2 pb-4">
             <ul className="grid grid-cols-3 gap-4 sm:grid-cols-5 md:grid-cols-6">
-              {profileSeasonPalette.palette.map((swatch) => (
+              {activeSeasonPalette.palette.map((swatch) => (
                 <li key={swatch.hex} className="flex flex-col items-center text-center">
                   <span
                     className="h-14 w-14 rounded-full border border-white/70 shadow-inner"
@@ -373,7 +391,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           </div>
         ) : (
           <p className="px-4 pb-6 text-center text-sm text-slate-600">
-            {t('season_palette_unavailable')}
+            {activeSeasonContext.key ? t('season_palette_unavailable') : t('season_palette_empty')}
           </p>
         )}
         <DrawerFooter className="items-center">
