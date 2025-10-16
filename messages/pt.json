@@ -152,6 +152,10 @@
     "detected": "Detectado",
     "zones_affected": "Zonas afetadas",
     "recommendations": "Recomendações",
+    "tab": {
+      "analysis": "Análise",
+      "color_guide": "Guia de cores"
+    },
     "verdict": {
       "yay": "SIM",
       "nay": "NÃO",
@@ -193,6 +197,8 @@
   "confidence_badge": "{value}% de confiança",
   "season_badge": "Temporada {season}",
   "season_confidence_badge": "{value}% de compatibilidade de temporada",
+    "undertone_suffix": "Subtom: {value}",
+    "season_suffix": "Temporada: {value}",
     "personalized_for_you": "Personalizado para você",
     "based_on_profile": "Com base no seu perfil: tipo de pele, tom e formato dos olhos",
     "your_analysis": "Suas cores pessoais",

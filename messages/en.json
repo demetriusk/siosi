@@ -182,6 +182,10 @@
     },
     "details": {
       "title": "Details"
+    },
+    "tab": {
+      "analysis": "Analysis",
+      "color_guide": "Color Guide"
     }
   },
   "colorimetry": {
@@ -189,10 +193,12 @@
     "photo_analysis": "Person in Photo",
     "detected": "Detected in Photo",
     "recommended_photo": "Recommended Colors",
-  "avoid_photo": "Colors to Avoid",
-  "confidence_badge": "{value}% confidence",
-  "season_badge": "{season} season",
-  "season_confidence_badge": "{value}% season match",
+    "avoid_photo": "Colors to Avoid",
+    "confidence_badge": "{value}% confidence",
+    "season_badge": "{season} season",
+    "season_confidence_badge": "{value}% season match",
+    "undertone_suffix": "{value} undertone",
+    "season_suffix": "{value} season palette",
     "personalized_for_you": "Personalized for You",
     "based_on_profile": "Based on your profile: skin type, tone, and eye shape",
     "your_analysis": "Your Personal Colors",

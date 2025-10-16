@@ -45,6 +45,8 @@
   "confidence_badge": "{value}% de confiance",
   "season_badge": "Saison {season}",
   "season_confidence_badge": "{value}% de correspondance saisonnière",
+  "undertone_suffix": "Sous-ton : {value}",
+  "season_suffix": "Saison : {value}",
       "personalized_for_you": "Personnalisé pour vous",
       "based_on_profile": "Selon votre profil : type de peau, ton et forme des yeux",
       "your_analysis": "Vos couleurs personnelles",
@@ -172,6 +174,10 @@
     "detected": "Détecté",
     "zones_affected": "Zones concernées",
     "recommendations": "Recommandations",
+    "tab": {
+      "analysis": "Analyse",
+      "color_guide": "Guide couleur"
+    },
     "verdict": {
       "yay": "OUI",
       "nay": "NON",

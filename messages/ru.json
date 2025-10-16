@@ -152,6 +152,10 @@
     "detected": "Обнаружено",
     "zones_affected": "Затронутые зоны",
     "recommendations": "Рекомендации",
+    "tab": {
+      "analysis": "Анализ",
+      "color_guide": "Гид по цвету"
+    },
     "verdict": {
       "yay": "ДА",
       "nay": "НЕТ",
@@ -193,6 +197,8 @@
   "confidence_badge": "{value}% уверенности",
   "season_badge": "Сезон {season}",
   "season_confidence_badge": "{value}% совпадение по сезону",
+    "undertone_suffix": "Подтон: {value}",
+    "season_suffix": "Сезон: {value}",
     "personalized_for_you": "Персонально вам",
     "based_on_profile": "На основе вашего профиля: типа и тона кожи и формы глаз",
     "your_analysis": "Персональные цвета",

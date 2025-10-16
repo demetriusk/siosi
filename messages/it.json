@@ -60,6 +60,8 @@
   "confidence_badge": "{value}% di sicurezza",
   "season_badge": "Stagione {season}",
   "season_confidence_badge": "{value}% corrispondenza stagione",
+  "undertone_suffix": "Sottotono: {value}",
+  "season_suffix": "Stagione: {value}",
       "personalized_for_you": "Personalizzato per te",
       "based_on_profile": "Basato sul tuo profilo: tipo di pelle, tono e forma degli occhi",
       "your_analysis": "I tuoi colori personali",
@@ -170,8 +172,12 @@
     "show_details": "Mostra dettagli",
     "hide_details": "Nascondi dettagli",
     "detected": "Rilevato",
-  "zones_affected": "Zone interessate",
+    "zones_affected": "Zone interessate",
     "recommendations": "Raccomandazioni",
+    "tab": {
+      "analysis": "Analisi",
+      "color_guide": "Guida colore"
+    },
     "verdict": {
       "yay": "SÌ",
       "nay": "NO",

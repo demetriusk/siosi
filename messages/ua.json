@@ -152,6 +152,10 @@
     "detected": "Виявлено",
     "zones_affected": "Уражені зони",
     "recommendations": "Рекомендації",
+    "tab": {
+      "analysis": "Аналіз",
+      "color_guide": "Гід по кольорах"
+    },
     "verdict": {
       "yay": "ТАК",
       "nay": "НІ",
@@ -193,6 +197,8 @@
   "confidence_badge": "{value}% впевненості",
   "season_badge": "Сезон {season}",
   "season_confidence_badge": "{value}% збіг сезону",
+    "undertone_suffix": "Підтон: {value}",
+    "season_suffix": "Сезон: {value}",
     "personalized_for_you": "Персоналізовано для тебе",
     "based_on_profile": "На основі твого профілю: тип шкіри, тон та форма очей",
     "your_analysis": "Твої особисті кольори",
