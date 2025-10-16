@@ -9,6 +9,75 @@ export const dynamic = 'force-dynamic';
 const CACHE_CONTROL_HEADER = 'public, max-age=600, stale-while-revalidate=86400';
 const POSTER_BUCKET = 'posters';
 
+const INTER_REGULAR_SRC = new URL('../../../../../public/fonts/Inter-Regular.ttf', import.meta.url);
+const INTER_BOLD_SRC = new URL('../../../../../public/fonts/Inter-Bold.ttf', import.meta.url);
+
+type FontCache = Record<string, ArrayBuffer>;
+type OgFontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+type OgFont = { name: string; data: ArrayBuffer; weight: OgFontWeight; style: 'normal' | 'italic' };
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __posterFontCache: FontCache | undefined;
+}
+
+const fontCache: FontCache = globalThis.__posterFontCache ?? (globalThis.__posterFontCache = {});
+
+async function loadFont(key: string, loader: () => Promise<ArrayBuffer | null>) {
+  if (fontCache[key]) return fontCache[key];
+  const data = await loader();
+  if (data) fontCache[key] = data;
+  return data ?? null;
+}
+
+async function loadFonts(req: NextRequest) {
+  const fonts: OgFont[] = [];
+  const origin = (() => {
+    try {
+      return new URL(req.url).origin;
+    } catch {
+      return null;
+    }
+  })();
+
+  const interRegular = await loadFont('inter-400', async () => {
+    const candidates: (URL | string)[] = [INTER_REGULAR_SRC];
+    if (origin) candidates.push(`${origin}/fonts/Inter-Regular.ttf`);
+
+    for (const candidate of candidates) {
+      try {
+        const res = await fetch(candidate);
+        if (!res.ok) continue;
+        return await res.arrayBuffer();
+      } catch (error) {
+        logger.debug('Poster font fetch candidate failed', { candidate: String(candidate), error });
+      }
+    }
+    return null;
+  });
+
+  const interBold = await loadFont('inter-700', async () => {
+    const candidates: (URL | string)[] = [INTER_BOLD_SRC];
+    if (origin) candidates.push(`${origin}/fonts/Inter-Bold.ttf`);
+
+    for (const candidate of candidates) {
+      try {
+        const res = await fetch(candidate);
+        if (!res.ok) continue;
+        return await res.arrayBuffer();
+      } catch (error) {
+        logger.debug('Poster font fetch candidate failed', { candidate: String(candidate), error });
+      }
+    }
+    return null;
+  });
+
+  if (interRegular) fonts.push({ name: 'Inter', data: interRegular, weight: 400, style: 'normal' });
+  if (interBold) fonts.push({ name: 'Inter', data: interBold, weight: 700, style: 'normal' });
+
+  return fonts;
+}
+
 function encodeStoragePath(path: string) {
   return path
     .split('/')
@@ -98,25 +167,14 @@ export async function GET(req: NextRequest, context: any) {
     const photoUrl = session.photo_url || '';
     const overall = typeof session.overall_score === 'number' ? session.overall_score.toFixed(1) : '';
 
-    // Try to load Inter fonts from public/fonts (deployed static)
-    let inter400: ArrayBuffer | undefined;
-    let inter700: ArrayBuffer | undefined;
-    try {
-      const origin = new URL(req.url).origin;
-      const r1 = await fetch(`${origin}/fonts/Inter-Regular.ttf`);
-      const r2 = await fetch(`${origin}/fonts/Inter-Bold.ttf`);
-      if (r1.ok) inter400 = await r1.arrayBuffer();
-      if (r2.ok) inter700 = await r2.arrayBuffer();
-    } catch (error) {
-      logger.debug('Poster font fetch failed', error);
-    }
-
     const width = 1200;
     const height = 1400;
 
-    const fonts: any[] = [];
-    if (inter400) fonts.push({ name: 'Inter', data: inter400, weight: 400, style: 'normal' });
-    if (inter700) fonts.push({ name: 'Inter', data: inter700, weight: 700, style: 'normal' });
+    const fonts = await loadFonts(req);
+    if (!fonts.length) {
+      logger.error('Poster fonts unavailable after fallback attempts');
+      return new Response('Poster fonts unavailable', { status: 500 });
+    }
 
     const titleText = `síOsí score: ${overall}`;
 
