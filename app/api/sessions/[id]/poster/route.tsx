@@ -171,9 +171,9 @@ export async function GET(req: NextRequest, context: any) {
         <div style={{ padding: '36px 56px', display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ fontSize: 32, fontWeight: 700, color: '#0f172a' }}>{titleText}</div>
           <div style={{ fontSize: 18, color: '#475569', maxWidth: 980 }}>
-            My síOsí makeup analysis — shareable summary.
+            síOsí makeup analysis
           </div>
-          <div style={{ marginTop: 8, fontSize: 14, color: '#94a3b8' }}>siosi.app</div>
+          <div style={{ marginTop: 8, fontSize: 14, color: '#94a3b8' }}>siOsi.me</div>
         </div>
       </div>
     );
