@@ -197,17 +197,21 @@ export default async function LookPage({ params }: LookPageProps) {
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join(' ');
 
-  const formatUndertoneBadge = (value?: string | null) => {
-    if (!value) return null;
-    const pretty = `${toTitleCase(value)} ${safeT('colorimetry.undertone_suffix', 'undertone')}`.trim();
-    return pretty;
+  const formatTemplateBadge = (templateKey: string, fallbackTemplate: string, rawValue?: string | null) => {
+    if (!rawValue) return null;
+    const prettyValue = toTitleCase(rawValue);
+    const template = safeT(templateKey, fallbackTemplate);
+    if (template.includes('{value}')) {
+      return template.replace('{value}', prettyValue);
+    }
+    return `${prettyValue} ${template}`.trim();
   };
 
-  const formatSeasonBadge = (value?: string | null) => {
-    if (!value) return null;
-    const pretty = `${toTitleCase(value)} ${safeT('colorimetry.season_suffix', 'season')}`.trim();
-    return pretty;
-  };
+  const formatUndertoneBadge = (value?: string | null) =>
+    formatTemplateBadge('colorimetry.undertone_suffix', '{value} undertone', value);
+
+  const formatSeasonBadge = (value?: string | null) =>
+    formatTemplateBadge('colorimetry.season_suffix', '{value} season', value);
 
   const formatSeasonMatch = (confidence: number) => {
     const rounded = Math.round(confidence);
