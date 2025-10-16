@@ -91,13 +91,28 @@ export default function LookHeroClient({
 
   const handleSeasonBadgeClick = () => {
     if (!seasonBadgeSource || typeof window === 'undefined') return;
-    const detail = { source: seasonBadgeSource } as const;
-    const event = new CustomEvent('siosi:season-drawer', { detail });
-    window.dispatchEvent(event);
 
-    if (!event.defaultPrevented) {
-      const drawerButton = document.querySelector<HTMLButtonElement>(`[data-season-source="${seasonBadgeSource}"]`);
-      drawerButton?.click();
+    const triggerDrawer = () => {
+      const detail = { source: seasonBadgeSource } as const;
+      const event = new CustomEvent('siosi:season-drawer', { detail, cancelable: true });
+      window.dispatchEvent(event);
+
+      if (!event.defaultPrevented) {
+        const drawerButton = document.querySelector<HTMLButtonElement>(`[data-season-source="${seasonBadgeSource}"]`);
+        drawerButton?.click();
+      }
+    };
+
+    const colorTab = document.querySelector<HTMLElement>('[data-tab-value="color"]');
+    const isActive = colorTab?.getAttribute('data-state') === 'active';
+
+    if (!isActive && colorTab) {
+      colorTab.click();
+      window.requestAnimationFrame(() => {
+        window.setTimeout(triggerDrawer, 50);
+      });
+    } else {
+      triggerDrawer();
     }
   };
 
@@ -231,7 +246,8 @@ export default function LookHeroClient({
       <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
         <DialogContent
           hideCloseButton
-          className="inset-0 left-auto top-auto flex h-full w-full items-center justify-center translate-x-0 translate-y-0 border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
+          layout="fullscreen"
+          className="relative border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
         >
           <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
           <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>

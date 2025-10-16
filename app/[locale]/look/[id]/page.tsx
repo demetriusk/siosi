@@ -281,12 +281,14 @@ export default async function LookPage({ params }: LookPageProps) {
                   <TabsList className="rounded-full bg-gray-100 p-1">
                     <TabsTrigger
                       value="analysis"
+                      data-tab-value="analysis"
                       className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
                     >
                       {safeT('results.tab.analysis', 'Analysis')}
                     </TabsTrigger>
                     <TabsTrigger
                       value="color"
+                      data-tab-value="color"
                       className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
                     >
                       {safeT('results.tab.color_guide', 'Color Guide')}
