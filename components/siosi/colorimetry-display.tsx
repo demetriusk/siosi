@@ -102,13 +102,6 @@ function PaletteCard({
           <h4 className="text-lg font-semibold text-[#0A0A0A]">{title}</h4>
           {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
         </div>
-        {badgeLabel && (
-          <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${VARIANT_BADGE_STYLES[variant]}`}
-          >
-            {badgeLabel}
-          </span>
-        )}
       </div>
 
       <ul className="space-y-4">
@@ -296,10 +289,10 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     <Drawer open={isPaletteDrawerOpen} onOpenChange={handleDrawerChange}>
       <section>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <h2 className="text-xl font-bold text-[#0A0A0A]">{t('title')}</h2>
           <p className="text-xs uppercase tracking-wide text-slate-500">
             {t('photo_analysis')}
           </p>
-          <h2 className="text-xl font-bold text-[#0A0A0A]">{t('title')}</h2>
       </div>
 
       {colorimetry.photo.notes && (
