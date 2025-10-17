@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     // Compose a friendly email body
       // Build link to analysis
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-      const analysisUrl = `${baseUrl}/${locale}/look/${sessionId}`;
+      const analysisUrl = `https://www.siosi.me/${locale}/look/${sessionId}`;
 
       // Compose email content
       const emailSubject = 'Analysis feedback';
