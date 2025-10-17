@@ -26,7 +26,7 @@ export function Header({ locale }: HeaderProps) {
   }
 
   useEffect(() => {
-    if (typeof document === 'undefined') {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
 
