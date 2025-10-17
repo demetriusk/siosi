@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic';
 
 import { Header } from '@/components/siosi/header';
 import { Footer } from '@/components/siosi/footer';
-import { LabResultCard } from '@/components/siosi/lab-result-card';
 import { Card } from '@/components/ui/card';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
@@ -16,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SessionSaveButton } from '@/components/siosi/session-save-button';
 import { publicPosterUrl } from '@/lib/poster';
 import type { Metadata } from 'next';
+import ClickableLabCard from '@/components/siosi/clickable-lab-card';
+import LabResultDrawerRoot from '@/components/siosi/lab-result-drawer-root';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
 
@@ -129,6 +130,17 @@ export default async function LookPage({ params }: LookPageProps) {
   );
 
   const categorizedCount = criticalAnalyses.length + watchAnalyses.length + goodAnalyses.length;
+
+  const categorizedAnalyses = [...criticalAnalyses, ...watchAnalyses, ...goodAnalyses];
+  const categorizedSet = new Set(categorizedAnalyses);
+  const orderedAnalyses = categorizedAnalyses.length > 0
+    ? [...categorizedAnalyses, ...analyses.filter((analysis) => !categorizedSet.has(analysis))]
+    : analyses;
+
+  const indexByRef = new Map<LabAnalysis, number>();
+  orderedAnalyses.forEach((analysis, idx) => {
+    indexByRef.set(analysis, idx);
+  });
 
   const profileDetails: string[] = [];
   if (session?.skin_type) {
@@ -327,9 +339,16 @@ export default async function LookPage({ params }: LookPageProps) {
                         </span>
                       </div>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {criticalAnalyses.map((analysis) => (
-                          <LabResultCard key={analysis.id} analysis={analysis} defaultExpanded />
-                        ))}
+                        {criticalAnalyses.map((analysis) => {
+                          const key = analysis.id ?? `${analysis.lab_name ?? 'critical'}-${indexByRef.get(analysis) ?? 0}`;
+                          return (
+                            <ClickableLabCard
+                              key={key}
+                              analysis={analysis}
+                              index={indexByRef.get(analysis) ?? 0}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -345,9 +364,16 @@ export default async function LookPage({ params }: LookPageProps) {
                         </span>
                       </div>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {watchAnalyses.map((analysis) => (
-                          <LabResultCard key={analysis.id} analysis={analysis} />
-                        ))}
+                        {watchAnalyses.map((analysis) => {
+                          const key = analysis.id ?? `${analysis.lab_name ?? 'watch'}-${indexByRef.get(analysis) ?? 0}`;
+                          return (
+                            <ClickableLabCard
+                              key={key}
+                              analysis={analysis}
+                              index={indexByRef.get(analysis) ?? 0}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -363,9 +389,16 @@ export default async function LookPage({ params }: LookPageProps) {
                         </span>
                       </div>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {goodAnalyses.map((analysis) => (
-                          <LabResultCard key={analysis.id} analysis={analysis} />
-                        ))}
+                        {goodAnalyses.map((analysis) => {
+                          const key = analysis.id ?? `${analysis.lab_name ?? 'good'}-${indexByRef.get(analysis) ?? 0}`;
+                          return (
+                            <ClickableLabCard
+                              key={key}
+                              analysis={analysis}
+                              index={indexByRef.get(analysis) ?? 0}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -395,12 +428,24 @@ export default async function LookPage({ params }: LookPageProps) {
                         </span>
                       </div>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {analyses.map((analysis) => (
-                          <LabResultCard key={analysis.id ?? analysis.lab_name} analysis={analysis} />
-                        ))}
+                        {analyses.map((analysis) => {
+                          const key = analysis.id ?? `${analysis.lab_name ?? 'analysis'}-${indexByRef.get(analysis) ?? 0}`;
+                          return (
+                            <ClickableLabCard
+                              key={key}
+                              analysis={analysis}
+                              index={indexByRef.get(analysis) ?? 0}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   )}
+
+                  <LabResultDrawerRoot
+                    analyses={orderedAnalyses}
+                    closeLabel={safeT('common.close', 'Close')}
+                  />
                 </TabsContent>
 
                 <TabsContent value="color" className="mt-6" forceMount>

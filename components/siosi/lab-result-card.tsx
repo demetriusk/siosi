@@ -1,74 +1,68 @@
 'use client';
 
-import { useState, KeyboardEvent } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import { LabAnalysis, Verdict } from '@/lib/types';
 import { ConfidenceScore } from './confidence-score';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+
+type LabResultCardVariant = 'preview' | 'full';
 
 interface LabResultCardProps {
   analysis: LabAnalysis;
-  defaultExpanded?: boolean;
+  variant?: LabResultCardVariant;
+  className?: string;
 }
 
-export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCardProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+const verdictBorder: Record<Verdict, string> = {
+  YAY: 'border-l-[#10B981]',
+  NAY: 'border-l-[#EF4444]',
+  MAYBE: 'border-l-[#F59E0B]',
+};
+
+const verdictBadge: Record<Verdict, string> = {
+  YAY: 'bg-[#10B981] text-white',
+  NAY: 'bg-[#EF4444] text-white',
+  MAYBE: 'bg-[#F59E0B] text-white',
+};
+
+function scoreColor(score: number) {
+  if (score >= 8) return 'text-[#10B981]';
+  if (score >= 6) return 'text-[#F59E0B]';
+  if (score >= 4) return 'text-[#F97316]';
+  return 'text-[#EF4444]';
+}
+
+export function LabResultCard({ analysis, variant = 'preview', className }: LabResultCardProps) {
   const t = useTranslations();
-  const detailsId = `lab-details-${analysis.id ?? analysis.lab_name}`;
-
-  const getBorderColorClass = (verdict: Verdict) => {
-    if (verdict === 'YAY') return 'border-l-[#10B981]';
-    if (verdict === 'NAY') return 'border-l-[#EF4444]';
-    return 'border-l-[#F59E0B]';
-  };
-
-  const getVerdictBadgeClass = (verdict: Verdict) => {
-    if (verdict === 'YAY') return 'bg-[#10B981] text-white';
-    if (verdict === 'NAY') return 'bg-[#EF4444] text-white';
-    return 'bg-[#F59E0B] text-white';
-  };
-
-  const getScoreColorClass = (score: number) => {
-    if (score >= 8) return 'text-[#10B981]';
-    if (score >= 6) return 'text-[#F59E0B]';
-    if (score >= 4) return 'text-[#F97316]';
-    return 'text-[#EF4444]';
-  };
-
   const labNameKey = `home.labs.${analysis.lab_name}`;
-
-  const toggleExpanded = () => {
-    setIsExpanded(prev => !prev);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      toggleExpanded();
+  const labLabel = (() => {
+    try {
+      return t(labNameKey);
+    } catch {
+      return analysis.lab_name ?? labNameKey;
     }
-  };
+  })();
 
   return (
     <div
-      role="button"
-      tabIndex={0}
-      aria-expanded={isExpanded}
-      aria-controls={detailsId}
-      onClick={toggleExpanded}
-      onKeyDown={handleKeyDown}
-      className={`bg-white border border-[#E5E7EB] border-l-4 ${getBorderColorClass(analysis.verdict)} rounded-sm p-6 transition-all hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/20 cursor-pointer`}
+      className={cn(
+        'rounded-sm border border-[#E5E7EB] border-l-4 bg-white p-6 transition-shadow',
+        verdictBorder[analysis.verdict],
+        variant === 'preview' && 'hover:shadow-md',
+        className,
+      )}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h3 className="text-lg font-semibold text-[#0A0A0A]">
-              {t(labNameKey)}
-            </h3>
-            <span className={`px-2.5 py-0.5 text-xs font-semibold rounded ${getVerdictBadgeClass(analysis.verdict)}`}>
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="text-lg font-semibold text-[#0A0A0A]">{labLabel}</h3>
+            <span
+              className={cn('rounded px-2.5 py-0.5 text-xs font-semibold', verdictBadge[analysis.verdict])}
+            >
               {t(`results.verdict.${analysis.verdict.toLowerCase()}`)}
             </span>
             <div className="flex items-baseline gap-1">
-              <span className={`text-2xl font-bold ${getScoreColorClass(analysis.score)}`}>
+              <span className={cn('text-2xl font-bold', scoreColor(analysis.score))}>
                 {analysis.score.toFixed(1)}
               </span>
               <span className="text-sm text-[#6B7280]">/10</span>
@@ -77,31 +71,20 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
           <ConfidenceScore confidence={analysis.confidence} size="sm" />
 
-          {analysis.detected.length > 0 && (
-            <p className="text-[#6B7280] line-clamp-2">
-              {analysis.detected[0]}
-            </p>
+          {analysis.detected.length > 0 && variant === 'preview' && (
+            <p className="line-clamp-2 text-[#6B7280]">{analysis.detected[0]}</p>
           )}
         </div>
-        <span className="text-[#6B7280] transition-transform flex-shrink-0" aria-hidden="true">
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </span>
       </div>
 
-      {isExpanded && (
-        <div id={detailsId} className="mt-6 space-y-6 pt-6 border-t border-[#E5E7EB]">
+      {variant === 'full' && (
+        <div className="mt-6 space-y-6 pt-6">
           {analysis.detected.length > 0 && (
             <div>
-              <h4 className="font-semibold text-[#0A0A0A] mb-2">
-                {t('results.detected')}
-              </h4>
+              <h4 className="mb-2 font-semibold text-[#0A0A0A]">{t('results.detected')}</h4>
               <ul className="space-y-1.5">
                 {analysis.detected.map((item, index) => (
-                  <li key={index} className="text-[#6B7280] flex items-start gap-2">
+                  <li key={index} className="flex items-start gap-2 text-[#6B7280]">
                     <span>{item}</span>
                   </li>
                 ))}
@@ -111,13 +94,11 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
           {analysis.recommendations.length > 0 && (
             <div>
-              <h4 className="font-semibold text-[#0A0A0A] mb-2">
-                {t('results.recommendations')}
-              </h4>
+              <h4 className="mb-2 font-semibold text-[#0A0A0A]">{t('results.recommendations')}</h4>
               <ol className="space-y-1.5">
                 {analysis.recommendations.map((item, index) => (
-                  <li key={index} className="text-[#0A0A0A] flex items-start gap-2">
-                    <span className="text-[#6B7280] font-medium">{index + 1}.</span>
+                  <li key={index} className="flex items-start gap-2 text-[#0A0A0A]">
+                    <span className="font-medium text-[#6B7280]">{index + 1}.</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -127,14 +108,14 @@ export function LabResultCard({ analysis, defaultExpanded = false }: LabResultCa
 
           {analysis.zones_affected && analysis.zones_affected.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-[#0A0A0A] mb-2">
+              <h4 className="mb-2 text-sm font-semibold text-[#0A0A0A]">
                 {t('results.zones_affected', { defaultValue: 'Zones Affected' })}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {analysis.zones_affected.map((zone, index) => (
                   <span
                     key={index}
-                    className="px-2.5 py-1 bg-[#F3F4F6] text-[#374151] text-xs font-medium rounded"
+                    className="rounded bg-[#F3F4F6] px-2.5 py-1 text-xs font-medium text-[#374151]"
                   >
                     {zone}
                   </span>
