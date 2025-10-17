@@ -304,13 +304,6 @@ export default async function LookPage({ params }: LookPageProps) {
               </div>
 
               <div className="px-4 pb-16 sm:px-6">
-                {/* Global disclaimer shown under the tabs for all views */}
-                <p className="mt-4 text-xs leading-relaxed text-[#4B5563]">
-                  {safeT(
-                    'colorimetry.disclaimer',
-                    'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.',
-                  )}
-                </p>
 
                 <TabsContent value="analysis" className="mt-6 space-y-12">
                   {criticalAnalyses.length > 0 && (
@@ -413,6 +406,14 @@ export default async function LookPage({ params }: LookPageProps) {
                     </Card>
                   )}
                 </TabsContent>
+
+                <p className="mt-4 text-xs leading-relaxed text-[#4B5563]">
+                  {safeT(
+                    'colorimetry.disclaimer',
+                    'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.',
+                  )}
+                </p>
+
               </div>
             </Tabs>
           </section>
