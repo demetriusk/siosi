@@ -94,20 +94,20 @@ export const Feedback: React.FC<FeedbackProps> = ({
       initial={{ borderRadius: "2rem" }}
       animate={happiness ? { borderRadius: "0.5rem" } : { borderRadius: "2rem" }}
       className={twMerge(
-        "w-fit overflow-hidden border py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 bg-white"
+        "w-fit overflow-hidden border py-2 shadow-sm bg-white"
       )}
     >
       <span className="flex items-center justify-center gap-3 pl-4 pr-2">
-        <div className="text-sm text-black dark:text-neutral-400">{submitLabel}</div>
+        <div className="text-sm text-black">{submitLabel}</div>
         <div className="flex items-center text-neutral-400">
           {feedbackOptions.map((e) => (
             <button
               onClick={() => setHappiness((prev) => (e.happiness === prev ? null : e.happiness))}
               className={twMerge(
                 happiness === e.happiness
-                  ? "bg-blue-100 stroke-blue-500 dark:bg-sky-900 dark:stroke-sky-500"
-                  : "stroke-neutral-500 dark:stroke-neutral-400",
-                "flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-blue-100 hover:stroke-blue-500 hover:dark:bg-sky-900 hover:dark:stroke-sky-500"
+                  ? "bg-black stroke-white"
+                  : "stroke-neutral-500",
+                "flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-black hover:stroke-white"
               )}
               key={e.happiness}
               type="button"
@@ -140,9 +140,9 @@ export const Feedback: React.FC<FeedbackProps> = ({
                   onClick={handleSubmit}
                   disabled={isLoading}
                   className={cn(
-                    "mt-1 flex h-9 items-center justify-center rounded-md border bg-neutral-950 px-2 text-sm text-white dark:bg-white dark:text-neutral-950",
+                    "mt-1 flex h-9 items-center justify-center rounded-md border bg-neutral-950 px-2 text-sm text-white",
                     {
-                      "bg-neutral-500 dark:bg-white dark:text-neutral-500": isLoading,
+                      "bg-neutral-500": isLoading,
                     }
                   )}
                 >
@@ -167,7 +167,7 @@ export const Feedback: React.FC<FeedbackProps> = ({
             >
               <motion.div
                 variants={item}
-                className="flex h-8 min-h-8 w-8 min-w-8 items-center justify-center rounded-full bg-blue-500 dark:bg-sky-500"
+                className="flex h-8 min-h-8 w-8 min-w-8 items-center justify-center rounded-full bg-black"
               >
                 <Check strokeWidth={2.5} size={16} className="stroke-white" />
               </motion.div>
