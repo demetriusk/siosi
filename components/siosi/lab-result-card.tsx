@@ -55,12 +55,16 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
           <div className="flex flex-wrap items-center gap-3">
-            <h3 className="text-lg font-semibold text-[#0A0A0A]">{labLabel}</h3>
-            <span
-              className={cn('rounded px-2.5 py-0.5 text-xs font-semibold', verdictBadge[analysis.verdict])}
-            >
-              {t(`results.verdict.${analysis.verdict.toLowerCase()}`)}
-            </span>
+            {variant !== 'full' && (
+              <>
+                <h3 className="text-lg font-semibold text-[#0A0A0A]">{labLabel}</h3>
+                <span
+                  className={cn('rounded px-2.5 py-0.5 text-xs font-semibold', verdictBadge[analysis.verdict])}
+                >
+                  {t(`results.verdict.${analysis.verdict.toLowerCase()}`)}
+                </span>
+              </>
+            )}
             <div className="flex items-baseline gap-1">
               <span className={cn('text-2xl font-bold', scoreColor(analysis.score))}>
                 {Number(analysis.score.toFixed(1))}
