@@ -125,7 +125,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent
-        className="mt-0 h-[70dvh] min-h-[70dvh] max-h-[70dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:h-[40dvh] sm:min-h-[40dvh] sm:max-h-[40dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-muted"
+        className="mt-0 h-[70dvh] min-h-[70dvh] max-h-[70dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:h-[50dvh] sm:min-h-[50dvh] sm:max-h-[50dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-muted"
         onKeyDown={handleKeyDown}
       >
         <DrawerTitle className="sr-only">{labTitle}</DrawerTitle>
@@ -133,7 +133,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
           Detailed analysis for {labTitle}. {positionLabel}.
         </DrawerDescription>
 
-        <div className="flex flex-col">
+  <div className="flex h-full flex-col">
           <header className="flex items-center gap-3 border-b border-[#E5E7EB] px-4 py-3 sm:px-6">
             <button
               type="button"
@@ -170,11 +170,11 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             </button>
           </header>
 
-          <DrawerBody className="overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 max-h-[calc(70dvh-220px)] sm:max-h-[calc(40dvh-220px)]">
+          <DrawerBody className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6">
             {selected && <LabResultCard analysis={selected} variant="full" />}
           </DrawerBody>
 
-          <DrawerFooter className="gap-3 border-t border-[#E5E7EB] bg-white px-4 py-4 sm:px-6">
+          <DrawerFooter className="flex-shrink-0 gap-3 border-t border-[#E5E7EB] bg-white px-4 py-4 sm:px-6">
             <div className="flex items-center justify-center gap-3">
               {analyses.map((_, dotIndex) => {
                 const active = dotIndex === index;
