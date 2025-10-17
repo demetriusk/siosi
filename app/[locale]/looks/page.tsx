@@ -82,28 +82,15 @@ export default function LooksPage() {
     <div className="min-h-screen flex flex-col">
       <Header locale={locale} />
 
-      <main className="flex-1 bg-[#F9FAFB] py-12">
+      <main className="flex-1 bg-[#F9FAFB] pt-4 sm:pt-6 lg:pt-8 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-3xl text-[#0A0A0A]">
-                {t('sessions.title')}
-              </h1>
-            </div>
-            <Link href={`/${locale}/analyze`}>
-              <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
-                <ScanFace className="w-4 h-4 mr-2" />
-                Analyze New Look
-              </Button>
-            </Link>
-          </div>
 
           {loading ? (
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-16 text-center">Loading...</div>
           ) : !userId ? (
             <div className="bg-white border border-[#E5E7EB] rounded-sm p-16 text-center">
-              <p className="mb-4">Please log in to see your sessions.</p>
-              <Button onClick={() => router.push(`/${locale}/login`)} className="bg-[#0A0A0A] text-white">
+              <p className="mb-4">Log in to see your looks.</p>
+              <Button onClick={() => router.push(`/${locale}/auth`)} className="bg-[#0A0A0A] text-white">
                 Log in
               </Button>
             </div>
@@ -118,13 +105,13 @@ export default function LooksPage() {
               </p>
               <Link href={`/${locale}/analyze`}>
                 <Button className="bg-[#0A0A0A] text-white hover:bg-[#1F1F1F]">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Upload Photo
+                  <ScanFace className="w-4 h-4 mr-2" />
+                  Analyze New Look
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {sessions.map((session) => (
                 <SessionCard key={session.id} session={session} locale={locale} viewerId={userId} />
               ))}
