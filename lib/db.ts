@@ -40,3 +40,16 @@ export async function getSessions(limit = 10) {
   if (error) throw error
   return data
 }
+
+export async function getSession(id: string) {
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error
+  return data
+}

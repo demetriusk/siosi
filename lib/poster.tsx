@@ -57,6 +57,23 @@ function transformSupabaseImageUrl(src: string | null | undefined, opts?: { widt
   }
 }
 
+async function ensureImageUrl(src: string | null | undefined): Promise<string | null> {
+  if (!src) return null
+  try {
+    // Try HEAD first to avoid large downloads
+    const head = await fetch(src, { method: 'HEAD', cache: 'no-store' })
+    const ct = head.headers.get('content-type') || ''
+    if (head.ok && ct.startsWith('image/')) return src
+    // Fallback to GET small check
+    const get = await fetch(src, { method: 'GET', cache: 'no-store' })
+    const ct2 = get.headers.get('content-type') || ''
+    if (get.ok && ct2.startsWith('image/')) return src
+  } catch {
+    // ignore
+  }
+  return null
+}
+
 async function loadFonts(): Promise<OgFont[]> {
   try {
     const res = await fetch('https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.5/files/inter-latin-400-normal.woff')
@@ -95,7 +112,8 @@ export async function generatePosterPng(session: any): Promise<ArrayBuffer> {
   const height = 1920
 
   const photoRaw = session?.photo_url || ''
-  const photoSrc = transformSupabaseImageUrl(photoRaw, { width: 1080, height: 1440, quality: 82 }) || photoRaw
+  const photoTransformed = transformSupabaseImageUrl(photoRaw, { width: 1080, height: 1440, quality: 82 }) || photoRaw
+  const photoSrc = await ensureImageUrl(photoTransformed)
 
   const overall = typeof session?.overall_score === 'number' ? session.overall_score : pickNumber(session, ['overall', 'overallScore'])
   const overallText = typeof overall === 'number' ? overall.toFixed(1) : '—'
@@ -131,14 +149,28 @@ export async function generatePosterPng(session: any): Promise<ArrayBuffer> {
       </div>
 
       {/* Hero image area (fills top ~75%) */}
-      <div style={{ position: 'relative', width: '100%', height: 1440, background: '#f3f4f6', overflow: 'hidden' }}>
-        <img
-          src={photoSrc || ''}
-          alt="look"
-          width={1080}
-          height={1440}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+      <div style={{ position: 'relative', width: '100%', height: 1440, background: '#f3f4f6', overflow: 'hidden', display: 'flex' }}>
+        {photoSrc ? (
+          <img
+            src={photoSrc}
+            alt="look"
+            width={1080}
+            height={1440}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          // Placeholder backdrop if the image cannot be loaded (deleted or unsupported)
+          <div
+            style={{
+              width: '100%', height: '100%',
+              background: 'linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#94a3b8', fontSize: 28, fontWeight: 600,
+            }}
+          >
+            síOsí
+          </div>
+        )}
         {/* bottom white gradient */}
         <div
           style={{

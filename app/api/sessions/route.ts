@@ -176,11 +176,18 @@ export async function POST(req: NextRequest) {
 
     if (sessionId) {
       (data as any).colorimetry = colorimetryRecord ?? null;
-      // Fire-and-forget poster generation. Do not block request.
+      // Fire-and-forget poster generation. Do not block request, but log outcome.
       try {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        generateAndUploadPoster({ ...data, id: sessionId });
-      } catch {}
+        void generateAndUploadPoster({ ...data, id: sessionId })
+          .then((url) => {
+            try { logger.info('Poster generated & uploaded', { sessionId, url }) } catch {}
+          })
+          .catch((e) => {
+            try { logger.warn('Poster generation/upload failed (non-blocking)', { sessionId, error: String(e?.message || e) }) } catch {}
+          })
+      } catch (e) {
+        try { logger.warn('Poster generation scheduling failed', { sessionId, error: String((e as any)?.message || e) }) } catch {}
+      }
     }
 
     return Response.json(data)

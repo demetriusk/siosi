@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
 import { createClient } from '@supabase/supabase-js'
+import { posterKeyForSession } from '@/lib/poster'
 import logger from '@/lib/logger'
 
 export async function DELETE(req: NextRequest, { params }: { params: any }) {
@@ -84,9 +85,12 @@ export async function DELETE(req: NextRequest, { params }: { params: any }) {
       ? createClient(supabaseUrl, serviceRoleKey)
       : supabase;
 
-    // Attempt to remove storage object for the session photo (if present)
-    const bucket = 'makeup-photos';
+  // Attempt to remove storage objects: poster and session photo (if present)
+  const bucket = 'makeup-photos';
     const pathsToRemove: string[] = [];
+  // Poster lives in public bucket `posters/`
+  const posterBucket = 'posters';
+  const posterPath = posterKeyForSession(id);
     try {
       const url: string | undefined = session?.photo_url;
       if (url) {
@@ -109,11 +113,47 @@ export async function DELETE(req: NextRequest, { params }: { params: any }) {
     }
 
 
+    // Remove session poster
+    try {
+      const { error: posterRmErr } = await (supabaseAdmin as any).storage.from(posterBucket).remove([posterPath]);
+      if (posterRmErr) {
+        logger.debug('No poster to remove or removal failed', posterRmErr);
+      }
+    } catch (e) {
+      logger.debug('Poster removal threw', e);
+    }
+
+    // Remove session photo
     if (pathsToRemove.length > 0) {
       const { error: rmErr } = await (supabaseAdmin as any).storage.from(bucket).remove(pathsToRemove);
       if (rmErr) {
         logger.warn('Error removing storage object for session', rmErr);
       }
+    }
+
+    // Delete child rows referencing the session to satisfy FK constraints
+    try {
+      const { error: colorimetryDelErr } = await (supabaseAdmin as any)
+        .from('colorimetry')
+        .delete()
+        .eq('session_id', id);
+      if (colorimetryDelErr) {
+        logger.warn('Failed to delete colorimetry rows for session', colorimetryDelErr);
+      }
+    } catch (e) {
+      logger.warn('Colorimetry delete threw', e);
+    }
+
+    try {
+      const { error: analysesDelErr } = await (supabaseAdmin as any)
+        .from('analyses')
+        .delete()
+        .eq('session_id', id);
+      if (analysesDelErr) {
+        logger.warn('Failed to delete analyses rows for session', analysesDelErr);
+      }
+    } catch (e) {
+      logger.warn('Analyses delete threw', e);
     }
 
     // Delete the session row using admin client when available
