@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { MobileBottomNav } from '@/components/siosi/mobile-bottom-nav';
 import { AppShell } from '@/components/siosi/app-shell';
 import { RegisterSW } from '@/components/register-sw';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { cn } from '@/lib/utils';
 import type { ParamsWithLocale } from '@/lib/types';
 import { cookies } from 'next/headers';
