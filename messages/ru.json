@@ -159,7 +159,7 @@
     "verdict": {
       "yay": "ДА",
       "nay": "НЕТ",
-      "maybe": "ВОЗМОЖНО"
+      "maybe": "НО ЭТО НЕ ТОЧНО"
     },
     "analyze_another": "Анализировать другое фото",
     "no_analyses_title": "Пока нет анализов",
@@ -190,7 +190,7 @@
   },
   "colorimetry": {
     "title": "Гид по цвету",
-    "photo_analysis": "Человек на фото",
+    "photo_analysis": "На фото",
     "detected": "Обнаружено на фото",
     "recommended_photo": "Рекомендованные оттенки",
   "avoid_photo": "Оттенки, которых лучше избегать",

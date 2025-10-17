@@ -190,7 +190,7 @@
   },
   "colorimetry": {
     "title": "Color Guide",
-    "photo_analysis": "Person in Photo",
+    "photo_analysis": "In Photo",
     "detected": "Detected in Photo",
     "recommended_photo": "Recommended Colors",
     "avoid_photo": "Colors to Avoid",
