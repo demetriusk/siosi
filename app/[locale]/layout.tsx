@@ -10,8 +10,6 @@ import { RegisterSW } from '@/components/register-sw';
 // import { Footer } from '@/components/siosi/footer';
 import { cn } from '@/lib/utils';
 import type { ParamsWithLocale } from '@/lib/types';
-import { cookies } from 'next/headers';
-import { getSupabase } from '@/lib/supabase';
 import ShowFooter from '@/components/siosi/show-footer';
 
 // Import messages statically
@@ -108,10 +106,6 @@ export default async function LocaleLayout({
   // Layout params come from the router and can be a Promise; await for safety
   const { locale } = await params as { locale: string };
 
-  // Server-side: check if user is logged in
-  const supabase = getSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
-  const isLoggedIn = !!user;
 
   return (
     <html lang={locale}>
@@ -123,8 +117,7 @@ export default async function LocaleLayout({
           <AppShell locale={locale}>{children}</AppShell>
           <Toaster />
           <MobileBottomNav locale={locale} />
-          {/* Only show footer if not logged in, or if logged in and on allowed route */}
-          <ShowFooter isLoggedIn={isLoggedIn} locale={locale} />
+            <ShowFooter locale={locale} />
         </NextIntlClientProvider>
         <RegisterSW />
       </body>
