@@ -290,23 +290,24 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
       <section>
       <div className="mb-2 flex gap-3 items-center justify-between">
           <h2 className="text-xl font-bold text-[#0A0A0A]">{t('title')}</h2>
-          <div className="flex flex-col gap-1">
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              {t('photo_analysis')}
-            </p>
-            <button
-              type="button"
-              className="self-start text-xs text-black underline underline-offset-2 hover:text-emerald-700 focus:outline-none"
-              style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}
-              onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
-            >
-              Learn more...
-            </button>
-          </div>
+          <p className="text-xs uppercase tracking-wide text-slate-500">
+            {t('photo_analysis')}
+          </p>
       </div>
 
       {colorimetry.photo.notes && (
-        <p className="mb-6 text-sm text-slate-600 leading-relaxed">{colorimetry.photo.notes}</p>
+        <p className="mb-6 text-sm text-slate-600 leading-relaxed">
+          {colorimetry.photo.notes}
+          {' '}
+          <button
+            type="button"
+            className="ml-2 text-black underline decoration-black hover:text-emerald-700 focus:outline-none focus:underline"
+            onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
+            aria-label="Learn more about season palette"
+          >
+            Learn more...
+          </button>
+        </p>
       )}
 
       <div className="grid gap-4">
