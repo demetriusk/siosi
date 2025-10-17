@@ -42,6 +42,16 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
       return analysis.lab_name ?? labNameKey;
     }
   })();
+  const isFull = variant === 'full';
+
+  const scoreDisplay = (
+    <div className="flex items-baseline gap-1">
+      <span className={cn('text-2xl font-bold', scoreColor(analysis.score))}>
+        {Number(analysis.score.toFixed(1))}
+      </span>
+      <span className="text-sm text-[#6B7280]">/10</span>
+    </div>
+  );
 
   const wrapperClassName = cn(
     variant === 'preview'
@@ -54,26 +64,33 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
     <div className={wrapperClassName}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
-          <div className="flex flex-wrap items-center gap-3">
-            {variant !== 'full' && (
-              <>
+          {isFull ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-[#6B7280]">
+                  {t('results.overall_score')}
+                </span>
+                {scoreDisplay}
+              </div>
+              <div className="flex flex-col justify-center">
+                <ConfidenceScore confidence={analysis.confidence} size="md" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center gap-3">
                 <h3 className="text-lg font-semibold text-[#0A0A0A]">{labLabel}</h3>
                 <span
-                  className={cn('rounded px-2.5 py-0.5 text-xs font-semibold', verdictBadge[analysis.verdict])}
+                  className={cn('rounded-full px-2.5 py-0.5 text-xs font-semibold', verdictBadge[analysis.verdict])}
                 >
                   {t(`results.verdict.${analysis.verdict.toLowerCase()}`)}
                 </span>
-              </>
-            )}
-            <div className="flex items-baseline gap-1">
-              <span className={cn('text-2xl font-bold', scoreColor(analysis.score))}>
-                {Number(analysis.score.toFixed(1))}
-              </span>
-              <span className="text-sm text-[#6B7280]">/10</span>
-            </div>
-          </div>
+                {scoreDisplay}
+              </div>
 
-          <ConfidenceScore confidence={analysis.confidence} size="sm" />
+              <ConfidenceScore confidence={analysis.confidence} size="sm" />
+            </>
+          )}
 
           {analysis.detected.length > 0 && variant === 'preview' && (
             <p className="line-clamp-2 text-[#6B7280]">{analysis.detected[0]}</p>
@@ -82,7 +99,7 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
       </div>
 
       {variant === 'full' && (
-        <div className="mt-6 space-y-6 pt-6">
+        <div className="mt-6 space-y-6">
           {analysis.detected.length > 0 && (
             <div>
               <h4 className="mb-2 font-semibold text-[#0A0A0A]">{t('results.detected')}</h4>
