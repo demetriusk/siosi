@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import LanguageSelect from './language-select';
 import { useSupabaseUser } from '@/hooks/use-supabase-user';
@@ -20,33 +20,6 @@ export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const user = useSupabaseUser();
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      return;
-    }
-
-    const root = document.documentElement;
-
-    if (user) {
-      root.style.removeProperty('--public-header-offset');
-      return;
-    }
-
-    const mediaQuery = window.matchMedia('(min-width: 768px)');
-
-    const setOffset = () => {
-      root.style.setProperty('--public-header-offset', mediaQuery.matches ? '64px' : '0px');
-    };
-
-    setOffset();
-    mediaQuery.addEventListener('change', setOffset);
-
-    return () => {
-      mediaQuery.removeEventListener('change', setOffset);
-      root.style.removeProperty('--public-header-offset');
-    };
-  }, [user]);
 
   if (user === undefined || user) {
     return null;
