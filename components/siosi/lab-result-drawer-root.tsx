@@ -125,7 +125,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent
-        className="mt-0 max-h-[92dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:max-h-[85dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-muted"
+        className="mt-0 h-[70dvh] min-h-[70dvh] max-h-[70dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:h-auto sm:min-h-0 sm:max-h-[85dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-muted"
         onKeyDown={handleKeyDown}
       >
         <DrawerTitle className="sr-only">{labTitle}</DrawerTitle>
@@ -170,7 +170,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             </button>
           </header>
 
-          <DrawerBody className="overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 max-h-[calc(92dvh-220px)] sm:max-h-[calc(85dvh-220px)]">
+          <DrawerBody className="overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 max-h-[calc(70dvh-220px)] sm:max-h-[calc(85dvh-220px)]">
             {selected && <LabResultCard analysis={selected} variant="full" />}
           </DrawerBody>
 
