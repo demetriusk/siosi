@@ -101,9 +101,9 @@ export default function SessionActionsClient({
   optionsIcon = <EllipsisVertical className="h-4 w-4" />,
   optionsAriaLabel = 'Look options',
 }: Props) {
-  const sessionUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/${locale}/look/${sessionId}`
-    : `/${locale}/look/${sessionId}`;
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const sessionUrl = origin ? `${origin}/${locale}/look/${sessionId}` : `/${locale}/look/${sessionId}`;
+  const posterUrl = `/api/sessions/${sessionId}/poster`;
 
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
   const [authChecked, setAuthChecked] = useState(false);
@@ -196,10 +196,25 @@ export default function SessionActionsClient({
     }
 
     try {
+      // Try attaching the poster as a file if the browser supports it
+      let files: File[] | undefined = undefined;
+      try {
+        const res = await fetch(posterUrl);
+        if (res.ok && res.headers.get('content-type')?.includes('image/png')) {
+          const blob = await res.blob();
+          const file = new File([blob], `siosi-${sessionId}.png`, { type: 'image/png', lastModified: Date.now() });
+          if ((navigator as any).canShare?.({ files: [file] })) {
+            files = [file];
+          }
+        }
+      } catch {}
+
       await navigator.share({
         title: 'síOsí makeup analysis',
         text: 'Check out my síOsí makeup analysis',
         url: sessionUrl,
+        // Attach poster file when possible
+        ...(files ? { files } : {}),
       });
       toast.success('Shared', { description: 'Shared via device share sheet' });
     } catch (error) {
@@ -224,30 +239,33 @@ export default function SessionActionsClient({
   }
 
   function onShareWhatsapp() {
-    const text = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
+    const text = encodeURIComponent(`Check out síOsí makeup analysis\n${sessionUrl}`);
     const href = `https://wa.me/?text=${text}`;
     window.open(href, '_blank', 'noopener');
   }
 
   function onShareMessenger() {
-    const text = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
+    // Rely on OG tags; link shares will unfurl with poster image
+    const text = encodeURIComponent('Check out síOsí makeup analysis');
     const href = `https://m.me/?link=${encodeURIComponent(sessionUrl)}&ref=${text}`;
     window.open(href, '_blank', 'noopener');
   }
 
   function onShareSms() {
-    const body = encodeURIComponent(`Check out síOsí makeup analysis: ${sessionUrl}`);
+    const body = encodeURIComponent(`Check out síOsí makeup analysis\n${sessionUrl}`);
     const href = `sms:?&body=${body}`;
     window.location.href = href;
   }
 
   function onShareFacebook() {
+    // Rely on OG tags so the poster image is used
     const href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(sessionUrl)}`;
     window.open(href, '_blank', 'noopener');
   }
 
   function onSharePinterest() {
-    const href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(sessionUrl)}&description=${encodeURIComponent('Check out síOsí makeup analysis')}`;
+    // Pinterest can accept a media param; pass the poster directly
+    const href = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(sessionUrl)}&media=${encodeURIComponent(origin + posterUrl)}&description=${encodeURIComponent('Check out síOsí makeup analysis')}`;
     window.open(href, '_blank', 'noopener');
   }
 
@@ -255,81 +273,15 @@ export default function SessionActionsClient({
     try {
       let blob: Blob | null = null;
       try {
-        const posterRes = await fetch(`/api/sessions/${sessionId}/poster`);
-        if (posterRes.ok) {
-          const contentType = posterRes.headers.get('content-type') || '';
-          if (contentType.includes('application/json')) {
-            const json = await posterRes.json();
-            if (json?.url) {
-              const pngRes = await fetch(json.url);
-              if (pngRes.ok) blob = await pngRes.blob();
-            }
-          } else if (contentType.includes('image/png')) {
-            blob = await posterRes.blob();
-          } else if (contentType.includes('image/svg')) {
-            const svgText = await posterRes.text();
-            const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(svgBlob);
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.src = url;
-            await img.decode();
-            const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth || 1200;
-            canvas.height = img.naturalHeight || 1400;
-            const ctx = canvas.getContext('2d');
-            if (ctx) ctx.drawImage(img, 0, 0);
-            blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), 'image/png'));
-            URL.revokeObjectURL(url);
-          }
+        const posterRes = await fetch(posterUrl);
+        if (posterRes.ok && posterRes.headers.get('content-type')?.includes('image/png')) {
+          blob = await posterRes.blob();
         }
       } catch (error) {
         logger.debug('Poster API fetch failed', error);
       }
 
-      if (!blob) {
-        const sessionRes = await fetch(`/api/sessions/${sessionId}`);
-        if (!sessionRes.ok) throw new Error('Failed to fetch look');
-        const sessionData = await sessionRes.json();
-        const photoUrl: string | undefined = sessionData?.photo_url;
-        if (!photoUrl) {
-          toast.error('No photo', { description: 'This look has no photo to download' });
-          return;
-        }
-
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = photoUrl;
-        await img.decode();
-
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || 1200;
-        canvas.height = img.naturalHeight || 1400;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Canvas not supported');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const pad = 80;
-        const maxImgW = canvas.width - pad * 2;
-        const maxImgH = canvas.height - 320;
-        let iw = img.width;
-        let ih = img.height;
-        const scale = Math.min(maxImgW / iw, maxImgH / ih, 1);
-        iw = Math.round(iw * scale);
-        ih = Math.round(ih * scale);
-        const ix = Math.round((canvas.width - iw) / 2);
-        const iy = Math.round((canvas.height - ih) / 2) - 60;
-        ctx.drawImage(img, ix, iy, iw, ih);
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.fillRect(0, canvas.height - 180, canvas.width, 180);
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 36px Arial, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText('siOsi.me', pad, canvas.height - 120);
-        ctx.font = '20px Arial, sans-serif';
-        ctx.fillText('My síOsí makeup analysis', pad, canvas.height - 80);
-        blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), 'image/png', 0.92));
-      }
+      if (!blob) throw new Error('Could not fetch poster');
 
       if (!blob) throw new Error('Could not prepare image');
 
@@ -344,7 +296,7 @@ export default function SessionActionsClient({
       toast.success('Image downloaded', { description: 'Poster saved to your device' });
     } catch (error) {
       logger.error('Download image failed', error);
-      toast.error('Download failed', { description: 'Could not create shareable image' });
+      toast.error('Download failed', { description: 'Could not download poster' });
     }
   }
 

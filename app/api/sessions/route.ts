@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import logger from '@/lib/logger'
 import { getSupabase } from '@/lib/supabase'
 import { normalizeAnalysesPayload } from '@/lib/normalize-analyses'
+import { generateAndUploadPoster } from '@/lib/poster'
 import { normalizeColorimetryPayload, buildColorimetryInsert, mapColorimetryRow } from '@/lib/normalize-colorimetry'
 
 export async function POST(req: NextRequest) {
@@ -175,6 +176,11 @@ export async function POST(req: NextRequest) {
 
     if (sessionId) {
       (data as any).colorimetry = colorimetryRecord ?? null;
+      // Fire-and-forget poster generation. Do not block request.
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        generateAndUploadPoster({ ...data, id: sessionId });
+      } catch {}
     }
 
     return Response.json(data)

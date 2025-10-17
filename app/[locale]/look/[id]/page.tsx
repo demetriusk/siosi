@@ -14,6 +14,8 @@ import type { ParamsWithLocaleAndId } from '@/lib/types';
 import LookHeroClient from '@/components/siosi/look-hero-client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SessionSaveButton } from '@/components/siosi/session-save-button';
+import { publicPosterUrl } from '@/lib/poster';
+import type { Metadata } from 'next';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
 
@@ -431,4 +433,32 @@ export default async function LookPage({ params }: LookPageProps) {
       <Footer locale={locale} />
     </div>
   );
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string; id: string }> }
+): Promise<Metadata> {
+  const { locale, id } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const poster = publicPosterUrl(id);
+  const title = 'síOsí makeup analysis';
+  const description = 'Makeup analysis and colorimetry results by síOsí';
+  const images = [{ url: poster, width: 1080, height: 1920, alt: title }];
+  return {
+    metadataBase: baseUrl ? new URL(baseUrl) : undefined,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images,
+    },
+  };
 }
