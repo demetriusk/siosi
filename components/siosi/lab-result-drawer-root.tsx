@@ -125,7 +125,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent
-        className="mt-0 max-h-[92dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:max-h-[85dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-[#D1D5DB]"
+        className="mt-0 max-h-[92dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:max-h-[85dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-muted"
         onKeyDown={handleKeyDown}
       >
         <DrawerTitle className="sr-only">{labTitle}</DrawerTitle>
@@ -188,8 +188,8 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
                     className={cn(
                       'h-[6px] rounded-full transition-all duration-300 ease-out',
                       active
-                        ? 'w-[32px] bg-[#0F172A] shadow-[0_0_0_2px_rgba(15,23,42,0.12)]'
-                        : 'w-[6px] bg-[#CBD5F5] hover:bg-[#94A3B8]',
+                        ? 'w-[32px] bg-[#0F172A] shadow-[#E5E7EB]'
+                        : 'w-[6px] bg-[#E5E7EB] hover:bg-[#0F172A]',
                     )}
                     data-active={active ? 'true' : 'false'}
                   />
