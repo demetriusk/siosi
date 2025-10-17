@@ -19,7 +19,7 @@ export default function ClickableLabCard({ analysis, index, className }: Clickab
       type="button"
       onClick={() => openLabDrawer(index)}
       className={cn(
-        'block w-full cursor-zoom-in text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40',
+        'block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40',
         className,
       )}
       aria-label={label}

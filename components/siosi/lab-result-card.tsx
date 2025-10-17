@@ -46,8 +46,7 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
   return (
     <div
       className={cn(
-        'rounded-sm border border-[#E5E7EB] border-l-4 bg-white p-6 transition-shadow',
-        verdictBorder[analysis.verdict],
+        'rounded-sm border border-[#E5E7EB] bg-white p-6 transition-shadow',
         variant === 'preview' && 'hover:shadow-md',
         className,
       )}
