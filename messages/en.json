@@ -246,7 +246,7 @@
     "zoom": {
       "title": "Look photo",
       "description": "Zoomed-in preview of your analyzed look photo.",
-      "hint": "Tap anywhere to close",
+      "hint": "Close",
       "close": "Close zoom"
     }
   },

@@ -241,7 +241,7 @@
     "zoom": {
       "title": "Photo du look",
       "description": "Aperçu agrandi de ta photo analysée.",
-      "hint": "Touchez n'importe où pour fermer",
+      "hint": "Fermer",
       "close": "Fermer le zoom"
     }
   },

@@ -241,7 +241,7 @@
     "zoom": {
       "title": "Foto del look",
       "description": "Anteprima ingrandita della foto analizzata.",
-      "hint": "Tocca ovunque per chiudere",
+      "hint": "Chiudere",
       "close": "Chiudi zoom"
     }
   },
