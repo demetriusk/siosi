@@ -65,8 +65,8 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
           {isFull ? (
-            <div className="grid grid-cols-[minmax(80px,max-content)_1fr] gap-4">
-              <div className="min-w-[80px]">
+            <div className="grid grid-cols-[max-content_minmax(0,1fr)] gap-4">
+              <div>
                 {scoreDisplay}
               </div>
               <div className="flex flex-col justify-center">
