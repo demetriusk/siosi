@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
 import { SessionCard } from '@/components/siosi/session-card';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/lib/types';
@@ -152,8 +151,6 @@ export default function SavedSessionsPage() {
           )}
         </div>
       </main>
-
-      <Footer locale={locale} />
     </div>
   );
 }

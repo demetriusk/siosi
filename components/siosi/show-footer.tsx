@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { usePathname } from 'next/navigation';
 import { Footer } from './footer';
 import { getSupabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
+import { APP_SIDEBAR_WIDTH } from '@/components/siosi/app-sidebar';
 
 const FOOTER_WHITELIST = [
   '', // home
@@ -86,5 +88,14 @@ export default function ShowFooter({ locale }: { locale: string }) {
     return null;
   }
 
-  return <Footer locale={locale} />;
+  const wrapperClass = cn(isLoggedIn ? 'md:ml-[var(--app-sidebar-width)]' : '');
+  const wrapperStyle = isLoggedIn
+    ? ({ '--app-sidebar-width': APP_SIDEBAR_WIDTH } as CSSProperties)
+    : undefined;
+
+  return (
+    <div className={wrapperClass} style={wrapperStyle}>
+      <Footer locale={locale} />
+    </div>
+  );
 }
