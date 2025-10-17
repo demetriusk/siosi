@@ -43,7 +43,7 @@ const DrawerContent = React.forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 mt-24 flex max-h-[calc(100dvh-6rem)] flex-col overflow-y-auto overscroll-contain rounded-t-[10px] border bg-background',
+        'fixed inset-x-0 bottom-0 z-50 mt-24 flex max-h-[calc(100dvh-6rem)] flex-col overflow-hidden rounded-t-[10px] border bg-background',
         className
       )}
       {...props}
@@ -71,11 +71,28 @@ const DrawerFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('mt-auto flex flex-col gap-2 p-4', className)}
+    className={cn(
+      'sticky inset-x-0 bottom-0 z-10 flex flex-col gap-2 border-t border-border bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/80',
+      className
+    )}
     {...props}
   />
 );
 DrawerFooter.displayName = 'DrawerFooter';
+
+const DrawerBody = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex-1 overflow-y-auto overscroll-contain px-4 pb-4 sm:px-6',
+      className
+    )}
+    {...props}
+  />
+);
+DrawerBody.displayName = 'DrawerBody';
 
 const DrawerTitle = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
@@ -113,6 +130,7 @@ export {
   DrawerContent,
   DrawerHeader,
   DrawerFooter,
+  DrawerBody,
   DrawerTitle,
   DrawerDescription,
 };

@@ -24,6 +24,8 @@ import {
   DrawerTitle,
   DrawerClose,
   DrawerDescription,
+  DrawerBody,
+  DrawerFooter,
 } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
@@ -401,7 +403,6 @@ export default function SessionActionsClient({
           </Button>
         </DrawerTrigger>
         <DrawerContent
-          className="pb-6"
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             shareFocusRef.current?.focus();
@@ -415,69 +416,73 @@ export default function SessionActionsClient({
               {labels.shareTitle}
             </DrawerDescription>
           </DrawerHeader>
-          <div
-            ref={shareFocusRef}
-            tabIndex={-1}
-            className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
-          >
-            <div className="grid grid-cols-5 gap-4">
-              {shareTiles.map(({ key, label, icon, action }) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={handleShare(action)}
-                  className="flex flex-col items-center gap-2 text-xs font-medium text-[#111827]"
-                >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F3F4F6]">
-                    {icon}
-                  </span>
-                  {label}
-                </button>
-              ))}
-            </div>
-            <div className="mt-6 grid gap-2">
-              {canNativeShare && (
+          <DrawerBody className="px-6 pb-8">
+            <div
+              ref={shareFocusRef}
+              tabIndex={-1}
+              className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
+            >
+              <div className="grid grid-cols-5 gap-4">
+                {shareTiles.map(({ key, label, icon, action }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={handleShare(action)}
+                    className="flex flex-col items-center gap-2 text-xs font-medium text-[#111827]"
+                  >
+                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F3F4F6]">
+                      {icon}
+                    </span>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-6 grid gap-2">
+                {canNativeShare && (
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      await onNativeShare();
+                      setShareOpen(false);
+                    }}
+                    className="justify-start gap-2 border-[#E5E7EB]"
+                  >
+                    <Share className="h-4 w-4" />
+                    {labels.shareViaDevice}
+                  </Button>
+                )}
                 <Button
                   variant="outline"
-                  onClick={async () => {
-                    await onNativeShare();
+                  onClick={() => {
+                    onCopyLink();
                     setShareOpen(false);
                   }}
                   className="justify-start gap-2 border-[#E5E7EB]"
                 >
-                  <Share className="h-4 w-4" />
-                  {labels.shareViaDevice}
+                  <Copy className="h-4 w-4" />
+                  {labels.copyLink}
                 </Button>
-              )}
-              <Button
-                variant="outline"
-                onClick={() => {
-                  onCopyLink();
-                  setShareOpen(false);
-                }}
-                className="justify-start gap-2 border-[#E5E7EB]"
-              >
-                <Copy className="h-4 w-4" />
-                {labels.copyLink}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  await downloadImage();
-                  setShareOpen(false);
-                }}
-                className="justify-start gap-2 border-[#E5E7EB]"
-              >
-                <Download className="h-4 w-4" />
-                {labels.downloadImage}
-              </Button>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    await downloadImage();
+                    setShareOpen(false);
+                  }}
+                  className="justify-start gap-2 border-[#E5E7EB]"
+                >
+                  <Download className="h-4 w-4" />
+                  {labels.downloadImage}
+                </Button>
+              </div>
             </div>
+          </DrawerBody>
+          <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant="ghost" className="mt-4 w-full text-sm text-[#6B7280]">
+              <Button variant="ghost" className="w-full text-sm text-[#6B7280]">
                 {labels.cancel}
               </Button>
             </DrawerClose>
-          </div>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
 
@@ -493,7 +498,6 @@ export default function SessionActionsClient({
           </Button>
         </DrawerTrigger>
         <DrawerContent
-          className="pb-6"
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             detailsFocusRef.current?.focus();
@@ -507,104 +511,108 @@ export default function SessionActionsClient({
               {formattedCreatedAt}
             </DrawerDescription>
           </DrawerHeader>
-          <div
-            ref={detailsFocusRef}
-            tabIndex={-1}
-            className="px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
-          >
-            <div className="space-y-6 text-left">
-              <Separator />
-              <div>
-                <p className="text-sm font-semibold text-[#0A0A0A]">
-                  {profileSummary.title}
-                </p>
-                {profileSummary.hasAny ? (
-                  <ul className="mt-2 space-y-1 text-sm text-[#111827]">
-                    {profileSummary.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-2 text-sm text-[#6B7280]">
-                    {profileSummary.emptyMessage}
+          <DrawerBody className="px-6 pb-8">
+            <div
+              ref={detailsFocusRef}
+              tabIndex={-1}
+              className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0A0A0A]/10"
+            >
+              <div className="space-y-6 text-left">
+                <Separator />
+                <div>
+                  <p className="text-sm font-semibold text-[#0A0A0A]">
+                    {profileSummary.title}
                   </p>
+                  {profileSummary.hasAny ? (
+                    <ul className="mt-2 space-y-1 text-sm text-[#111827]">
+                      {profileSummary.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-2 text-sm text-[#6B7280]">
+                      {profileSummary.emptyMessage}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#0A0A0A]">
+                    {contextSummary.title}
+                  </p>
+                  {contextSummary.hasAny ? (
+                    <div className="mt-2 space-y-3 text-sm text-[#111827]">
+                      {contextSummary.occasion?.value && (
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                            {contextSummary.occasion.label}
+                          </p>
+                          <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                            {contextSummary.occasion.value}
+                          </p>
+                        </div>
+                      )}
+                      {contextSummary.where?.value && (
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                            {contextSummary.where.label}
+                          </p>
+                          <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                            {contextSummary.where.value}
+                          </p>
+                        </div>
+                      )}
+                      {contextSummary.climate?.value && (
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                            {contextSummary.climate.label}
+                          </p>
+                          <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
+                            {contextSummary.climate.value}
+                          </p>
+                        </div>
+                      )}
+                      {contextSummary.concerns.items.length > 0 && (
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-[#6B7280]">
+                            {contextSummary.concerns.title}
+                          </p>
+                          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm font-medium text-[#0A0A0A]">
+                            {contextSummary.concerns.items.map((concern) => (
+                              <li key={concern}>{concern}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-sm text-[#6B7280]">
+                      {contextSummary.emptyMessage}
+                    </p>
+                  )}
+                </div>
+                <Separator />
+                {authChecked && isAuthenticated && (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-center border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+                    onClick={() => {
+                      deleteDialogTriggerRef.current?.();
+                      requestAnimationFrame(() => setDetailsOpen(false));
+                    }}
+                  >
+                    {labels.deleteLabel}
+                  </Button>
                 )}
               </div>
-              <div>
-                <p className="text-sm font-semibold text-[#0A0A0A]">
-                  {contextSummary.title}
-                </p>
-                {contextSummary.hasAny ? (
-                  <div className="mt-2 space-y-3 text-sm text-[#111827]">
-                    {contextSummary.occasion?.value && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                          {contextSummary.occasion.label}
-                        </p>
-                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
-                          {contextSummary.occasion.value}
-                        </p>
-                      </div>
-                    )}
-                    {contextSummary.where?.value && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                          {contextSummary.where.label}
-                        </p>
-                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
-                          {contextSummary.where.value}
-                        </p>
-                      </div>
-                    )}
-                    {contextSummary.climate?.value && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                          {contextSummary.climate.label}
-                        </p>
-                        <p className="mt-0.5 text-sm font-medium text-[#0A0A0A]">
-                          {contextSummary.climate.value}
-                        </p>
-                      </div>
-                    )}
-                    {contextSummary.concerns.items.length > 0 && (
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-[#6B7280]">
-                          {contextSummary.concerns.title}
-                        </p>
-                        <ul className="mt-1 list-disc space-y-1 pl-5 text-sm font-medium text-[#0A0A0A]">
-                          {contextSummary.concerns.items.map((concern) => (
-                            <li key={concern}>{concern}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-[#6B7280]">
-                    {contextSummary.emptyMessage}
-                  </p>
-                )}
-              </div>
-              <Separator />
-              {authChecked && isAuthenticated && (
-                <Button
-                  variant="outline"
-                  className="w-full justify-center border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
-                  onClick={() => {
-                    deleteDialogTriggerRef.current?.();
-                    requestAnimationFrame(() => setDetailsOpen(false));
-                  }}
-                >
-                  {labels.deleteLabel}
-                </Button>
-              )}
             </div>
+          </DrawerBody>
+          <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant="ghost" className="mt-6 w-full text-sm text-[#6B7280]">
+              <Button variant="ghost" className="w-full text-sm text-[#6B7280]">
                 {labels.cancel}
               </Button>
             </DrawerClose>
-          </div>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
       {authChecked && isAuthenticated && (

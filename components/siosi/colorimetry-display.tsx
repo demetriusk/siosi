@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ColorimetryRecord, ColorimetrySwatch, Season, Undertone } from '@/lib/types';
 import { Badge, badgeVariants } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerClose,
+  DrawerBody,
 } from '@/components/ui/drawer';
 import { SEASON_PALETTES } from '@/lib/season-palettes';
 import { SwatchBook } from 'lucide-react';
@@ -101,13 +102,20 @@ function PaletteCard({
           <h4 className="text-lg font-semibold text-[#0A0A0A]">{title}</h4>
           {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
         </div>
+        {badgeLabel && (
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${VARIANT_BADGE_STYLES[variant]}`}
+          >
+            {badgeLabel}
+          </span>
+        )}
       </div>
 
       <ul className="space-y-4">
         {swatches.map((swatch, index) => (
           <li key={swatch.id ?? `${swatch.hex}-${index}`} className="flex items-start gap-3">
             <div
-              className="h-12 w-12 flex-shrink-0 rounded-full border border-white/70 shadow-inner"
+              className="h-14 w-14 rounded-full border border-white/70 border-white ring-2 ring-gray-200 shadow-inner shadow-md transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16 flex-shrink-0"
               style={{ backgroundColor: swatch.hex }}
             />
             <div className="flex flex-col gap-1">
@@ -156,14 +164,17 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     }
   };
 
-  const openSeasonDrawer = (
-    seasonKey: Season | null,
-    seasonLabel: string | null,
-    source: 'photo' | 'profile'
-  ) => {
-    setActiveSeasonContext({ key: seasonKey, label: seasonLabel, source });
-    setIsPaletteDrawerOpen(true);
-  };
+  const openSeasonDrawer = useCallback(
+    (
+      seasonKey: Season | null,
+      seasonLabel: string | null,
+      source: 'photo' | 'profile'
+    ) => {
+      setActiveSeasonContext({ key: seasonKey, label: seasonLabel, source });
+      setIsPaletteDrawerOpen(true);
+    },
+    []
+  );
 
   const photoPalettes = useMemo(
     () => [
@@ -398,31 +409,31 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
         </div>
       )}
       </section>
-      <DrawerContent id="season-palette-drawer" className="px-4 pb-6">
+      <DrawerContent id="season-palette-drawer">
         <DrawerHeader className="space-y-2 text-center">
           <DrawerTitle>
             {activeSeasonContext.label ?? t('season_palette_title')}
           </DrawerTitle>
           <DrawerDescription>
             {activeSeasonContext.source === 'photo' && colorimetry.photo.notes && (
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-sm leading-relaxed text-slate-600">
                 {colorimetry.photo.notes}
               </p>
             )}
           </DrawerDescription>
           {activeSeasonContext.source === 'profile' && (
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm leading-relaxed text-slate-600">
               Shades best suitable for you
             </p>
           )}
         </DrawerHeader>
-        {activeSeasonPalette ? (
-          <div className="px-2 pb-4">
+        <DrawerBody className="space-y-6">
+          {activeSeasonPalette ? (
             <ul className="grid grid-cols-3 gap-4 sm:grid-cols-5 md:grid-cols-6">
               {activeSeasonPalette.palette.map((swatch) => (
                 <li key={swatch.hex} className="flex flex-col items-center text-center">
                   <span
-                    className="h-14 w-14 rounded-full border border-white/70 shadow-inner"
+                    className="h-14 w-14 rounded-full border-2 border-white shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
                     style={{ backgroundColor: swatch.hex }}
                     aria-hidden
                   />
@@ -432,12 +443,12 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
                 </li>
               ))}
             </ul>
-          </div>
-        ) : (
-          <p className="px-4 pb-6 text-center text-sm text-slate-600">
-            {activeSeasonContext.key ? t('season_palette_unavailable') : t('season_palette_empty')}
-          </p>
-        )}
+          ) : (
+            <p className="text-center text-sm text-slate-600">
+              {activeSeasonContext.key ? t('season_palette_unavailable') : t('season_palette_empty')}
+            </p>
+          )}
+        </DrawerBody>
         <DrawerFooter className="items-center">
           <DrawerClose asChild>
             <button
