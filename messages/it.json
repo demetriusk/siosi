@@ -302,5 +302,12 @@
     "confidence_medium": "Buona previsione, qualche incertezza",
     "confidence_low": "Stima approssimativa, prendila con cautela",
     "disclaimer": "Le nostre previsioni sono basate sull'IA e sono raccomandazioni. Fidati sempre del tuo giudizio e consulta un professionista per eventi importanti."
+  },
+  "feedback": {
+    "analysis": {
+      "title": "Quanto è stata accurata questa analisi?",
+      "description": "Vogliamo rendere síOsí più intelligente per te! Questa analisi era perfetta o mancava qualcosa? Condividi i tuoi pensieri qui sotto — ogni feedback ci aiuta a migliorare.",
+      "submit": "Invia feedback"
+    }
   }
 }

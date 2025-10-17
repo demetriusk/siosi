@@ -302,5 +302,12 @@
     "confidence_medium": "Gute Vorhersage, gewisse Unsicherheit",
     "confidence_low": "Grobe Schätzung, mit Vorsicht verwenden",
     "disclaimer": "Unsere Vorhersagen basieren auf KI und sind Empfehlungen. Vertrauen Sie immer Ihrem eigenen Urteil und suchen Sie bei wichtigen Ereignissen professionellen Rat."
+  },
+  "feedback": {
+    "analysis": {
+      "title": "Wie genau war diese Analyse?",
+      "description": "Wir möchten síOsí für dich noch besser machen! War diese Analyse zutreffend oder fehlt etwas? Teile uns deine Meinung mit – jedes Feedback hilft uns, uns zu verbessern.",
+      "submit": "Feedback senden"
+    }
   }
 }

@@ -307,5 +307,12 @@
     "confidence_medium": "Good prediction, some uncertainty",
     "confidence_low": "Rough estimate, take with caution",
     "disclaimer": "Our predictions are AI-based recommendations. Always trust your own judgment and seek professional advice for important events."
+  },
+  "feedback": {
+    "analysis": {
+      "title": "How accurate was this analysis?",
+      "description": "We want to make síOsí smarter for you! Was this analysis spot-on, or did it miss something? Share your thoughts below — every bit of feedback helps us improve.",
+      "submit": "Send Feedback"
+    }
   }
 }
