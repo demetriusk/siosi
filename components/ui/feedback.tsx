@@ -97,10 +97,6 @@ export const Feedback: React.FC<FeedbackProps> = ({
         "w-fit overflow-hidden border py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 bg-white"
       )}
     >
-      <div className="px-4 pt-2 pb-1">
-        <h3 className="mb-1 text-base font-semibold text-black dark:text-neutral-100">{title}</h3>
-        <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-400">{description}</p>
-      </div>
       <span className="flex items-center justify-center gap-3 pl-4 pr-2">
         <div className="text-sm text-black dark:text-neutral-400">{submitLabel}</div>
         <div className="flex items-center text-neutral-400">
@@ -134,7 +130,7 @@ export const Feedback: React.FC<FeedbackProps> = ({
             <motion.span exit={{ opacity: 0 }} initial={{ opacity: 1 }}>
               <textarea
                 ref={textRef}
-                placeholder="Your app is awesoooome"
+                placeholder="{title}"
                 className="min-h-32 w-full resize-none rounded-md border bg-transparent p-2 text-sm placeholder-neutral-400 focus:border-neutral-400 focus:outline-0 dark:border-neutral-800 focus:dark:border-white"
               />
               <div className="flex h-fit w-full justify-end">
