@@ -201,7 +201,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
               type="button"
               onClick={() => setOpen(false)}
               ref={closeButtonRef}
-              className="w-full rounded-md border border-[#D1D5DB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]"
+              className="w-full rounded-md border border-[#D1D5DB] bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-[#F9FAFB]"
             >
               {closeLabel}
             </button>
