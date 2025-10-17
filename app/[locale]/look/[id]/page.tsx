@@ -255,7 +255,7 @@ export default async function LookPage({ params }: LookPageProps) {
       <main className="flex-1 bg-[#F9FAFB]">
         <div className="mx-auto flex w-full max-w-6xl flex-col lg:grid lg:grid-cols-5 lg:gap-8">
           <aside className="lg:sticky lg:top-0 lg:col-span-2 lg:h-screen">
-            <div className="relative aspect-[9/16] w-full lg:h-screen">
+            <div className="relative aspect-[9/16] w-full max-h-[70vh] max-h-[70svh] max-h-[70dvh] lg:h-screen lg:max-h-none">
               <LookHeroClient
                 src={session?.photo_url ?? null}
                 alt={safeT('common.photo', 'Photo')}
