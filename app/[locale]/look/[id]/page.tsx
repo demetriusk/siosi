@@ -270,7 +270,7 @@ export default async function LookPage({ params }: LookPageProps) {
       <main
         className="flex-1 bg-[#F9FAFB]"
         style={{
-          marginTop: 'var(--public-header-offset, 0px)',
+          paddingTop: 'var(--public-header-offset, 0px)',
           minHeight: 'calc(100vh - var(--public-header-offset, 0px))',
         }}
       >
