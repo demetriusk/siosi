@@ -13,7 +13,6 @@ import logger from '@/lib/logger';
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 import LookHeroClient from '@/components/siosi/look-hero-client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScanFace, SwatchBook } from 'lucide-react';
 import { SessionSaveButton } from '@/components/siosi/session-save-button';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
@@ -285,7 +284,6 @@ export default async function LookPage({ params }: LookPageProps) {
                       data-tab-value="analysis"
                       className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
                     >
-                      <ScanFace aria-hidden className="h-4 w-4" />
                       {safeT('results.tab.analysis', 'Analysis')}
                       <span
                         aria-hidden
@@ -297,7 +295,6 @@ export default async function LookPage({ params }: LookPageProps) {
                       data-tab-value="color"
                       className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
                     >
-                      <SwatchBook aria-hidden className="h-4 w-4" />
                       {safeT('results.tab.color_guide', 'Color Guide')}
                       <span
                         aria-hidden
