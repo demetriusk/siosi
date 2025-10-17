@@ -301,7 +301,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
           {' '}
           <button
             type="button"
-            className="ml-2 text-black underline decoration-black hover:text-emerald-700 focus:outline-none focus:underline"
+            className="ml-1 text-slate-600 underline decoration-slate-600 hover:text-black focus:outline-none focus:underline"
             onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
             aria-label="Learn more about season palette"
           >
