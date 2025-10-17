@@ -2,7 +2,8 @@
   "common": {
     "photo": "Photo",
     "clear": "Effacer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "close": "Fermer"
   },
   "nav": {
     "home": "Accueil",

@@ -2,7 +2,8 @@
   "common": {
     "photo": "Foto",
     "clear": "Zurücksetzen",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "close": "Schließen"
   },
   "nav": {
     "home": "Start",

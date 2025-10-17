@@ -2,7 +2,8 @@
   "common": {
     "photo": "Foto",
     "clear": "Pulisci",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "close": "Chiudi"
   },
   "nav": {
     "home": "Home",

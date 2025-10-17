@@ -8,6 +8,7 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
+  DrawerTitle,
 } from '@/components/ui/drawer';
 import type { LabAnalysis, Verdict } from '@/lib/types';
 import { LabResultCard } from './lab-result-card';
@@ -30,6 +31,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   const [open, setOpen] = React.useState(false);
   const [index, setIndex] = React.useState(0);
   const t = useTranslations();
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     if (analyses.length === 0) {
@@ -111,17 +113,28 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
       })()
     : 'Lab';
 
+  React.useEffect(() => {
+    if (open) {
+      const id = requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    return undefined;
+  }, [open]);
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent
-        className="mt-0 h-[92dvh] max-h-[92dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl [&>div:first-child]:hidden"
+        className="mt-0 max-h-[92dvh] rounded-t-[24px] border-0 bg-white px-0 pb-0 shadow-2xl sm:max-h-[85dvh] [&>div:first-child]:mx-auto [&>div:first-child]:mt-3 [&>div:first-child]:h-2 [&>div:first-child]:w-[100px] [&>div:first-child]:rounded-full [&>div:first-child]:bg-[#D1D5DB]"
         onKeyDown={handleKeyDown}
       >
+        <DrawerTitle className="sr-only">{labTitle}</DrawerTitle>
         <DrawerDescription className="sr-only">
-          Detailed analysis for {selected?.lab_name ?? 'selected lab'}. {positionLabel}.
+          Detailed analysis for {labTitle}. {positionLabel}.
         </DrawerDescription>
 
-        <div className="flex h-full flex-col">
+        <div className="flex flex-col">
           <header className="flex items-center gap-3 border-b border-[#E5E7EB] px-4 py-3 sm:px-6">
             <button
               type="button"
@@ -158,7 +171,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             </button>
           </header>
 
-          <DrawerBody className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6">
+          <DrawerBody className="overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 max-h-[calc(92dvh-220px)] sm:max-h-[calc(85dvh-220px)]">
             {selected && <LabResultCard analysis={selected} variant="full" />}
           </DrawerBody>
 
@@ -184,6 +197,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             <button
               type="button"
               onClick={() => setOpen(false)}
+              ref={closeButtonRef}
               className="w-full rounded-md border border-[#D1D5DB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]"
             >
               {closeLabel}
