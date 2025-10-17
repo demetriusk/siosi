@@ -267,7 +267,13 @@ export default async function LookPage({ params }: LookPageProps) {
     <div className="flex min-h-screen flex-col">
       <Header locale={locale} />
 
-      <main className="flex-1 bg-[#F9FAFB]">
+      <main
+        className="flex-1 bg-[#F9FAFB]"
+        style={{
+          marginTop: 'var(--public-header-offset, 0px)',
+          minHeight: 'calc(100vh - var(--public-header-offset, 0px))',
+        }}
+      >
         <div className="mx-auto flex w-full max-w-6xl flex-col lg:grid lg:grid-cols-5 lg:gap-8">
           <aside className="lg:sticky lg:top-0 lg:col-span-2 lg:h-screen">
             <div className="relative aspect-[9/16] w-full max-h-[60vh] max-h-[60svh] max-h-[60dvh] lg:h-screen lg:max-h-none">
