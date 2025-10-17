@@ -108,7 +108,7 @@ function PaletteCard({
         {swatches.map((swatch, index) => (
           <li key={swatch.id ?? `${swatch.hex}-${index}`} className="flex items-start gap-3">
             <div
-              className="h-14 w-14 rounded-full border border-white/70 border-white ring-2 ring-gray-200 shadow-inner shadow-md transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16 flex-shrink-0"
+              className="h-14 w-14 rounded-full border-2 border-white shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
               style={{ backgroundColor: swatch.hex }}
             />
             <div className="flex flex-col gap-1">
