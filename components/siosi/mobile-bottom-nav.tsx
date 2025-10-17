@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentType, SVGProps } from 'react';
+import type { ComponentType, MutableRefObject, SVGProps } from 'react';
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,11 +12,15 @@ interface MobileBottomNavProps {
   locale: string;
 }
 
+const SAVED_NAV_PING_EVENT = 'siosi:saved-nav-ping';
+
 export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   const pathname = usePathname();
   const t = useTranslations('nav');
   const logoRef = useRef<HTMLSpanElement | null>(null);
   const animationTimeoutRef = useRef<number | null>(null);
+  const savedNavRef = useRef<HTMLAnchorElement | null>(null);
+  const savedNavTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const logoEl = logoRef.current;
@@ -42,7 +46,44 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
     };
   }, [pathname]);
 
-  const navigation = [
+  useEffect(() => {
+    const handleSavedNavPing = () => {
+      const savedEl = savedNavRef.current;
+      if (!savedEl) return;
+
+      savedEl.classList.remove('is-saved-nav-pulsing');
+      void savedEl.offsetWidth;
+      savedEl.classList.add('is-saved-nav-pulsing');
+
+      if (savedNavTimeoutRef.current) {
+        window.clearTimeout(savedNavTimeoutRef.current);
+      }
+
+      savedNavTimeoutRef.current = window.setTimeout(() => {
+        savedEl.classList.remove('is-saved-nav-pulsing');
+      }, 720);
+    };
+
+    window.addEventListener(SAVED_NAV_PING_EVENT, handleSavedNavPing);
+
+    return () => {
+      window.removeEventListener(SAVED_NAV_PING_EVENT, handleSavedNavPing);
+      if (savedNavTimeoutRef.current) {
+        window.clearTimeout(savedNavTimeoutRef.current);
+        savedNavTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  interface NavigationItem {
+    href: string;
+    label: string;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
+    ref?: MutableRefObject<HTMLAnchorElement | null> | null;
+    isSaved?: boolean;
+  }
+
+  const navigation: NavigationItem[] = [
     {
       href: `/${locale}/looks`,
       label: t('sessions'),
@@ -56,19 +97,23 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
     {
       href: `/${locale}/saved`,
       label: t('saved_looks'),
-      icon: Star
+      icon: Star,
+      ref: savedNavRef,
+      isSaved: true
     }
   ];
 
   const isActive = (href: string) => pathname.startsWith(href);
   const isHomeActive = pathname === `/${locale}` || pathname === `/${locale}/`;
 
-  const renderNavItem = ({ href, label, icon: Icon }: { href: string; label: string; icon: ComponentType<SVGProps<SVGSVGElement>> }) => (
+  const renderNavItem = ({ href, label, icon: Icon, ref: itemRef, isSaved }: NavigationItem) => (
     <Link
       key={href}
       href={href}
+      ref={itemRef}
       className={cn(
         'flex flex-col items-center gap-1 text-xs font-medium transition-colors',
+        isSaved && 'saved-nav-target',
         isActive(href) ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
       )}
     >
@@ -91,7 +136,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
           <span className="text-xs">síOsí</span>
         </Link>
 
-        {navigation.map((item) => renderNavItem(item))}
+  {navigation.map((item) => renderNavItem(item))}
 
         <Link
           href={`/${locale}/analyze`}

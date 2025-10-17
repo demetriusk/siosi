@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useTranslations } from 'next-intl';
 
 export const APP_SIDEBAR_WIDTH = '4.5rem';
+const SAVED_NAV_PING_EVENT = 'siosi:saved-nav-ping';
 
 interface AppSidebarProps {
   locale: string;
@@ -28,6 +29,8 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
   const t = useTranslations('nav');
   const logoRef = useRef<HTMLSpanElement | null>(null);
   const animationTimeoutRef = useRef<number | null>(null);
+  const savedNavRef = useRef<HTMLAnchorElement | null>(null);
+  const savedNavTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const logoEl = logoRef.current;
@@ -52,6 +55,35 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
       }
     };
   }, [pathname]);
+
+  useEffect(() => {
+    const handleSavedNavPing = () => {
+      const savedEl = savedNavRef.current;
+      if (!savedEl) return;
+
+      savedEl.classList.remove('is-saved-nav-pulsing');
+      void savedEl.offsetWidth;
+      savedEl.classList.add('is-saved-nav-pulsing');
+
+      if (savedNavTimeoutRef.current) {
+        window.clearTimeout(savedNavTimeoutRef.current);
+      }
+
+      savedNavTimeoutRef.current = window.setTimeout(() => {
+        savedEl.classList.remove('is-saved-nav-pulsing');
+      }, 720);
+    };
+
+    window.addEventListener(SAVED_NAV_PING_EVENT, handleSavedNavPing);
+
+    return () => {
+      window.removeEventListener(SAVED_NAV_PING_EVENT, handleSavedNavPing);
+      if (savedNavTimeoutRef.current) {
+        window.clearTimeout(savedNavTimeoutRef.current);
+        savedNavTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   if (!user) {
     return null;
@@ -130,9 +162,10 @@ export function AppSidebar({ locale, user }: AppSidebarProps) {
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <Link
+              ref={savedNavRef}
               href={bottomItem.href}
               className={cn(
-                'flex h-11 w-11 items-center justify-center rounded-full border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50',
+                'saved-nav-target flex h-11 w-11 items-center justify-center rounded-full border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A]/50',
                 isActive(bottomItem.href)
                   ? 'border-transparent bg-[#0A0A0A] text-white shadow-lg'
                   : 'border-transparent bg-white text-[#6B7280] shadow-sm hover:bg-[#0A0A0A]/5 hover:text-[#0A0A0A]'

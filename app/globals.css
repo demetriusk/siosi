@@ -183,6 +183,54 @@
       background-position: center;
     }
   }
+
+  @keyframes saved-nav-pulse {
+    0% {
+      transform: scale(1);
+    }
+    32% {
+      transform: scale(1.12);
+    }
+    64% {
+      transform: scale(0.94);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes saved-nav-icon-pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.25);
+    }
+    70% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .saved-nav-target {
+    transition: color 200ms ease;
+  }
+
+  .saved-nav-target svg {
+    transition: transform 200ms ease;
+    transform-origin: center;
+  }
+
+  .saved-nav-target.is-saved-nav-pulsing {
+    animation: saved-nav-pulse 720ms ease;
+    color: #0A0A0A;
+  }
+
+  .saved-nav-target.is-saved-nav-pulsing svg {
+    animation: saved-nav-icon-pop 720ms ease;
+  }
 }
 
 

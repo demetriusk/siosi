@@ -145,7 +145,12 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
       }
 
       const body = await resp.json();
-      setSaved(Boolean(body?.saved));
+      const didSave = Boolean(body?.saved);
+      setSaved(didSave);
+
+      if (didSave && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('siosi:saved-nav-ping'));
+      }
 
       toast.success(body?.saved ? t('save_success') : t('unsave_success'));
     } catch (error) {

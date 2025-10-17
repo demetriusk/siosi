@@ -63,7 +63,7 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
             </span>
             <div className="flex items-baseline gap-1">
               <span className={cn('text-2xl font-bold', scoreColor(analysis.score))}>
-                {analysis.score.toFixed(1)}
+                {Number(analysis.score.toFixed(1))}
               </span>
               <span className="text-sm text-[#6B7280]">/10</span>
             </div>
