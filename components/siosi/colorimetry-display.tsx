@@ -404,13 +404,12 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
             {activeSeasonContext.label ?? t('season_palette_title')}
           </DrawerTitle>
           <DrawerDescription>
-            {activeSeasonPalette?.name ?? activeSeasonContext.label ?? t('season_palette_empty')}
+            {activeSeasonContext.source === 'photo' && colorimetry.photo.notes && (
+              <p className="text-sm text-slate-600 leading-relaxed">
+                {colorimetry.photo.notes}
+              </p>
+            )}
           </DrawerDescription>
-          {activeSeasonContext.source === 'photo' && colorimetry.photo.notes && (
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {colorimetry.photo.notes}
-            </p>
-          )}
           {activeSeasonContext.source === 'profile' && (
             <p className="text-sm text-slate-600 leading-relaxed">
               Shades best suitable for you
