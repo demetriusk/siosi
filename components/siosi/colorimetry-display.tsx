@@ -288,7 +288,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
   return (
     <Drawer open={isPaletteDrawerOpen} onOpenChange={handleDrawerChange}>
       <section>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-6 flex gap-3 items-center justify-between">
           <h2 className="text-xl font-bold text-[#0A0A0A]">{t('title')}</h2>
           <p className="text-xs uppercase tracking-wide text-slate-500">
             {t('photo_analysis')}
