@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -556,7 +556,7 @@ export default function ProfileClient({ locale }: Props) {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

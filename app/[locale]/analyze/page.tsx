@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Loader as Loader2, Gem, Shell, PartyPopper, ThermometerSun, Ghost, Zap, Trees, Aperture, Camera, Video, Activity, Home, Sun, Thermometer, Droplet, Clock, ZoomIn, AlertCircle } from 'lucide-react';
 import logger from '@/lib/logger';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { UsageBanner } from '@/components/siosi/usage-banner';
 import { UploadZone } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
@@ -496,7 +496,7 @@ export default function AnalyzePage() {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
 
       <style jsx global>{`
         @keyframes progress {

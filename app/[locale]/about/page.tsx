@@ -1,5 +1,5 @@
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { CircleCheck as CheckCircle, CircleAlert as AlertCircle, TriangleAlert as AlertTriangle } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
@@ -184,7 +184,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

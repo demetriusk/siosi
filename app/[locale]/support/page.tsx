@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -177,7 +177,7 @@ export default function SupportPage() {
           </div>
         </div>
       </main>
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

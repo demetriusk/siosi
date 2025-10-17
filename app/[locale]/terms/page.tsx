@@ -1,5 +1,5 @@
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import type { ParamsWithLocale } from '@/lib/types';
 
 interface TermsPageProps extends ParamsWithLocale {}
@@ -105,7 +105,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

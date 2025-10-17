@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { Card } from '@/components/ui/card';
 import { getSupabase } from '@/lib/supabase';
 import { SessionWithAnalyses, LabAnalysis } from '@/lib/types';
@@ -488,7 +488,7 @@ export default async function LookPage({ params }: LookPageProps) {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

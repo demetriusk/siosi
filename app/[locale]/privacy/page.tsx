@@ -1,5 +1,5 @@
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import type { ParamsWithLocale } from '@/lib/types';
 
 interface PrivacyPageProps extends ParamsWithLocale {}
@@ -98,7 +98,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

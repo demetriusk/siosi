@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Upload, ScanFace } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { SessionCard } from '@/components/siosi/session-card';
 import { Button } from '@/components/ui/button';
 // Do not import `supabase` at module scope in client components. We'll dynamically
@@ -120,7 +120,7 @@ export default function LooksPage() {
         </div>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

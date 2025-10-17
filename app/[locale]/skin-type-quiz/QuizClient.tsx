@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { Button } from '@/components/ui/button';
 import { QuizProvider, useQuiz } from '@/components/siosi/skin-type-quiz/quiz-context';
 import { QuizProgress } from '@/components/siosi/skin-type-quiz/quiz-progress';
@@ -210,7 +210,7 @@ function QuizShell({ locale }: QuizClientProps) {
           )}
         </div>
       </main>
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }

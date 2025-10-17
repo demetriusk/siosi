@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import logger from '@/lib/logger';
 import { Camera } from 'lucide-react';
 import { Header } from '@/components/siosi/header';
-import { Footer } from '@/components/siosi/footer';
+// import { Footer } from '@/components/siosi/footer';
 import { UploadZone, UploadZoneHandle } from '@/components/siosi/upload-zone';
 import { Button } from '@/components/ui/button';
 
@@ -211,7 +211,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <Footer locale={locale} />
+  {/* <Footer locale={locale} /> */}
     </div>
   );
 }
