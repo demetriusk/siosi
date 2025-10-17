@@ -176,7 +176,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
           </DrawerBody>
 
           <DrawerFooter className="gap-3 border-t border-[#E5E7EB] bg-white px-4 py-4 sm:px-6">
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-3">
               {analyses.map((_, dotIndex) => {
                 const active = dotIndex === index;
                 return (
@@ -185,10 +185,14 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
                     type="button"
                     onClick={() => goTo(dotIndex)}
                     aria-label={`Go to result ${dotIndex + 1}`}
+                    aria-pressed={active}
                     className={cn(
-                      'rounded-full bg-[#111827]/45 transition-all',
-                      active ? 'h-[2px] w-2 bg-[#111827]' : 'h-[2px] w-[2px]',
+                      'h-[6px] rounded-full transition-all duration-300 ease-out',
+                      active
+                        ? 'w-[32px] bg-[#0F172A] shadow-[0_0_0_2px_rgba(15,23,42,0.12)]'
+                        : 'w-[6px] bg-[#CBD5F5] hover:bg-[#94A3B8]',
                     )}
+                    data-active={active ? 'true' : 'false'}
                   />
                 );
               })}
