@@ -86,7 +86,7 @@ const DrawerBody = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex-1 overflow-y-auto overscroll-contain px-4 pb-4 sm:px-6',
+      'flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6',
       className
     )}
     {...props}
