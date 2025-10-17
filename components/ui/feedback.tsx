@@ -1,99 +1,201 @@
-"use client";
-import React, { useState } from 'react';
 
+"use client";
+import { Angry, Check, Frown, Laugh, Loader2, Smile } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { twMerge } from "tailwind-merge";
+import { cn } from "@/utils/cn";
 
 interface FeedbackProps {
   title: string;
   description: string;
   submitLabel?: string;
   userId?: string;
-  onSubmit: (data: { userId?: string; happiness: string; message?: string }) => Promise<void>;
+  sessionId?: string;
+  locale?: string;
+  onSubmit?: (data: { userId?: string; happiness: number; message?: string }) => Promise<void>;
 }
 
-const happinessOptions = [
-  { value: 'happy', label: 'Spot-on! Very happy' },
-  { value: 'neutral', label: "It's okay, but could be better" },
-  { value: 'unhappy', label: 'Missed the mark' },
+const feedbackOptions = [
+  { happiness: 4, emoji: <Laugh size={16} className="stroke-inherit" />, label: "Spot-on! Very happy" },
+  { happiness: 3, emoji: <Smile size={16} className="stroke-inherit" />, label: "Pretty good" },
+  { happiness: 2, emoji: <Frown size={16} className="stroke-inherit" />, label: "Could be better" },
+  { happiness: 1, emoji: <Angry size={16} className="stroke-inherit" />, label: "Missed the mark" },
 ];
 
 export const Feedback: React.FC<FeedbackProps> = ({
   title,
   description,
-  submitLabel = 'Send Feedback',
+  submitLabel = "Send Feedback",
   userId,
-  onSubmit,
+  sessionId,
+  locale,
 }) => {
-  const [happiness, setHappiness] = useState('happy');
-  const [message, setMessage] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const [happiness, setHappiness] = useState<number | null>(null);
+  const [isSubmitted, setSubmissionState] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isSent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError('');
+  useEffect(() => {
+    if (!happiness && textRef.current) {
+      textRef.current.value = "";
+    }
+  }, [happiness]);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
+    let submissionStateTimeout: NodeJS.Timeout | null = null;
+    if (isSent) {
+      setSubmissionState(true);
+      timeout = setTimeout(() => {
+        setHappiness(null);
+        if (textRef.current) textRef.current.value = "";
+      }, 2000);
+      submissionStateTimeout = setTimeout(() => {
+        setSubmissionState(false);
+        setSent(false);
+      }, 2200);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+      if (submissionStateTimeout) clearTimeout(submissionStateTimeout);
+    };
+  }, [isSent]);
+
+  const handleSubmit = async () => {
+    if (!happiness) return;
+    setLoading(true);
+    setError(null);
     try {
-      await onSubmit({ userId, happiness, message });
-      setSuccess(true);
-      setMessage('');
-      setHappiness('happy');
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          locale,
+          userId,
+          happiness,
+          message: textRef.current?.value || "",
+        }),
+      });
+      setSent(true);
     } catch (err) {
-      setError('Sorry, something went wrong. Please try again.');
+      setError("Sorry, something went wrong. Please try again.");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto rounded-lg bg-white shadow p-6">
-      <h3 className="mb-2 text-lg font-semibold text-[#0A0A0A]">{title}</h3>
-      <p className="mb-4 text-sm text-[#6B7280]">{description}</p>
-      {success ? (
-        <div className="text-green-600 text-sm mb-2">Thank you for your feedback!</div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-[#374151] mb-1">How did you feel about the results?</label>
-            <div className="flex gap-2">
-              {happinessOptions.map((opt) => (
-                <label key={opt.value} className="flex items-center gap-1 text-sm">
-                  <input
-                    type="radio"
-                    name="happiness"
-                    value={opt.value}
-                    checked={happiness === opt.value}
-                    onChange={() => setHappiness(opt.value)}
-                    className="accent-[#111827]"
-                  />
-                  {opt.label}
-                </label>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label htmlFor="feedback-message" className="block text-xs font-medium text-[#374151] mb-1">
-              Anything else you'd like to share? (optional)
-            </label>
-            <textarea
-              id="feedback-message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-200"
-              rows={3}
-              placeholder="Tell us what was accurate, what missed, or any thoughts!"
-            />
-          </div>
-          {error && <div className="text-red-600 text-xs">{error}</div>}
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded bg-[#111827] text-white py-2 font-semibold hover:bg-[#0A0A0A] transition"
-          >
-            {submitting ? 'Sending...' : submitLabel}
-          </button>
-        </form>
+    <motion.div
+      layout
+      initial={{ borderRadius: "2rem" }}
+      animate={happiness ? { borderRadius: "0.5rem" } : { borderRadius: "2rem" }}
+      className={twMerge(
+        "w-fit overflow-hidden border py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 bg-white"
       )}
-    </div>
+    >
+      <div className="px-4 pt-2 pb-1">
+        <h3 className="mb-1 text-base font-semibold text-black dark:text-neutral-100">{title}</h3>
+        <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-400">{description}</p>
+      </div>
+      <span className="flex items-center justify-center gap-3 pl-4 pr-2">
+        <div className="text-sm text-black dark:text-neutral-400">{submitLabel}</div>
+        <div className="flex items-center text-neutral-400">
+          {feedbackOptions.map((e) => (
+            <button
+              onClick={() => setHappiness((prev) => (e.happiness === prev ? null : e.happiness))}
+              className={twMerge(
+                happiness === e.happiness
+                  ? "bg-blue-100 stroke-blue-500 dark:bg-sky-900 dark:stroke-sky-500"
+                  : "stroke-neutral-500 dark:stroke-neutral-400",
+                "flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-blue-100 hover:stroke-blue-500 hover:dark:bg-sky-900 hover:dark:stroke-sky-500"
+              )}
+              key={e.happiness}
+              type="button"
+              aria-label={e.label}
+            >
+              {e.emoji}
+            </button>
+          ))}
+        </div>
+      </span>
+      <motion.div
+        aria-hidden={happiness ? false : true}
+        initial={{ height: 0, translateY: 15 }}
+        className="px-2"
+        transition={{ ease: "easeInOut", duration: 0.3 }}
+        animate={happiness ? { height: "195px", width: "330px" } : {}}
+      >
+        <AnimatePresence>
+          {!isSubmitted ? (
+            <motion.span exit={{ opacity: 0 }} initial={{ opacity: 1 }}>
+              <textarea
+                ref={textRef}
+                placeholder="Your app is awesoooome"
+                className="min-h-32 w-full resize-none rounded-md border bg-transparent p-2 text-sm placeholder-neutral-400 focus:border-neutral-400 focus:outline-0 dark:border-neutral-800 focus:dark:border-white"
+              />
+              <div className="flex h-fit w-full justify-end">
+                <button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className={cn(
+                    "mt-1 flex h-9 items-center justify-center rounded-md border bg-neutral-950 px-2 text-sm text-white dark:bg-white dark:text-neutral-950",
+                    {
+                      "bg-neutral-500 dark:bg-white dark:text-neutral-500": isLoading,
+                    }
+                  )}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading
+                    </>
+                  ) : (
+                    submitLabel
+                  )}
+                </button>
+              </div>
+              {error && <div className="text-red-600 text-xs mt-2">{error}</div>}
+            </motion.span>
+          ) : (
+            <motion.div
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="flex h-full w-full flex-col items-center justify-start gap-2 pt-9 text-sm font-normal"
+            >
+              <motion.div
+                variants={item}
+                className="flex h-8 min-h-8 w-8 min-w-8 items-center justify-center rounded-full bg-blue-500 dark:bg-sky-500"
+              >
+                <Check strokeWidth={2.5} size={16} className="stroke-white" />
+              </motion.div>
+              <motion.div variants={item}>Your feedback has been received!</motion.div>
+              <motion.div variants={item}>Thank you for your help.</motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
+};
+
+const container = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.2,
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const item = {
+  hidden: { y: 10 },
+  show: { y: 0 },
 };

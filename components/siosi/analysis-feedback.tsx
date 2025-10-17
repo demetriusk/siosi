@@ -25,7 +25,7 @@ export default function AnalysisFeedback({
       description={description}
       submitLabel={submitLabel}
       userId={userId}
-      onSubmit={async ({ userId, happiness, message }) => {
+  onSubmit={async ({ userId, happiness, message }: { userId?: string; happiness: number; message?: string }) => {
         await fetch("/api/feedback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
