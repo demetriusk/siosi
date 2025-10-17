@@ -13,6 +13,7 @@ import logger from '@/lib/logger';
 import type { ParamsWithLocaleAndId } from '@/lib/types';
 import LookHeroClient from '@/components/siosi/look-hero-client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScanFace, SwatchBook } from 'lucide-react';
 import { SessionSaveButton } from '@/components/siosi/session-save-button';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
@@ -278,20 +279,30 @@ export default async function LookPage({ params }: LookPageProps) {
             <Tabs defaultValue="analysis" className="w-full">
               <div className="sticky top-0 z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6">
                 <div className="flex items-center justify-between gap-3">
-                  <TabsList className="rounded-full bg-gray-100 p-1">
+                  <TabsList className="grid flex-1 grid-cols-2 rounded-none border-b border-gray-200 bg-transparent p-0">
                     <TabsTrigger
                       value="analysis"
                       data-tab-value="analysis"
-                      className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
+                      className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
                     >
+                      <ScanFace aria-hidden className="h-4 w-4" />
                       {safeT('results.tab.analysis', 'Analysis')}
+                      <span
+                        aria-hidden
+                        className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
+                      />
                     </TabsTrigger>
                     <TabsTrigger
                       value="color"
                       data-tab-value="color"
-                      className="rounded-full px-4 py-1.5 text-sm font-medium text-[#1F2937] data-[state=active]:bg-black data-[state=active]:text-white"
+                      className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
                     >
+                      <SwatchBook aria-hidden className="h-4 w-4" />
                       {safeT('results.tab.color_guide', 'Color Guide')}
+                      <span
+                        aria-hidden
+                        className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
+                      />
                     </TabsTrigger>
                   </TabsList>
                   <SessionSaveButton
@@ -407,7 +418,7 @@ export default async function LookPage({ params }: LookPageProps) {
                   )}
                 </TabsContent>
 
-                <p className="mt-4 text-xs leading-relaxed text-[#4B5563]">
+                <p className="mt-8 text-xs leading-relaxed text-[#4B5563]">
                   {safeT(
                     'colorimetry.disclaimer',
                     'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.',
