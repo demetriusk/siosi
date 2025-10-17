@@ -152,7 +152,9 @@ export function SessionSaveButton({ sessionId, locale, className, ownerId, viewe
         window.dispatchEvent(new CustomEvent('siosi:saved-nav-ping'));
       }
 
-      toast.success(body?.saved ? t('save_success') : t('unsave_success'));
+      if (!didSave) {
+        toast.success(t('unsave_success'));
+      }
     } catch (error) {
       logger.error('Failed to toggle session save', error);
       toast.error(t('save_error'));

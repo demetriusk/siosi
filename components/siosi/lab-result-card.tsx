@@ -45,7 +45,7 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
 
   const wrapperClassName = cn(
     variant === 'preview'
-      ? 'rounded-sm border border-[#E5E7EB] bg-white p-6 transition-shadow hover:shadow-md'
+      ? 'rounded-sm h-full border border-[#E5E7EB] bg-white p-6 transition-shadow hover:shadow-md'
       : undefined,
     className,
   );
