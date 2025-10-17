@@ -291,7 +291,10 @@ export default async function LookPage({ params }: LookPageProps) {
 
           <section className="lg:col-span-3">
             <Tabs defaultValue="analysis" className="w-full">
-              <div className="sticky top-0 z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6">
+              <div
+                className="sticky z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6"
+                style={{ top: 'var(--public-header-offset, 0px)' }}
+              >
                 <div className="flex items-center justify-between gap-3">
                   <TabsList className="grid flex-1 grid-cols-2 rounded-none border-b border-gray-200 bg-transparent p-0">
                     <TabsTrigger
