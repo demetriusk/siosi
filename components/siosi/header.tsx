@@ -21,16 +21,18 @@ export function Header({ locale }: HeaderProps) {
   const t = useTranslations('nav');
   const user = useSupabaseUser();
 
-  if (user === undefined || user) {
-    return null;
-  }
-
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
 
     const root = document.documentElement;
+
+    if (user) {
+      root.style.removeProperty('--public-header-offset');
+      return;
+    }
+
     const mediaQuery = window.matchMedia('(min-width: 768px)');
 
     const setOffset = () => {
@@ -44,7 +46,11 @@ export function Header({ locale }: HeaderProps) {
       mediaQuery.removeEventListener('change', setOffset);
       root.style.removeProperty('--public-header-offset');
     };
-  }, []);
+  }, [user]);
+
+  if (user === undefined || user) {
+    return null;
+  }
 
   // Basic navigation items. Keep these simple and locale-aware.
   const navigation = [
