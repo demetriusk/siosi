@@ -226,7 +226,7 @@ export default function LookHeroClient({
                         key={`${badge.label}-${index}`}
                         type="button"
                         onClick={handleSeasonBadgeClick}
-                        className={`${baseClass} ${neutralClass} gap-1.5 transition bg-[#0A0A0A] text-white hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80`}
+                        className={`${baseClass} gap-1.5 transition bg-[#0A0A0A] text-white hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80`}
                         data-season-badge
                         data-season-source={seasonBadgeSource}
                         aria-label={seasonPaletteLabel}
