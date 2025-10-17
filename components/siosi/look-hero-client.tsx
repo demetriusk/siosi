@@ -256,7 +256,7 @@ export default function LookHeroClient({
         <DialogContent
           hideCloseButton
           layout="fullscreen"
-          className="border-none bg-black/95 p-4 text-white shadow-2xl focus:outline-none sm:p-6"
+          className="border-none p-4 text-white shadow-2xl focus:outline-none sm:p-6"
         >
           <DialogTitle className="sr-only">{zoomTitle}</DialogTitle>
           <DialogDescription className="sr-only">{zoomDescription}</DialogDescription>
