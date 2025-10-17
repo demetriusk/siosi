@@ -129,9 +129,11 @@ export const Feedback: React.FC<FeedbackProps> = ({
           {!isSubmitted ? (
             <motion.span exit={{ opacity: 0 }} initial={{ opacity: 1 }}>
               <textarea
+                id="feedback-message"
+                name="feedback-message"
                 ref={textRef}
-                placeholder="{title}"
-                className="min-h-32 w-full resize-none rounded-md border bg-transparent p-2 text-sm placeholder-neutral-400 focus:border-neutral-400 focus:outline-0 dark:border-neutral-800 focus:dark:border-white"
+                placeholder={title}
+                className="min-h-[8rem] w-full resize-none rounded-md border bg-transparent p-2 text-sm placeholder-neutral-400 focus:border-neutral-400 focus:outline-0 dark:border-neutral-800 focus:dark:border-white"
               />
               <div className="flex h-fit w-full justify-end">
                 <button
