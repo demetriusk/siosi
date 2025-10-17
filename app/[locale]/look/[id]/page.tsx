@@ -266,17 +266,12 @@ export default async function LookPage({ params }: LookPageProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <Header locale={locale} />
-
       <main
-        className="flex-1 bg-[#F9FAFB]"
-        style={{
-          paddingTop: 'var(--public-header-offset, 0px)',
-          minHeight: 'calc(100vh - var(--public-header-offset, 0px))',
-        }}
+        className="md:fixed md:inset-x-0 md:top-[var(--public-header-offset,0px)] md:h-[calc(100vh-var(--public-header-offset,0px))] md:max-h-[calc(100vh-var(--public-header-offset,0px))] flex-1 bg-[#F9FAFB]"
       >
-        <div className="mx-auto flex w-full max-w-6xl flex-col lg:grid lg:grid-cols-5 lg:gap-8">
-          <aside className="lg:sticky lg:top-0 lg:col-span-2 lg:h-screen">
-            <div className="relative aspect-[9/16] w-full max-h-[60vh] max-h-[60svh] max-h-[60dvh] lg:h-screen lg:max-h-none">
+        <div className="mx-auto flex w-full max-w-6xl flex-col md:flex-row md:h-full md:max-h-full md:gap-8">
+          <aside className="md:h-full md:max-h-full md:w-2/5 lg:w-2/5 xl:w-2/5">
+            <div className="relative aspect-[9/16] w-full md:h-full md:max-h-full">
               <LookHeroClient
                 src={session?.photo_url ?? null}
                 alt={safeT('common.photo', 'Photo')}
@@ -295,160 +290,147 @@ export default async function LookPage({ params }: LookPageProps) {
             </div>
           </aside>
 
-          <section className="lg:col-span-3">
-            <Tabs defaultValue="analysis" className="w-full">
-              <div
-                className="sticky z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6"
-                style={{ top: 'var(--public-header-offset, 0px)' }}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <TabsList className="grid flex-1 grid-cols-2 rounded-none border-b border-gray-200 bg-transparent p-0">
-                    <TabsTrigger
-                      value="analysis"
-                      data-tab-value="analysis"
-                      className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
-                    >
-                      {safeT('results.tab.analysis', 'Analysis')}
-                      <span
-                        aria-hidden
-                        className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
-                      />
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="color"
-                      data-tab-value="color"
-                      className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
-                    >
-                      {safeT('results.tab.color_guide', 'Color Guide')}
-                      <span
-                        aria-hidden
-                        className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
-                      />
-                    </TabsTrigger>
-                  </TabsList>
-                  <SessionSaveButton
-                    sessionId={id}
-                    locale={locale}
-                    ownerId={session?.user_id ?? null}
-                    className="h-11 w-11 bg-white/80 text-[#0A0A0A] backdrop-blur hover:bg-white"
-                  />
+          <section className="flex-1 flex flex-col md:h-full md:max-h-full overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <Tabs defaultValue="analysis" className="w-full">
+                <div
+                  className="sticky z-20 border-b border-gray-100 bg-[#F9FAFB]/90 px-4 pb-3 pt-4 backdrop-blur-sm sm:px-6"
+                  style={{ top: '0px' }}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <TabsList className="grid flex-1 grid-cols-2 rounded-none border-b border-gray-200 bg-transparent p-0">
+                      <TabsTrigger
+                        value="analysis"
+                        data-tab-value="analysis"
+                        className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
+                      >
+                        {safeT('results.tab.analysis', 'Analysis')}
+                        <span
+                          aria-hidden
+                          className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
+                        />
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="color"
+                        data-tab-value="color"
+                        className="group relative inline-flex w-full items-center justify-center gap-2 rounded-none bg-transparent px-0 py-2.5 text-sm font-medium text-[#111827] transition-colors data-[state=active]:text-black"
+                      >
+                        {safeT('results.tab.color_guide', 'Color Guide')}
+                        <span
+                          aria-hidden
+                          className="indicator absolute -bottom-[1px] left-0 h-[3px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-data-[state=active]:scale-x-100"
+                        />
+                      </TabsTrigger>
+                    </TabsList>
+                    <SessionSaveButton
+                      sessionId={id}
+                      locale={locale}
+                      ownerId={session?.user_id ?? null}
+                      className="h-11 w-11 bg-white/80 text-[#0A0A0A] backdrop-blur hover:bg-white"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="px-4 pb-16 sm:px-6">
+                <div className="px-4 pb-16 sm:px-6">
 
-                <TabsContent value="analysis" className="mt-6 space-y-12">
-                  {criticalAnalyses.length > 0 && (
-                    <div>
-                      <div className="mb-4 flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">
-                          {safeT('results.critical', 'Critical')}
-                        </h3>
-                        <span className="rounded-full bg-[#EF4444] px-2.5 py-0.5 text-xs font-semibold text-white">
-                          {criticalAnalyses.length}
-                        </span>
+                  <TabsContent value="analysis" className="mt-6 space-y-12">
+                    {criticalAnalyses.length > 0 && (
+                      <div>
+                        <div className="mb-4 flex items-center gap-2">
+                          <h3 className="text-xl font-bold text-[#0A0A0A]">
+                            {safeT('results.critical', 'Critical')}
+                          </h3>
+                          <span className="rounded-full bg-[#EF4444] px-2.5 py-0.5 text-xs font-semibold text-white">
+                            {criticalAnalyses.length}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                          {criticalAnalyses.map((analysis) => {
+                            const key = analysis.id ?? `${analysis.lab_name ?? 'critical'}-${indexByRef.get(analysis) ?? 0}`;
+                            return (
+                              <ClickableLabCard
+                                key={key}
+                                analysis={analysis}
+                                index={indexByRef.get(analysis) ?? 0}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {criticalAnalyses.map((analysis) => {
-                          const key = analysis.id ?? `${analysis.lab_name ?? 'critical'}-${indexByRef.get(analysis) ?? 0}`;
-                          return (
-                            <ClickableLabCard
-                              key={key}
-                              analysis={analysis}
-                              index={indexByRef.get(analysis) ?? 0}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {watchAnalyses.length > 0 && (
-                    <div>
-                      <div className="mb-4 flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">
-                          {safeT('results.watch_these', 'Watch these')}
-                        </h3>
-                        <span className="rounded-full bg-[#F59E0B] px-2.5 py-0.5 text-xs font-semibold text-white">
-                          {watchAnalyses.length}
-                        </span>
+                    {watchAnalyses.length > 0 && (
+                      <div>
+                        <div className="mb-4 flex items-center gap-2">
+                          <h3 className="text-xl font-bold text-[#0A0A0A]">
+                            {safeT('results.watch', 'Watch')}
+                          </h3>
+                          <span className="rounded-full bg-[#F59E42] px-2.5 py-0.5 text-xs font-semibold text-white">
+                            {watchAnalyses.length}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                          {watchAnalyses.map((analysis) => {
+                            const key = analysis.id ?? `${analysis.lab_name ?? 'watch'}-${indexByRef.get(analysis) ?? 0}`;
+                            return (
+                              <ClickableLabCard
+                                key={key}
+                                analysis={analysis}
+                                index={indexByRef.get(analysis) ?? 0}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {watchAnalyses.map((analysis) => {
-                          const key = analysis.id ?? `${analysis.lab_name ?? 'watch'}-${indexByRef.get(analysis) ?? 0}`;
-                          return (
-                            <ClickableLabCard
-                              key={key}
-                              analysis={analysis}
-                              index={indexByRef.get(analysis) ?? 0}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {goodAnalyses.length > 0 && (
-                    <div>
-                      <div className="mb-4 flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">
-                          {safeT('results.looking_good', 'Looking good')}
-                        </h3>
-                        <span className="rounded-full bg-[#10B981] px-2.5 py-0.5 text-xs font-semibold text-white">
-                          {goodAnalyses.length}
-                        </span>
+                    {goodAnalyses.length > 0 && (
+                      <div>
+                        <div className="mb-4 flex items-center gap-2">
+                          <h3 className="text-xl font-bold text-[#0A0A0A]">
+                            {safeT('results.good', 'Good')}
+                          </h3>
+                          <span className="rounded-full bg-[#10B981] px-2.5 py-0.5 text-xs font-semibold text-white">
+                            {goodAnalyses.length}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                          {goodAnalyses.map((analysis) => {
+                            const key = analysis.id ?? `${analysis.lab_name ?? 'good'}-${indexByRef.get(analysis) ?? 0}`;
+                            return (
+                              <ClickableLabCard
+                                key={key}
+                                analysis={analysis}
+                                index={indexByRef.get(analysis) ?? 0}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {goodAnalyses.map((analysis) => {
-                          const key = analysis.id ?? `${analysis.lab_name ?? 'good'}-${indexByRef.get(analysis) ?? 0}`;
-                          return (
-                            <ClickableLabCard
-                              key={key}
-                              analysis={analysis}
-                              index={indexByRef.get(analysis) ?? 0}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {analyses.length === 0 && (
-                    <Card className="p-6 text-center">
-                      <h3 className="mb-2 text-lg font-semibold text-[#0A0A0A]">
-                        {safeT('results.no_analyses_title', 'No analyses yet')}
-                      </h3>
-                      <p className="text-sm text-[#6B7280]">
-                        {safeT(
-                          'results.no_analyses_body',
-                          "We couldn't find any lab results for this session. Try analyzing another photo.",
-                        )}
-                      </p>
-                    </Card>
-                  )}
+                    {orderedAnalyses.length === 0 && (
+                      <div className="text-center text-[#6B7280]">
+                        {safeT('results.empty', 'No analyses found for this look.')}
+                      </div>
+                    )}
+                  </TabsContent>
 
-                  {analyses.length > 0 && categorizedCount === 0 && (
-                    <div>
-                      <div className="mb-4 flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-[#0A0A0A]">
-                          {safeT('results.all_results', 'All results')}
-                        </h3>
-                        <span className="rounded-full bg-[#6B7280] px-2.5 py-0.5 text-xs font-semibold text-white">
-                          {analyses.length}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        {analyses.map((analysis) => {
-                          const key = analysis.id ?? `${analysis.lab_name ?? 'analysis'}-${indexByRef.get(analysis) ?? 0}`;
-                          return (
-                            <ClickableLabCard
-                              key={key}
-                              analysis={analysis}
-                              index={indexByRef.get(analysis) ?? 0}
-                            />
-                          );
-                        })}
-                      </div>
+                  <TabsContent value="color" className="mt-6 space-y-12">
+                    <ColorimetryDisplay
+                      colorimetry={colorimetry}
+                      locale={locale}
+                      t={safeT}
+                    />
+                  </TabsContent>
+                </div>
+              </Tabs>
+            </div>
+            {/* Footer will appear at the end of scrollable content via ShowFooter */}
+          </section>
+        </div>
+      </main>
+    </div>
                     </div>
                   )}
 
