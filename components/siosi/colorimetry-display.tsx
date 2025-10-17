@@ -296,43 +296,10 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
     <Drawer open={isPaletteDrawerOpen} onOpenChange={handleDrawerChange}>
       <section>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs uppercase tracking-wide text-slate-500">
             {t('photo_analysis')}
           </p>
           <h2 className="text-xl font-bold text-[#0A0A0A]">{t('title')}</h2>
-          <p className="text-sm text-slate-600">{t('your_analysis')}</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {photoUndertone && (
-            <Badge variant="secondary" className="bg-amber-100 text-amber-700">
-              {photoUndertone} undertone
-            </Badge>
-          )}
-          {photoSeasonLabel && (
-            <button
-              type="button"
-              className={`${badgeVariants({ variant: 'outline' })} gap-2 border-slate-200 bg-slate-100 text-slate-800 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2`}
-              aria-controls="season-palette-drawer"
-              aria-expanded={isPaletteDrawerOpen && activeSeasonContext.source === 'photo'}
-              data-season-source="photo"
-              onClick={() => openSeasonDrawer(photoSeasonKey, photoSeasonLabel, 'photo')}
-            >
-              <SwatchBook className="h-3.5 w-3.5" aria-hidden />
-              <span>{t('season_badge', { season: photoSeasonLabel })}</span>
-            </button>
-          )}
-          {photoConfidence && (
-            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-              {photoConfidence}
-            </Badge>
-          )}
-          {photoSeasonConfidence && (
-            <Badge variant="outline" className="border-slate-200 bg-slate-100 text-slate-800">
-              {photoSeasonConfidence}
-            </Badge>
-          )}
-        </div>
       </div>
 
       {colorimetry.photo.notes && (
