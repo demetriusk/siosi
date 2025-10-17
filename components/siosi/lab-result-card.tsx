@@ -43,14 +43,15 @@ export function LabResultCard({ analysis, variant = 'preview', className }: LabR
     }
   })();
 
+  const wrapperClassName = cn(
+    variant === 'preview'
+      ? 'rounded-sm border border-[#E5E7EB] bg-white p-6 transition-shadow hover:shadow-md'
+      : undefined,
+    className,
+  );
+
   return (
-    <div
-      className={cn(
-        'rounded-sm border border-[#E5E7EB] bg-white p-6 transition-shadow',
-        variant === 'preview' && 'hover:shadow-md',
-        className,
-      )}
-    >
+    <div className={wrapperClassName}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-3">
           <div className="flex flex-wrap items-center gap-3">

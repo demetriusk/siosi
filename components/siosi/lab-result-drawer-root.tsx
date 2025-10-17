@@ -58,20 +58,17 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   }, [analyses]);
 
   const selected = analyses[index];
-  const canPrev = index > 0;
-  const canNext = index < analyses.length - 1;
+  const hasMultiple = analyses.length > 1;
 
   const goPrev = React.useCallback(() => {
-    if (canPrev) {
-      setIndex((current) => current - 1);
-    }
-  }, [canPrev]);
+    if (analyses.length <= 1) return;
+    setIndex((current) => (current - 1 + analyses.length) % analyses.length);
+  }, [analyses.length]);
 
   const goNext = React.useCallback(() => {
-    if (canNext) {
-      setIndex((current) => current + 1);
-    }
-  }, [canNext]);
+    if (analyses.length <= 1) return;
+    setIndex((current) => (current + 1) % analyses.length);
+  }, [analyses.length]);
 
   const goTo = React.useCallback(
     (target: number) => {
@@ -83,6 +80,8 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!hasMultiple) return;
+
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
       goPrev();
@@ -139,7 +138,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             <button
               type="button"
               onClick={goPrev}
-              disabled={!canPrev}
+              disabled={!hasMultiple}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D1D5DB] text-[#111827] transition disabled:opacity-40"
               aria-label="Previous lab"
             >
@@ -163,7 +162,7 @@ export default function LabResultDrawerRoot({ analyses, closeLabel }: LabResultD
             <button
               type="button"
               onClick={goNext}
-              disabled={!canNext}
+              disabled={!hasMultiple}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#D1D5DB] text-[#111827] transition disabled:opacity-40"
               aria-label="Next lab"
             >
