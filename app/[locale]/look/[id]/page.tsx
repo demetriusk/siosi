@@ -17,6 +17,7 @@ import { publicPosterUrl } from '@/lib/poster';
 import type { Metadata } from 'next';
 import ClickableLabCard from '@/components/siosi/clickable-lab-card';
 import LabResultDrawerRoot from '@/components/siosi/lab-result-drawer-root';
+import { Feedback } from '@/components/ui/feedback';
 
 interface LookPageProps extends ParamsWithLocaleAndId {}
 
@@ -446,6 +447,7 @@ export default async function LookPage({ params }: LookPageProps) {
                     analyses={orderedAnalyses}
                     closeLabel={safeT('common.close', 'Close')}
                   />
+
                 </TabsContent>
 
                 <TabsContent value="color" className="mt-6" forceMount>
@@ -468,6 +470,28 @@ export default async function LookPage({ params }: LookPageProps) {
                     'Color recommendations are based on color theory and undertone analysis. Personal preference and experimentation are encouraged. Lighting conditions may affect how colors appear in real life.',
                   )}
                 </p>
+
+                    <div className="mt-6">
+                      <Feedback
+                        title={safeT('feedback.analysis.title', 'How accurate was this analysis?')}
+                        description={safeT('feedback.analysis.description', 'We want to make síOsí smarter for you! Was this analysis spot-on, or did it miss something? Share your thoughts below — every bit of feedback helps us improve.')}
+                        submitLabel={safeT('feedback.analysis.submit', 'Send Feedback')}
+                        userId={session?.user_id ?? ''}
+                        onSubmit={async ({ userId, happiness, message }) => {
+                          await fetch('/api/feedback', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              sessionId: id,
+                              locale,
+                              userId,
+                              happiness,
+                              message,
+                            }),
+                          });
+                        }}
+                      />
+                    </div>
 
               </div>
             </Tabs>
