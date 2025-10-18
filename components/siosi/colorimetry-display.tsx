@@ -108,7 +108,7 @@ function PaletteCard({
         {swatches.map((swatch, index) => (
           <li key={swatch.id ?? `${swatch.hex}-${index}`} className="flex items-start gap-3">
             <div
-              className="h-14 w-14 rounded-full border-2 border-white shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
+              className="h-14 w-14 rounded-full border-2 border-white flex-shrink-0 shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
               style={{ backgroundColor: swatch.hex }}
             />
             <div className="flex flex-col gap-1">
@@ -404,7 +404,7 @@ export default function ColorimetryDisplay({ colorimetry }: ColorimetryDisplayPr
               {activeSeasonPalette.palette.map((swatch) => (
                 <li key={swatch.hex} className="flex flex-col items-center text-center">
                   <span
-                    className="h-14 w-14 rounded-full border-2 border-white shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
+                    className="h-14 w-14 rounded-full border-2 flex-shrink-0 shadow-inner shadow-md ring-2 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl hover:ring-4 hover:ring-gray-300 lg:h-16 lg:w-16"
                     style={{ backgroundColor: swatch.hex }}
                     aria-hidden
                   />
